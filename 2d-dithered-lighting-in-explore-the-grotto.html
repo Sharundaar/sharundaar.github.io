@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>2D Dithered Lighting in Explore the Grotto</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content="Eplore the Grotto I developped a small adventure game for the January 2022 Wasm4 Gamejam which featured a very basic lighting system that I felt..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Sharundaar's Blog</a></h1>
+                <nav><ul>
+                    <li><a href="/category/about-me.html">About Me</a></li>
+                    <li class="active"><a href="/category/articles.html">Articles</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/2d-dithered-lighting-in-explore-the-grotto.html" rel="bookmark"
+           title="Permalink to 2D Dithered Lighting in Explore the Grotto">2D Dithered Lighting in Explore the Grotto</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2022-02-03T00:00:00-05:00">
+                Published: Thu 03 February 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/sharundaar.html">Sharundaar</a>
+        </address>
+<p>In <a href="/category/articles.html">Articles</a>.</p>
+
+</footer><!-- /.post-info -->      <h1>Eplore the Grotto</h1>
+<p>I developped a small adventure game for the January 2022 <a href="https://itch.io/jam/wasm4">Wasm4 Gamejam</a> which featured a very basic lighting system that I felt gave a nice effect and I thought I'd write up a bit on it.</p>
+<h1>Wasm4</h1>
+<p>So first of all, what's <a href="https://wasm4.org/">Wasm4</a> ?</br>
+It's a fantasy console that aims to be small and simple, with the kind of graphics and sounds you'd find on an old console (think gameboy/gamegear). The specs are as follow :</p>
+<ul>
+<li>160x160 pixels screen, 4 colors, refreshed at 60Hz</li>
+<li>64Kb of linear RAM</li>
+<li>... and a few other details</li>
+</ul>
+<p>The console is made to run wasm compiled binary code and as such runs entirely in the browser. The low resolution combined with the wasm performance allows to do some fairly complex effect despites the limitation, you can currently easily find <a href="https://wasm4.org/play/maze/">software 3D renderer</a> for the console !</p>
+<p>So what I liked is that it was really easy to just write relatively complex effects, and since you can compile a lot of language into wasm4 then we can just write the code in our favourite language ! Which is going to be <a href="https://odin-lang.org/">Odin</a> in our case.</p>
+<h1>Result</h1>
+<p>Before diving in the implementation I wanted to show off what we can expect :</p>
+<p><img alt="Explore the Grotto gif" src="/images/etg-light.gif"></p>
+<p>As you can see, although we're limited to 4 color, we manage to get a nice gradient going from the light sources and puting out the darkness. We can see on the player that the light is easy to animate too !</p>
+<h1>Ligths and Shadows</h1>
+<p>To understand why I went with dithering (and where it even comes from) we have to take a step back and understand the initial problem. The game takes place in a cave and I wanted to have that item that helps you see in the dark. In normal circumstances it's fairly easy to do as you can generate a smooth gradient to transition from light to darkness. Due to the console limitation (we only have 4 colors), you can't really smoothly transition as you'd need as many colors that the blending would require.</p>
+<p><img alt="Faked image to show smooth lighting" src=""></p>
+<p>There's a few ways to solve that issue, we could not care for exemple and just have a hard line</p>
+<p><img alt="Light with hard edge" src="/images/etg-light-2.gif"></p>
+<p>I thought it was a little too "flat", and so I leaned on dithering ! It's a nice technique that allows us to convey gradient when we're limited in the palette department.</p>
+<h1>Dithering</h1>
+<p>If you search for dithering online you'll find a bunch of images demonstrating that it's a good technique to transform pretty high-res images into a jumbled mess of pixels.</p>
+<p>Now in reality when used properly it's a really good technique to trick your brain into thinking there's shadows and gradient in places where you only have a couple of colors.</p>
+<p>One of the best use of dithering I think is in <a href="https://store.steampowered.com/app/653530/Return_of_the_Obra_Dinn/">Return of the Obra Dinn</a> where it's an integral part of the art style.</p>
+<p><img alt="Return of the Obra Dinn" src="/images/obra-dinn.jpg"></p>
+<p>Now what do we have to do to achieve this ? <a href="https://forums.tigsource.com/index.php?topic=40832.msg1363742#msg1363742">Well a lot actually</a>, so we're not going to replicate that, but we can implement the basis ! The <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering">Floyd-Steinberg dithering</a></p>
+<h1>Implementation</h1>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/Sharundaar">Twitter</a></li>
+                            <li><a href="https://github.com/Sharundaar">GitHub</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

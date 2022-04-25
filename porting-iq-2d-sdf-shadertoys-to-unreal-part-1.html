@@ -4,8 +4,9 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>Sharundaar's Blog - Sharundaar</title>
+        <title>Porting IQ 2D SDF Shadertoys to Unreal - Part 1</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content="I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez..." />
 </head>
 
 <body id="index" class="home">
@@ -13,13 +14,18 @@
                 <h1><a href="/">Sharundaar's Blog</a></h1>
                 <nav><ul>
                     <li><a href="/category/about-me.html">About Me</a></li>
-                    <li><a href="/category/articles.html">Articles</a></li>
+                    <li class="active"><a href="/category/articles.html">Articles</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html" rel="bookmark"
+           title="Permalink to Porting IQ 2D SDF Shadertoys to Unreal - Part 1">Porting IQ 2D SDF Shadertoys to Unreal - Part 1</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">Porting IQ 2D SDF Shadertoys to Unreal - Part 1</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2022-04-24T00:00:00-04:00">
                 Published: Sun 24 April 2022
@@ -30,7 +36,7 @@
         </address>
 <p>In <a href="/category/articles.html">Articles</a>.</p>
 
-</footer><!-- /.post-info --><p>I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. </p>
+</footer><!-- /.post-info -->      <p>I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. </p>
 <p>The source article with all the SDF we're going to try can be found <a href="https://iquilezles.org/articles/distfunctions2d/">here</a></p>
 <h1>Initial Setup</h1>
 <p>Since my end goal is to make some UI shaders we're goig to setup a UI material !
@@ -83,36 +89,11 @@ So we go right click in the content window -&gt; Materials -&gt; Material, I'm n
 <p>And here's our final result :</p>
 <p><img alt="Substract Node" src="/images/2DSDF/clear-border-preview.png"></p>
 <p>At this point we're able to draw a simple circle on a square quad, you'll see that trying this on anything but a square will stretch the circle strangely, also if we want more color than black and white we'll need a bit more stuff. But this was the simplest setup to get the more complicated stuff running later !</p>
-<p>I haven't even referenced Inigo shadertoy or articles but this was about getting our feet in the unreal material door, we'll see in the next chapter how to do more complicated stuff !</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>I haven't even referenced Inigo shadertoy or articles but this was about getting our feet in the unreal material door, we'll see in the next chapter how to do more complicated stuff !</p>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/about-me.html" rel="bookmark"
-                           title="Permalink to About Me">About Me</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2022-02-02T00:00:00-05:00">
-                Published: Wed 02 February 2022
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/sharundaar.html">Sharundaar</a>
-        </address>
-<p>In <a href="/category/about-me.html">About Me</a>.</p>
-
-</footer><!-- /.post-info -->                <p>Hello ! I'm Donatien Rabiller, a developper in the video game industry. I've worked on Call of Duty as a UI programmer and am now working on an undisclosed project. I have accumulated a bunch of experiences that I would like to share. I do not plan to write detailed tutorials …</p>
-                <a class="readmore" href="/about-me.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
