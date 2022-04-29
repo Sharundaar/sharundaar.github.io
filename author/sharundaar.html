@@ -19,7 +19,158 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">Porting IQ 2D SDF Shadertoys to Unreal - Part 1</a></h1>
+                    <h1 class="entry-title"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html">Porting IQ 2D SDF Shadertoys to Unreal - Part 2</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2022-04-29T00:00:00-04:00">
+                Published: Fri 29 April 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/sharundaar.html">Sharundaar</a>
+        </address>
+<p>In <a href="/category/articles.html">Articles</a>.</p>
+
+</footer><!-- /.post-info --><p>As a quick refresher, we're working on reproducing the 2D signed distance field described on <a href="https://iquilezles.org/articles/distfunctions2d/">Inigo Quilez's blog</a>, we've got <a href="porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">our circle</a>, and now we're gonna inject some colors in there !</p>
+<h1>The Target</h1>
+<p>The goal this time is to reproduce the overall look of IQ's shadertoy's that demos the 2D SDF functions.</p>
+<p><img alt="Expected result" src="/images/2DSDF/iq-expected-result.png"></p>
+<p>You can go check the shadertoy <a href="https://www.shadertoy.com/view/3ltSW2">here</a> but we're gonna talk about the important lines.</p>
+<p>Here's the commented code we're going to port, I've removed the mouse related stuff as it's out of scope :</p>
+<div class="highlight"><pre><span></span><code>void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 p = (2.0*fragCoord-iResolution.xy)/iResolution.y; // our pixel position on screen
+
+    float d = sdCircle(p,0.5); // the evaluated signed distance field
+
+    // coloring
+    vec3 col = (d&gt;0.0) ? vec3(0.9,0.6,0.3) : vec3(0.65,0.85,1.0); // inside and outside colors
+    col *= 1.0 - exp(-6.0*abs(d)); // this generate the dark shadows around the outline
+    col *= 0.8 + 0.2*cos(150.0*d); // generates the wavy pattern
+    col = mix( col, vec3(1.0), 1.0-smoothstep(0.0,0.01,abs(d)) ); // this gives the strong white outline
+
+    fragColor = vec4(col,1.0);
+}
+</code></pre></div>
+
+<p>As you might see there's 3 big parts to the shader:</p>
+<ul>
+<li>Computing p: transforming from the quad [0, 1] coordinates to the circle local coordinates<p></li>
+<li>Evaluating d: in our case we're juste evaluating the circle SDF function<p></li>
+<li>Determining col: this is the color computation we're interested about today<p></li>
+</ul>
+<p>Following the previous part you should already have p and d computed, so now we only have to port the color code, it's split into 4 parts that renders that particular look :</p>
+<p><a href="#PickCol">[1]</a> Picking a color depending if we're inside or outside the shape<p>
+ <a href="#DarkenCol">[2]</a> Darken that color if we're near the outline<p>
+ <a href="#WavyPattern">[3]</a> Generate the wavy pattern centered on the SDF<p>
+ <a href="#GenOutline">[4]</a> Add a thin white outline where the SDF goes from positive to negative</p>
+<p>Let's tackle those one by one.</p>
+<h2 id="PickCol"></h2>
+
+<h1>Picking a color</h1>
+<p>The color pick code is very simple, if d is positive we're outside and pick one color, if it's negative we're inside and pick the other color.</p>
+<p><code>vec3 col = (d&gt;0.0) ? vec3(0.9,0.6,0.3) : vec3(0.65,0.85,1.0); // inside and outside colors</code></p>
+<p>So we need 4 nodes here :
+ - 2 colors or vec3<p>
+ - A way to compare the distance field with a number<p>
+ - A way to pick between our 2 colors depending on our condition<p></p>
+<h2>Color nodes</h2>
+<p>The 2 colors are straightforward, we can do as before by using a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant3vector">Constant3Vector</a> but I think it would be nice if we could edit this value from outside the shader, so let's go with a <a href="https://docs.unrealengine.com/5.0/en-US/material-parameter-expressions-in-unreal-engine/#vectorparameter">VectorParameter</a> !</p>
+<p><img alt="Parameter Node Inside" src="/images/2DSDF/parameter-node-inside.png"></p>
+<p>When you create the node you get to give it a name, the name here is important if you want to drive the color from code or blueprint later. We're going to name it <code>Inside</code> for the inside color. And while we're at it we'll create a 2nd node named <code>Outside</code>. Let's copy the shader's value in the node and tada ! Our colors are ready.</p>
+<p><img alt="Our Two Colors" src="/images/2DSDF/the-two-colors.png"></p>
+<h2>Comparison and Branch</h2>
+<p>Actualy I lied, going into this I thought we would need 2 nodes for the condition and the comparison, kinda like in a normal blueprint. But turns out in a material the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#if">If</a> node actually does both of them at the same time. It takes 2 single float values, and outputs something depending on the 3 other pins.</p>
+<p><img alt="If Node" src="/images/2DSDF/if-node.png"></p>
+<p>Although the A pin needs to be provided, if you look at the If node details panel you'll find that you can set the B pin constant there directly, and it's 0 by default which is just what we want, lucky !</p>
+<h2>Slight Stop at the Reroute</h2>
+<p>Before wiring things up, I learned about "Named Reroute Nodes" which I believe is a great way to give name to our intermediate results and denoodelify our graph ! We're going to create one to note our signed distance field result, the variable <code>d</code> in the original shadertoy.</p>
+<p>To create one, drag from the Substract output to an empty space and create a reroute node.</p>
+<p><img alt="Reroute Declaration Node" src="/images/2DSDF/create-named-reroute-declaration-node.png"></p>
+<p>This will prompt you to give it a name (if you mess up you can quickly rename by selecting the node and pressing F2), let's name it d just like the shadertoy. Then we can rewire it back and see that nothing changed ! (Well aside from a better annotated shader)</p>
+<p><img alt="D Rewired Node" src="/images/2DSDF/d-node-rewired.png"></p>
+<p>The nice thing is that afterward we can just pull the reroute node alone in a separate part of the graph without having to pull wires around. See in the right click menu.</p>
+<h2>Plug everything together</h2>
+<p>Alright let's make some noodles, starting from our previous graph we want to take the distance field value <code>d</code>, plug that into the A pin of our If node, plug the Outside color to A &gt; B (which is d &gt; 0, outside the circle) and plug the Inside color to A &lt; B (which is d &lt; 0, inside the circle).</p>
+<p>Finally you can move or delete the Step node and plug the If output to the Final Color pin and enjoy the result !</p>
+<p><img alt="Wiring" src="/images/2DSDF/everything-plugged.png"> <img alt="Result" src="/images/2DSDF/result-dual-color.png"></p>
+<p>You might notice that the colors are washed out even though we have the same RGB, we'll go over that in an other article because there's some interesting technical details between shadertoy and unreal UI materials there</p>
+<h2 id="DarkenCol"></h2>
+
+<h1>Create the Shadow</h1>
+<p>Next step is to create the dark shadow around the outline, it's done by evaluating an exponential function that results in a very low value when the input is 0 and a value near 1 when the input is 1 with a strong falloff</p>
+<p><code>col *= 1.0 - exp(-6.0*abs(d));</code></p>
+<p>We can plug this in <a href="https://www.desmos.com/calculator/xqlptifxfu">desmos</a> and see what it looks like :</p>
+<iframe src="https://www.desmos.com/calculator/xqlptifxfu?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+<p>As I said, 0 at 0, 1 at 1, with strong falloff closer to 0.</p>
+<p>Since we've already seen the basic math node we're only going to check how to make the Abs and the Exp.</p>
+<h2>Absolute</h2>
+<p>This one is straightforward, there's a built-in <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#abs">Abs</a> node.</p>
+<p><img alt="Abs Node" src="/images/2DSDF/abs-node.png"></p>
+<p>We can add a Multiply * -6 node and wire it and we're ready for the exponential.</p>
+<h2>Exponential</h2>
+<p>Fairly easy too as it's a built-in function in GLSL and HLSL, we can just search for the exp node aaand...</p>
+<p><img alt="No Exp" src="/images/2DSDF/no-exp.png"></p>
+<p>No exp ? So actually there's no exponential function node in Unreal, which I don't really understand why. Luckily, the exponential function is just putting a particular constant (<code>e</code>) to the power of the value you want (in our case the result of <code>-6*abs(d)</code>).</p>
+<p>To get e's value, we can make a constant node and do a quick google search which will give you a <a href="https://www.rapidtables.com/math/number/e_constant.html">nice value to sufficient precision</a> and learn a few things about that famous Euler's number ! Or you can just copy this <code>2.718281828459</code>.</p>
+<p>So our easy Exp node became a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#power">Power</a> node in the end, but we got what we wanted !</p>
+<p><img alt="Power Node Wired" src="/images/2DSDF/power-node-wired.png"></p>
+<p>At that point we can open the node by clicking on the lil' arrow on the top right to see if we made any mistakes :</p>
+<p><img alt="Previewing" src="/images/2DSDF/previewed-power-node.png"></p>
+<p>It's red here because we're outputing only one channel. We've got a strong white at the outline and a quick falloff to 0 when we get out. We can already see that the scale is a bit wrong. This is because the -6 that IQ picked was dependent on the shadertoy viewport scaling he used (see his p computation), we can adjust it for our setup by switching the -6 to a -16 for exemple (lower values gives stronger falloff, test on the desmos link !).</p>
+<p><img alt="Previewing" src="/images/2DSDF/switch-to-16.png"></p>
+<p>We'll see other values to adjust later, I'll call them out when we get there.</p>
+<p>The value goes from 1 at the outline to 0 outside but we want the other way around, that's what the 1 - X is for ! One subtract and a multiply later we already have a lot more bumpiness to our circle</p>
+<p><img alt="Partial Result 1" src="/images/2DSDF/partial-result-1.png"></p>
+<h2 id="WavyPattern"></h2>
+
+<h1>Generate the Wavy Pattern</h1>
+<p><code>col *= 0.8 + 0.2*cos(150.0*d);</code></p>
+<p>The goal of this equation here is to get an oscillating value centered on the circle that goes between 0.8 and 1.0, we'll be able to multiply the color by that value to get that nice wavy gradient. We can check the equation in desmos too.</p>
+<iframe src="https://www.desmos.com/calculator/adrorlq7xx?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+<p>The .8 and .2 controls the min and max value of the wave (min=.8 and max=(.8+.2))</p>
+<p>The 150 controls the frequency, or how close each wave peaks are. With our scale we should reduce that a bunch, 60 seems to be a good value. This time I noticed that you can just input the constants in the math node directly, so that gives a pretty compact graph !</p>
+<p><img alt="The Wavy Nodes" src="/images/2DSDF/wavy-calculus.png"></p>
+<p>We multiply our previous color by the wave and we're almost there 😁</p>
+<p><img alt="Wavy Result" src="/images/2DSDF/result-wavy.png"></p>
+<h2 id="GenOutline"></h2>
+
+<h1>Strongify the Outline</h1>
+<p>Ok last part of the color equation, the small outline.</p>
+<p><code>col = mix( col, vec3(1.0), 1.0-smoothstep(0.0,0.01,abs(d)) );</code></p>
+<p>This one is a bit more esoteric, we can see 2 built-in GLSL functions <a href="https://docs.gl/sl4/mix">mix</a> and <a href="https://docs.gl/sl4/smoothstep">smoothstep</a>. We'll go from the inside to the outside starting with the smoothstep.</p>
+<h2>Smoothstep</h2>
+<p><code>1.0 - smoothstep(0.0, 0.01, abs( d ) );</code></p>
+<p>We've seen the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#step">Step</a> function in Part 1, <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#smoothstep">Smoothstep</a> is equivalent but generates a gradient instead of a hard line.</p>
+<p><img alt="Smooth Step vs Step" src="/images/2DSDF/smoothstep-vs-step.png"></p>
+<p>If you're curious about the math behind the smoothstep it's usually a polynomial of degree 3 like this one :</p>
+<iframe src="https://www.desmos.com/calculator/kzrxs4f6fk?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+<h2>Mix</h2>
+<p><code>mix( col, vec3(1.0), smoothstep );</code></p>
+<p>Mix is a simple linear interpolation between 2 colors by a value in the [0, 1] range. The equivalent node in Unreal is <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#linearinterpolate">LinearInterpolate</a></p>
+<p>So as stated in the expression we're going to interpolate between the color and a white vector, using the smoothstep result as the interpolation value. And all that in a single node !</p>
+<p><img alt="Wiring the lerp and smooth node" src="/images/2DSDF/lerp-and-smooth-node.png"></p>
+<h1>Wiring everything together</h1>
+<p>Once we got all the pieces, we can mix them up using multiply and lerp and we get the final graph. I've used some Named Reroute nodes to organize the various datas we're computing and the result is not too bad !</p>
+<p><img alt="Result" src="/images/2DSDF/final-material.png"></p>
+<h1>Wrapping up</h1>
+<p>Alright this article has been long enough !</p>
+<p>Comparing the expected result I'm not completely satisfied with the result. The colors are washed out, the spacings are not exactly the same, changing the quad size results in weird stretching, we'll fix all that in the next article and from there we'll finally grind those SDF functions properly and get more than a circle !</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html" rel="bookmark"
+                           title="Permalink to Porting IQ 2D SDF Shadertoys to Unreal - Part 1">Porting IQ 2D SDF Shadertoys to Unreal - Part 1</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2022-04-24T00:00:00-04:00">
                 Published: Sun 24 April 2022
@@ -30,65 +181,12 @@
         </address>
 <p>In <a href="/category/articles.html">Articles</a>.</p>
 
-</footer><!-- /.post-info --><p>I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. </p>
+</footer><!-- /.post-info -->                <p>I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. </p>
 <p>The source article with all the SDF we're going to try can be found <a href="https://iquilezles.org/articles/distfunctions2d/">here</a></p>
-<h1>Initial Setup</h1>
-<p>Since my end goal is to make some UI shaders we're goig to setup a UI material !
-So we go right click in the content window -&gt; Materials -&gt; Material, I'm naming mine SDFMaterial for now. <img alt="New Material" src="/images/2DSDF/create-mat.png"></p>
-<p>Open the material, go to the detail panel and set the domain to User Interface.
-<img alt="Set domain to user interface" src="/images/2DSDF/set-domain.png"></p>
-<p>And now we're good to go !</p>
-<h1>The Simplest SDF function</h1>
-<p>The first SDF function we're going to implement is the circle since it's pretty simple and straightforward to visualize. The distance to a circle is the distance between the evaluated point and the circle center minus the radius. You'll see that all functions on Inigo's website skip the "distance between the evaluated point and the circle" part since we can just do those transformation before calling the function. This means that in all the functions we're going to write, the shape we're forming is assuming to be at coordinates (0, 0).</p>
-<p>Aight let's see how to do it in practice !</p>
-<p>To get our circle, we need 4 pieces :</p>
-<ul>
-<li>A way to get a point coordinate<p></li>
-<li>A node to store our circle's radius<p></li>
-<li>Some way to compute the length of a vector<p></li>
-<li>Some way to substract two quantities<p></li>
-</ul>
-<h2>Getting some UVs</h2>
-<p>Let's deal with the first point, since we're doing a UI shader we have access to the GetUserInterfaceUV node. This node offers the Normalize UV pin which will give us a coordinate vector in the [0, 1] range to play with.</p>
-<p><img alt="Get UIUVNode" src="/images/2DSDF/get-user-interface-uv-node.png"></p>
-<p>A good tip here is to plug the node into the Final Color pin of the output to see what we're dealing with.</p>
-<p><img alt="First Preview" src="/images/2DSDF/nuv-to-fc-preview.png"></p>
-<p>If you've never wrote any shader you might be confused at what you're looking at but this black-red-green-yellow gradient square is typical when viewing a 2D vector going smoothly between 0 and 1 on both axis, the square corners correspond to the [0, 0] (black), [1, 0] (red), [0, 1] (green), [1, 1] (yellow) vectors respectively.</p>
-<p>Anyway, this just shows us that our Normalized UV pin does what we expect it to do :D</p>
-<h2>Constant nodes</h2>
-<p>Now for the radius, we might want to control that outside of the shader later but let's go the simplest way first and use a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant">Constant</a> node. We can set it's value to 0.25, since our space is in the [0, 1] range, using 0.25 as the radius should have our circle radius take 1/4 of the screen space.</p>
-<p><img alt="Radius Node" src="/images/2DSDF/radius-const-node.png"></p>
-<h2>Vector Length</h2>
-<p>Third point ! The vector's length, there's a very straightforward VectorLength node we can use here</p>
-<p><img alt="Vector Length Node" src="/images/2DSDF/vector-length-node.png"></p>
-<p>I was actually confused why there was a V3 and V2 inputs and outputs pins on it, those nodes are actually "material function" nodes that are built from more simpler node, we can double-click them to see the source !</p>
-<p><img alt="Vector Length Source" src="/images/2DSDF/vectorlength-source.png"></p>
-<p>This makes some kind of sense, computing the length of a vector is equivalent to getting the distance between the point represented by the vector and the origin. It's a bit confusing comming from GLSL (and HLSL) since there's just a length primitive function, but if it works for them, it works for me.</p>
-<h2>Actual Math</h2>
-<p>Last point now, the last node is straightforward there's just a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#subtract">Substract</a> node.</p>
-<p><img alt="Substract Node" src="/images/2DSDF/substract-node.png"></p>
-<h2>Result</h2>
-<p>Aight, let's wire everything up !</p>
-<p><img alt="Substract Node" src="/images/2DSDF/preview-circle.png"></p>
-<p>And we have our circle ! Except it's a little "fuzzy"... Also it's just a forth of a circle in the corner... Well this is all expected, as we said the SDF function assumes the circle is at the origin, and here the origin is the top left of the render space ! Also it's fuzzy because we're feeding the distance directly to the output, so the value is positive going up at the border and it's negative inside. The black part inside is actually negative values but the colors are clamped to 0 before going on the screen. </p>
-<p>Before moving forward, let's move the circle to the middle of the screen and take care of the border !</p>
-<h2>Moving the Circle</h2>
-<p>We can move the circle by translating the initial UV by some vector, this is done using the same substract node as before, and we can get a vector with a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant2vector">Constant2Vector</a> node. Center of the screen is [0.5, 0.5] so let's translate our UVs by this vector.</p>
-<p><img alt="Substract Node" src="/images/2DSDF/translate-setup.png"></p>
-<p>And tada ! Our circle is centered.</p>
-<p><img alt="Substract Node" src="/images/2DSDF/centered-circle.png"></p>
-<h2>Clearing the Border</h2>
-<p>Finally let's take care of the fuzzy border before moving forward, for this we'll use the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#step">Step</a> function. It's a bit confusing to use but it returns 0 when X &lt; Y, so if we input our distance as X and 0 as Y, we should get full black everywhere negative (inside) and full white everywhere positive (outside).</p>
-<p><img alt="Substract Node" src="/images/2DSDF/clear-border.png"></p>
-<p>And here's our final result :</p>
-<p><img alt="Substract Node" src="/images/2DSDF/clear-border-preview.png"></p>
-<p>At this point we're able to draw a simple circle on a square quad, you'll see that trying this on anything but a square will stretch the circle strangely, also if we want more color than black and white we'll need a bit more stuff. But this was the simplest setup to get the more complicated stuff running later !</p>
-<p>I haven't even referenced Inigo shadertoy or articles but this was about getting our feet in the unreal material door, we'll see in the next chapter how to do more complicated stuff !</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<h1>Initial …</h1>
+                <a class="readmore" href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
