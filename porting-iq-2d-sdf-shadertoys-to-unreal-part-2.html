@@ -149,7 +149,7 @@
 <h2>Smoothstep</h2>
 <p><code>1.0 - smoothstep(0.0, 0.01, abs( d ) );</code></p>
 <p>We've seen the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#step">Step</a> function in Part 1, <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#smoothstep">Smoothstep</a> is equivalent but generates a gradient instead of a hard line.</p>
-<p><img alt="Smooth Step vs Step" src="/images/2DSDF/smoothstep-vs-step.png"></p>
+<p><img alt="Smooth Step vs Step" src="/images/2DSDF/smoothsteo-vs-step.png"></p>
 <p>If you're curious about the math behind the smoothstep it's usually a polynomial of degree 3 like this one :</p>
 <iframe src="https://www.desmos.com/calculator/kzrxs4f6fk?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
 
@@ -160,10 +160,11 @@
 <p><img alt="Wiring the lerp and smooth node" src="/images/2DSDF/lerp-and-smooth-node.png"></p>
 <h1>Wiring everything together</h1>
 <p>Once we got all the pieces, we can mix them up using multiply and lerp and we get the final graph. I've used some Named Reroute nodes to organize the various datas we're computing and the result is not too bad !</p>
-<p><img alt="Result" src="/images/2DSDF/final-material.png"></p>
+<p><img alt="Complete Material" src="/images/2DSDF/final-material.png"></p>
 <h1>Wrapping up</h1>
 <p>Alright this article has been long enough !</p>
-<p>Comparing the expected result I'm not completely satisfied with the result. The colors are washed out, the spacings are not exactly the same, changing the quad size results in weird stretching, we'll fix all that in the next article and from there we'll finally grind those SDF functions properly and get more than a circle !</p>
+<p><img alt="Current Result" src="/images/2DSDF/part2-result.png"></p>
+<p>Compared to the expected result I'm not completely satisfied with what we have. The colors are washed out, the spacings are not exactly the same, changing the quad size results in weird stretching, we'll fix all that in the next article and from there we'll finally grind those SDF functions properly and get more than a circle !</p>
     </div><!-- /.entry-content -->
 
   </article>

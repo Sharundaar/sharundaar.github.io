@@ -19,7 +19,207 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html">Porting IQ 2D SDF Shadertoys to Unreal - Part 2</a></h1>
+                    <h1 class="entry-title"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-3.html">Porting IQ 2D SDF Shadertoys to Unreal - Part 3</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2022-05-08T00:00:00-04:00">
+                Published: Sun 08 May 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/sharundaar.html">Sharundaar</a>
+        </address>
+<p>In <a href="/category/articles.html">Articles</a>.</p>
+
+</footer><!-- /.post-info --><style>
+.aligncenter {
+    text-align:center
+}
+</style>
+
+<p>Last time we changed the look of our shader to match Inigo Quilez's demos on <a href="https://www.shadertoy.com/view/3ltSW2">shadertoy</a>, but we kind of left it with a bunch of glaring differences and issues :</p>
+<ul>
+<li>The colors are washed out<p><img alt="Washed out Colors" src="/images/2DSDF/washed-out-colors.png"></li>
+<li>Stretching happens if we resize the viewport<p><img alt="Washed out Colors" src="/images/2DSDF/sad-stretching.png"></li>
+<li>The numbers we enter don't match Inigo's shader</li>
+</ul>
+<p>Each issue isn't too bad individually, but as we're going to get into the more complex SDF functions I'd like it if we could just copy Inigo's samples directly and compare the output images. It'll make things easier to debug as we go along. I also think it's going to be an interesting exercise to dive a bit more into how those shaders work and have a better understanding on how to translate shaders from Shadertoy to Unreal. So let's tackle them one by one !</p>
+<h1>My colors are all washed out !</h1>
+<p>The first glaring issue is the colors, they look all vibrant and clean on shadertoy and although we copied the exact RGB they're all whitened out in Unreal ! What's up with that ?</p>
+<p>To be completely honest I'm not a graphical engineer, I don't really do colors, I don't really do shaders, but I kind of understand the concepts and I like hearing about them ray tracers and color corrections and tone mapping, and hey, we're here to learn ! So when I saw those washed out colors, I got a vague memory about a gamma correction discussion that happened at some point when speaking about shadertoy and color spaces. Going from that vague memory I checked the <a href="https://en.wikipedia.org/wiki/Gamma_correction">gamma correction wiki page</a> and picked the magic formula, <code>Vout = A * Vin ^ Gamma</code>, and added some nodes and lo and behold :</p>
+<p><img alt="Gamma corrected shader" src="/images/2DSDF/uh-that-worked.png"></p>
+<p>So ok, that seems to be the solution... Let's try to understand what's up though.</p>
+<h2>Gamma Correction</h2>
+<p>Reading the article this all comes from the way human beings perceive light and colors. Your human eye (if you have at least one of them) is much more sensible to darker tone variations than to lighter ones. In more mathy terms, if you have some light in the [0, 1] range (0 being full dark and one being full light), you would see a much color difference in a gradient going from 0.1 to 0.2, than in a gradient going from 0.8 to 0.9. I think intuitively it makes sense when I try to think of a very "light" scene (like on a snow field) all colors "feel" white, but in a darker scene (like when the sun is setting), you tend to perceive a lot more details in the color variations.</p>
+<p>So from there, usually we think about RGB computer colors as a triplet value in the [0, 1] range, with the color increasing linearly. If we take the red channel only for example, going from 0.1 to 0.2 adds as much "red" as going from 0.8 to 0.9 even though your brain would interpret the first as a much bigger gradient than the second one ! If we were saving the color linearly, like when taking a picture, we would waste a lot of bits to encode gradients we can't perceive, and on the other end we wouldn't have enough values to represent colors we can actually perceive. </p>
+<p>To resolve that issue, instead of directly showing a 0.5 pixels to the screen, we perform a mapping function that's going to transform the input values onto a curve that gives more room for darker values and less room for lighter ones.</p>
+<p>The process is called "Gamma Correction" and that's what we're doing when we put our color value to the power of some Gamma value. If you check the article the usual value for computer screens gamma correction is 2.2, and it maps the input values on this curve :</p>
+<p class="aligncenter">
+<iframe src="https://www.desmos.com/calculator/x8xe2ts7ub?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+</p>
+
+<p>You can see that the curve is kind of "compressed" to the right. Going from a color value of 0.1 to 0.2 increases the output from 0.0063 to 0.029 (0.0227 increase), while going from 0.8 to 0.9 goes from 0.61 to 0.79 (0.18 increase, so almost 8 times more). This means that we can represent more values in the lower end of the spectrum than in the higher end, which makes it better for human perception !</p>
+<h2>What this means in Unreal</h2>
+<p>As you might have guessed at this point, Unreal is actually doing something automatically related to this color correction. We can verify that by taking some screenshots ! Instead of our complex output, we can just plug a simple Vector 4 with a 0.5 Grey color, take a screenshot, and check what the output color is.</p>
+<p><img alt="Checking Unreal Output" src="/images/2DSDF/checking-unreal-output.png"></p>
+<p>I've added a 0.5 grey blob from paint.net next to the node on the image so we have a reference. Using the mighty color picker tool we can get values ! Our grey blob reports at 0.5 as expected, but the unreal 0.5 vector reports at 0.73 ! If you check back to the Desmos curve, you can see that an X value of 0.73 actually matches our expected 0.5, put in other words Unreal is doing the invert of the gamma correction ! Essentially what's happening here is that Unreal is expecting the input to be gamma corrected, and is automatically applying an invert function that puts the color back to uniform space before presenting it to the screen.</p>
+<p>I was a bit confused by this at first, but I found this article dating back to Unreal 3 that reaches the same conclusion and explains why Unreal does this : <a href="http://artbyplunkett.com/Unreal/unrealgamma.html">artbyplunkett.com/</a></p>
+<p>From what I understand this is the result of expectations from the painting program and screen output that doesn't work when rendering those assets in a 3D space. So Unreal is effectively counteracting the gamma curve function by applying the invert, resulting in a physically correct 3D rendering.</p>
+<p>Aight, from there we can get mathy and explain exactly why doing the pow(X, 2.2) gives us the "correct" output. Unreal is just applying a pow(X, 1/2.2) to the output, so by pow'ing our value before we get this :</p>
+<ul>
+<li>pow(pow(X, 2.2), 1 / 2.2) = pow(X, 2.2 / 2.2) = pow(X, 1) = X</li>
+</ul>
+<p>And so we get back our original color.</p>
+<h2>In Practice</h2>
+<p>Actually at that point I realized that the Unreal color picker had a "sRGB Preview" checkbox that actually talks directly about the gamma correction (┬┬﹏┬┬). Unchecking it doesn't change the resulting color but it does make the preview show the exact 0.5 expected color.</p>
+<p><img alt="sRGB Preview Checkbox" src="/images/2DSDF/gamma-correction-checkbox.png"></p>
+<p>So anyway, let's intercept our color output before sending it to the Final Color node with a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#power">Power</a> 2.2 node and tada !</p>
+<p><img alt="Color Correct Output" src="/images/2DSDF/color-correct-output.png"></p>
+<p>It's looking pretty vibrant now ╰(<em>°▽°</em>)╯, compared to IQ's shadertoy it's pretty much the same. One problem fixed, let's go to the next !</p>
+<h2 id="AspectRatio"></h2>
+
+<h1>Aspect Ratio Correctness</h1>
+<p>The next issue we'll solve is the unexpected stretch of our SDF output when the viewport resizes. To do that we simply need to transform the input UVs in a way that makes them uniform even if we change the length of one side.</p>
+<p>Our UV coordinate ranges from [0, 1] on both axis without any consideration for the image aspect ratio, we can do a bit of math to reinject some viewport information into those values.
+Assuming we've got a vector (x, y) with <code>0 &lt;= x &lt;= 1.0</code> and <code>0 &lt;= y &lt;= 1.0</code> (our uniform UVs), and we've got a vector (width, height) representing our destination rectangle size :</p>
+<div class="highlight"><pre><span></span><code>    x                 &lt;= 1.0             | y                   &lt;= 1.0       (1)
+    x * width         &lt;= width           | y * height          &lt;= height    (2)
+    x * width / height &lt;= width / height | y * height / height &lt;= 1.0       (3)
+
+&lt;=&gt; x &lt;= 1.0 | y * aspect_ratio &lt;= aspect_ratio
+</code></pre></div>
+
+<p>I've omitted the <code>0 &lt;=</code> part since it doesn't change anyways. Also the <code>width / height</code> quantity is usually called the aspect ratio of the rectangle so I've swapped the names.
+Porting this to our material, we conveniently have a Pixel Size input in our graph, we're going to use the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#componentmask">Component Mask</a> node to access the height (or Y, or G) component of our rect size. And after some math nodes :</p>
+<p><img alt="Aspect Ratio Correct Material" src="/images/2DSDF/aspect-ratio-correct.png"></p>
+<p>We can now resize the X axis all we want and we no longer have stretching !</p>
+<p>Now going back to the original shadertoy, we can see that IQ is actually doing the same-ish kind of computation as us :</p>
+<div class="highlight"><pre><span></span><code>    vec2 p = (2.0*fragCoord-iResolution.xy)/iResolution.y;
+</code></pre></div>
+
+<p>Ignoring the multiply and substract part for now, we see that he divides by the viewport height, which matches line (3) of our computation ! Shadertoy fragCoord value is actually not normalized compared to our Normalized UV pin. So he directly get the result value of line (2) and just needs to divide ╰(<em>°▽°</em>)╯</p>
+<p>Aight, there's actually one last thing I want to do, we've tested a viewport that's larger than tall, meaning the aspect ratio is greater than 1. What happens if we make it taller than large ?</p>
+<p><img alt="Bisected Circle" src="/images/2DSDF/bissected-circle.png"></p>
+<p>Our circle get bisected (┬┬﹏┬┬)</p>
+<p>This is an easy fix though, depending on which is smaller, the width or the height, we actually want to divide by that value.</p>
+<p><img alt="Aspect Ratio Correction Final" src="/images/2DSDF/final-graph-stretch-part3.png"></p>
+<p>And now our circle is full even if we make the rect too small for it ╰(<em>°▽°</em>)╯</p>
+<p><img alt="Saved Circle" src="/images/2DSDF/saved-circle.png"></p>
+<p>To be fair it might not be the behavior you want since it makes the final picture resize in potentially unexpected ways, I just wanted to mention the math for funsies.</p>
+<h1>Correcting dimensions and numbers</h1>
+<p>On to the last issue, the numbers Jason, they do not match ! As we were building the current visual we took some liberties with the input numbers to roughly match the Shadertoy demo, but it bothers me that they don't. We're doing standard math here, nothing that should trigger rounding issues or architecture differences that would lead to widely different visuals. We should be able to directly input the Shadertoy's number in our shader and have everything match perfectly ! So let's go through all the magic numbers in our shader, see how they differ from the Shadertoy, and get them fixed. We'll see that the root cause is fairly obvious but it's good to know precisely what we're dealing with.</p>
+<ul>
+<li>Circle radius : 0.25 (expected 0.5)<p></li>
+<li>UV Translation : 0.5 (expected 0)<p></li>
+<li>Shadow constant multiply : -16 (expected -6)<p></li>
+<li>Wave frequency multiplier : 60 (expected 150)<p></li>
+<li>Outline Smooth Step : 0.005 (expected 0.01)<p></li>
+</ul>
+<p>Thankfully most of those have the same root issue, we just don't work in the same coordinate system as Inigo's shader. The wave issue though... That one special and will have it's own section.</p>
+<h2>Adjusting our coordinate system</h2>
+<p>If you've been attentive, you might have noticed that I lied a little bit in the last part, and that we kind of corrected it-ish while doing the <a href="#AspectRatio">aspect ratio</a> shenanigans but I glossed over it... Let's go back to the <code>p</code> computation :</p>
+<div class="highlight"><pre><span></span><code>    // Inigo&#39;s code
+    vec2 p = (2.0*fragCoord-iResolution.xy)/iResolution.y;
+
+    // Our equivalent nodes
+    vec2 p = NormalizedUV * iResolution.xy / min(iResolution.x, iResolution.y)
+</code></pre></div>
+
+<p>Inigo's code scale's and translates <code>p</code> directly, he has two goals :</p>
+<ul>
+<li>Ensure <code>p == (0, 0)</code> is in the middle of the rectangle<p></li>
+<li>Have the coordinates in the [-1, 1] range<p></li>
+</ul>
+<p>Compared to us, we currently have <code>(0, 0)</code> be in the top left corner, and our coordinates are in the [0, 1] range. This actually directly explains the factor 2 in the circle radius, the shadow constant, and the outline smooth step ! And also why we have a 0.5 translation to center our circle. Let's fix that !</p>
+<p>The added nodes are fairly simple, starting from our coordinates in the [0, (width, height)] range we want to shift them so they are in the [(-width, -height), (width, height)] range, after that we can do the division to normalize them in the [(-aspect_ratio, -1), (aspect_ratio, 1)] range.</p>
+<p><img alt="Correctly transformed UVs" src="/images/2DSDF/correctly-transformed-uvs.png"></p>
+<p>If we check the output now, it's all wrong (⊙_⊙;). But that's expected ! Remember that all our values assumed the wrong coordinate system.</p>
+<p><img alt="All wrong :(" src="/images/2DSDF/all-shifted-circle.png"></p>
+<p>Let's go around and fix everything ! Follow the arrows :</p>
+<p><img alt="Fixup all the values" src="/images/2DSDF/fixup-values.png"></p>
+<p>And voilà ! Your circle should actually look <b>very</b> close to the Shadertoy demo at this point, we could stop there but I wanted to understand what's up with the cosine frequency, I mean a cosine is a cosine, there's no reason to have different results !</p>
+<p><img alt="Good circle, happy circle" src="/images/2DSDF/fixed-up-circle.png"></p>
+<h2>Fixing the Waves</h2>
+<p>Last but not least, the waves. The core of the issue is that the frequency is all wrong. If you put the value back to 150, there's a lot more peaks than what we see in Shadertoy... But who's wrong ? Is Shadertoy/GLSL cosine doing something weird ? Or is it Unreal ? The way I went about it is first checking the math.</p>
+<p>The nature of a cosine function is a wavy pattern that has peaks and creases, by counting the number of peaks you can deduce the frequency, and the height is the amplitude. We modulate the amplitude with the 0.2 multiply, a cosine outputs a value in the [-1, 1] range, so with the multiply we get a value in the [-0.2, 0.2] range and the add drives it to [0.6, 1.0], comparing the colors we can see that there's no difference there between Unreal and Shadertoy (at least after gamma correction fixup).</p>
+<p>So the issue is fundamentally with the frequency, or particularly with what's happening inside the cosine. To have some certitudes I plotted the distance function and the cosine in desmos, and we're going to look at the part inside the circle, so d(x) &lt; 0 :</p>
+<p class="aligncenter">
+<iframe src="https://www.desmos.com/calculator/rxhibhew5r?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+</p>
+
+<p>I've also offset the cosine curve so it's packed with the distance function so we can see exactly what the value is at the circle border. Essentially we want to count the number of peaks between x=0, which is the circle's center, and x=0.5, where the outline is. If the shadertoy circle has as many peaks as the desmos curve between those two points, then we now that the frequency is correct, and that Unreal is doing something weird !</p>
+<p>On the above curve you can count 13 peaks, let's check the shadertoy :</p>
+<p><img alt="Counting peaks" src="/images/2DSDF/counting-peaks.png"></p>
+<p>And we count 13 peaks too ! So something's definitely wrong with the Unreal cosine function. I'm not going to count them but the frequency is waaayyy off than what we would expect from inputting those number in the cosine function.</p>
+<p>Funnily enough, if you try to search for a good value in unreal that gives us 13 peaks, you'll find something in the 24 range... And if you compute the ratio between 150 and 24 you get 6.25, which you might notice is suspiciously close to 2*π (or τ if you're the kind of person that likes being right). Well just to burst the bubble now, divide 150 by 2*π and you get approx. 23.87, and if you input that into Unreal, you'll get your 13 peaks (⊙_⊙;)... So what's up Unreal ? Well, that's our punishment for not reading the documentation and having programmer expectation from math nodes. Let's check the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#cosine">Cosine node</a>:</p>
+<table>
+    <caption></caption>
+    <colgroup>
+        <col align="">
+        <col align="">
+    </colgroup>
+    <thead>
+        <tr>
+            <th style="background-color:#d8d8d8" rowspan="1" colspan="1">
+                <p>Item </p>
+            </th>
+            <th style="background-color:#d8d8d8" rowspan="1" colspan="1">
+                <p>Description </p>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="background-color:#f0f0f0" rowspan="1" colspan="2" align="">
+                <p></p>
+                <div style="background-color:#f0f0f0" class="tablesection">
+                    <p>Properties</p>
+                </div>
+                <p></p>
+            </td>
+            <td rowspan="1">
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="1" colspan="1" align="">
+                <p><strong>Period</strong></p>
+            </td>
+            <td rowspan="1" colspan="1" align="">
+                <p>Specifies the period of the resultant wave. In other words, this is how long one full oscillation takes to occur, or the time between each successive crest or each successive trough&nbsp;in the waveform. For example, in the image above, the period is one second.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Oh.</p>
+<p>There's a Period parameter attached to the cosine node that implicitly scales the cosine frequency so it matches, and it defaults to 1... The standard frequency of a cosine function is actually 2*π, so the way I interpret this is that it multiplies whatever input we give to the node by <code>(2*π) / Period</code>. From there we have 2 ways to fix this, either we bake the frequency (the *150) in the Period node parameter, or we set the Period to <code>2*π</code> to cancel the computation inside and keep the 150 outside the node. I think both are fine depending on what you want, I'm going to show both method but I'll be keeping the 2nd one for the future.</p>
+<h3>Baking into the period</h3>
+<p>As stated, the node is taking whatever you have as input and outputs <code>cosine( Input * 2*π / Period )</code>. And the result we want is actually <code>cosine( Input * K )</code> where K is whatever we want, and in this particular case 150. So resolving quickly we want <code>K = 2*π / Period &lt;=&gt; K * Period = 2*π &lt;=&gt; Period = 2*π / K</code>. Taking your favorite calculator, I like to approximate π by 3.14159 as it's easy to remember and has enough precision, you get <code>Period = 0.0419</code>. Select the node, go in the details panel and input that value. Also set the 150 multiply to 1 and check the result !</p>
+<p><img alt="Fixing the cosine period" src="/images/2DSDF/magic-numbers-all-around.png"></p>
+<p><img alt="Nice circle !" src="/images/2DSDF/matching-waves.png"></p>
+<p>Alright ! That's pretty good and looks very much like the Shadertoy demo ! Let's check the 2nd method that's fairly similar</p>
+<h3>Having the value outside</h3>
+<p>If we take the initial formula back <code>cosine( Input * 2*π / Period )</code>. If we want to bake the 150 in the Input instead of the Period, it's as simple as having the right hand side = 1, so we just want to have <code>2*π / Period = 1 &lt;=&gt;  Period = 2*π</code>, which gives us <code>Period = 6.28318</code></p>
+<p><img alt="Fixing the cosine period 2nd take" src="/images/2DSDF/fixing-wave-2nd.png"></p>
+<p><img alt="Pretty much the same result" src="/images/2DSDF/matching-waves.png"></p>
+<p>This makes the 150 easy to modify, but all in all it doesn't matters a lot.</p>
+<h1>Wrapping up</h1>
+<p>Alright ! We've fixed the 3 major points I wanted, if we match the size of the shadertoy viewport with unreal, make some screenshot and apply a diff filter, we can actually check how accurate we are :</p>
+<p><img alt="Diffing Shadertoy and Unreal" src="/images/2DSDF/diffing-shadertoy-with-unreal.png"></p>
+<p>It's... it's not completely black... Honestly at that point it might be a whole bunch of stuff. It <i>feels</i> like some compression artifact, but I can't be bothered to go find the exact cause... It's honestly close enough and to be honest I don't think it's an issue with shadertoy or unreal in itself, it's possibly some compression artifact caused by either windows screenshots, or Paint.net paste result. So let's appreciate our hard work !</p>
+<p><img alt="Pretty shader" src="/images/2DSDF/nice-result.png"></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html" rel="bookmark"
+                           title="Permalink to Porting IQ 2D SDF Shadertoys to Unreal - Part 2">Porting IQ 2D SDF Shadertoys to Unreal - Part 2</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2022-04-29T00:00:00-04:00">
                 Published: Fri 29 April 2022
@@ -30,139 +230,12 @@
         </address>
 <p>In <a href="/category/articles.html">Articles</a>.</p>
 
-</footer><!-- /.post-info --><p>As a quick refresher, we're working on reproducing the 2D signed distance field described on <a href="https://iquilezles.org/articles/distfunctions2d/">Inigo Quilez's blog</a>, we've got <a href="porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">our circle</a>, and now we're gonna inject some colors in there !</p>
+</footer><!-- /.post-info -->                <p>As a quick refresher, we're working on reproducing the 2D signed distance field described on <a href="https://iquilezles.org/articles/distfunctions2d/">Inigo Quilez's blog</a>, we've got <a href="porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">our circle</a>, and now we're gonna inject some colors in there !</p>
 <h1>The Target</h1>
-<p>The goal this time is to reproduce the overall look of IQ's shadertoy's that demos the 2D SDF functions.</p>
-<p><img alt="Expected result" src="/images/2DSDF/iq-expected-result.png"></p>
-<p>You can go check the shadertoy <a href="https://www.shadertoy.com/view/3ltSW2">here</a> but we're gonna talk about the important lines.</p>
-<p>Here's the commented code we're going to port, I've removed the mouse related stuff as it's out of scope :</p>
-<div class="highlight"><pre><span></span><code>void mainImage( out vec4 fragColor, in vec2 fragCoord )
-{
-    vec2 p = (2.0*fragCoord-iResolution.xy)/iResolution.y; // our pixel position on screen
-
-    float d = sdCircle(p,0.5); // the evaluated signed distance field
-
-    // coloring
-    vec3 col = (d&gt;0.0) ? vec3(0.9,0.6,0.3) : vec3(0.65,0.85,1.0); // inside and outside colors
-    col *= 1.0 - exp(-6.0*abs(d)); // this generate the dark shadows around the outline
-    col *= 0.8 + 0.2*cos(150.0*d); // generates the wavy pattern
-    col = mix( col, vec3(1.0), 1.0-smoothstep(0.0,0.01,abs(d)) ); // this gives the strong white outline
-
-    fragColor = vec4(col,1.0);
-}
-</code></pre></div>
-
-<p>As you might see there's 3 big parts to the shader:</p>
-<ul>
-<li>Computing p: transforming from the quad [0, 1] coordinates to the circle local coordinates<p></li>
-<li>Evaluating d: in our case we're juste evaluating the circle SDF function<p></li>
-<li>Determining col: this is the color computation we're interested about today<p></li>
-</ul>
-<p>Following the previous part you should already have p and d computed, so now we only have to port the color code, it's split into 4 parts that renders that particular look :</p>
-<p><a href="#PickCol">[1]</a> Picking a color depending if we're inside or outside the shape<p>
- <a href="#DarkenCol">[2]</a> Darken that color if we're near the outline<p>
- <a href="#WavyPattern">[3]</a> Generate the wavy pattern centered on the SDF<p>
- <a href="#GenOutline">[4]</a> Add a thin white outline where the SDF goes from positive to negative</p>
-<p>Let's tackle those one by one.</p>
-<h2 id="PickCol"></h2>
-
-<h1>Picking a color</h1>
-<p>The color pick code is very simple, if d is positive we're outside and pick one color, if it's negative we're inside and pick the other color.</p>
-<p><code>vec3 col = (d&gt;0.0) ? vec3(0.9,0.6,0.3) : vec3(0.65,0.85,1.0); // inside and outside colors</code></p>
-<p>So we need 4 nodes here :
- - 2 colors or vec3<p>
- - A way to compare the distance field with a number<p>
- - A way to pick between our 2 colors depending on our condition<p></p>
-<h2>Color nodes</h2>
-<p>The 2 colors are straightforward, we can do as before by using a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant3vector">Constant3Vector</a> but I think it would be nice if we could edit this value from outside the shader, so let's go with a <a href="https://docs.unrealengine.com/5.0/en-US/material-parameter-expressions-in-unreal-engine/#vectorparameter">VectorParameter</a> !</p>
-<p><img alt="Parameter Node Inside" src="/images/2DSDF/parameter-node-inside.png"></p>
-<p>When you create the node you get to give it a name, the name here is important if you want to drive the color from code or blueprint later. We're going to name it <code>Inside</code> for the inside color. And while we're at it we'll create a 2nd node named <code>Outside</code>. Let's copy the shader's value in the node and tada ! Our colors are ready.</p>
-<p><img alt="Our Two Colors" src="/images/2DSDF/the-two-colors.png"></p>
-<h2>Comparison and Branch</h2>
-<p>Actualy I lied, going into this I thought we would need 2 nodes for the condition and the comparison, kinda like in a normal blueprint. But turns out in a material the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#if">If</a> node actually does both of them at the same time. It takes 2 single float values, and outputs something depending on the 3 other pins.</p>
-<p><img alt="If Node" src="/images/2DSDF/if-node.png"></p>
-<p>Although the A pin needs to be provided, if you look at the If node details panel you'll find that you can set the B pin constant there directly, and it's 0 by default which is just what we want, lucky !</p>
-<h2>Slight Stop at the Reroute</h2>
-<p>Before wiring things up, I learned about "Named Reroute Nodes" which I believe is a great way to give name to our intermediate results and denoodelify our graph ! We're going to create one to note our signed distance field result, the variable <code>d</code> in the original shadertoy.</p>
-<p>To create one, drag from the Substract output to an empty space and create a reroute node.</p>
-<p><img alt="Reroute Declaration Node" src="/images/2DSDF/create-named-reroute-declaration-node.png"></p>
-<p>This will prompt you to give it a name (if you mess up you can quickly rename by selecting the node and pressing F2), let's name it d just like the shadertoy. Then we can rewire it back and see that nothing changed ! (Well aside from a better annotated shader)</p>
-<p><img alt="D Rewired Node" src="/images/2DSDF/d-node-rewired.png"></p>
-<p>The nice thing is that afterward we can just pull the reroute node alone in a separate part of the graph without having to pull wires around. See in the right click menu.</p>
-<h2>Plug everything together</h2>
-<p>Alright let's make some noodles, starting from our previous graph we want to take the distance field value <code>d</code>, plug that into the A pin of our If node, plug the Outside color to A &gt; B (which is d &gt; 0, outside the circle) and plug the Inside color to A &lt; B (which is d &lt; 0, inside the circle).</p>
-<p>Finally you can move or delete the Step node and plug the If output to the Final Color pin and enjoy the result !</p>
-<p><img alt="Wiring" src="/images/2DSDF/everything-plugged.png"> <img alt="Result" src="/images/2DSDF/result-dual-color.png"></p>
-<p>You might notice that the colors are washed out even though we have the same RGB, we'll go over that in an other article because there's some interesting technical details between shadertoy and unreal UI materials there</p>
-<h2 id="DarkenCol"></h2>
-
-<h1>Create the Shadow</h1>
-<p>Next step is to create the dark shadow around the outline, it's done by evaluating an exponential function that results in a very low value when the input is 0 and a value near 1 when the input is 1 with a strong falloff</p>
-<p><code>col *= 1.0 - exp(-6.0*abs(d));</code></p>
-<p>We can plug this in <a href="https://www.desmos.com/calculator/xqlptifxfu">desmos</a> and see what it looks like :</p>
-<iframe src="https://www.desmos.com/calculator/xqlptifxfu?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
-
-<p>As I said, 0 at 0, 1 at 1, with strong falloff closer to 0.</p>
-<p>Since we've already seen the basic math node we're only going to check how to make the Abs and the Exp.</p>
-<h2>Absolute</h2>
-<p>This one is straightforward, there's a built-in <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#abs">Abs</a> node.</p>
-<p><img alt="Abs Node" src="/images/2DSDF/abs-node.png"></p>
-<p>We can add a Multiply * -6 node and wire it and we're ready for the exponential.</p>
-<h2>Exponential</h2>
-<p>Fairly easy too as it's a built-in function in GLSL and HLSL, we can just search for the exp node aaand...</p>
-<p><img alt="No Exp" src="/images/2DSDF/no-exp.png"></p>
-<p>No exp ? So actually there's no exponential function node in Unreal, which I don't really understand why. Luckily, the exponential function is just putting a particular constant (<code>e</code>) to the power of the value you want (in our case the result of <code>-6*abs(d)</code>).</p>
-<p>To get e's value, we can make a constant node and do a quick google search which will give you a <a href="https://www.rapidtables.com/math/number/e_constant.html">nice value to sufficient precision</a> and learn a few things about that famous Euler's number ! Or you can just copy this <code>2.718281828459</code>.</p>
-<p>So our easy Exp node became a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#power">Power</a> node in the end, but we got what we wanted !</p>
-<p><img alt="Power Node Wired" src="/images/2DSDF/power-node-wired.png"></p>
-<p>At that point we can open the node by clicking on the lil' arrow on the top right to see if we made any mistakes :</p>
-<p><img alt="Previewing" src="/images/2DSDF/previewed-power-node.png"></p>
-<p>It's red here because we're outputing only one channel. We've got a strong white at the outline and a quick falloff to 0 when we get out. We can already see that the scale is a bit wrong. This is because the -6 that IQ picked was dependent on the shadertoy viewport scaling he used (see his p computation), we can adjust it for our setup by switching the -6 to a -16 for exemple (lower values gives stronger falloff, test on the desmos link !).</p>
-<p><img alt="Previewing" src="/images/2DSDF/switch-to-16.png"></p>
-<p>We'll see other values to adjust later, I'll call them out when we get there.</p>
-<p>The value goes from 1 at the outline to 0 outside but we want the other way around, that's what the 1 - X is for ! One subtract and a multiply later we already have a lot more bumpiness to our circle</p>
-<p><img alt="Partial Result 1" src="/images/2DSDF/partial-result-1.png"></p>
-<h2 id="WavyPattern"></h2>
-
-<h1>Generate the Wavy Pattern</h1>
-<p><code>col *= 0.8 + 0.2*cos(150.0*d);</code></p>
-<p>The goal of this equation here is to get an oscillating value centered on the circle that goes between 0.8 and 1.0, we'll be able to multiply the color by that value to get that nice wavy gradient. We can check the equation in desmos too.</p>
-<iframe src="https://www.desmos.com/calculator/adrorlq7xx?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
-
-<p>The .8 and .2 controls the min and max value of the wave (min=.8 and max=(.8+.2))</p>
-<p>The 150 controls the frequency, or how close each wave peaks are. With our scale we should reduce that a bunch, 60 seems to be a good value. This time I noticed that you can just input the constants in the math node directly, so that gives a pretty compact graph !</p>
-<p><img alt="The Wavy Nodes" src="/images/2DSDF/wavy-calculus.png"></p>
-<p>We multiply our previous color by the wave and we're almost there 😁</p>
-<p><img alt="Wavy Result" src="/images/2DSDF/result-wavy.png"></p>
-<h2 id="GenOutline"></h2>
-
-<h1>Strongify the Outline</h1>
-<p>Ok last part of the color equation, the small outline.</p>
-<p><code>col = mix( col, vec3(1.0), 1.0-smoothstep(0.0,0.01,abs(d)) );</code></p>
-<p>This one is a bit more esoteric, we can see 2 built-in GLSL functions <a href="https://docs.gl/sl4/mix">mix</a> and <a href="https://docs.gl/sl4/smoothstep">smoothstep</a>. We'll go from the inside to the outside starting with the smoothstep.</p>
-<h2>Smoothstep</h2>
-<p><code>1.0 - smoothstep(0.0, 0.01, abs( d ) );</code></p>
-<p>We've seen the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#step">Step</a> function in Part 1, <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#smoothstep">Smoothstep</a> is equivalent but generates a gradient instead of a hard line.</p>
-<p><img alt="Smooth Step vs Step" src="/images/2DSDF/smoothstep-vs-step.png"></p>
-<p>If you're curious about the math behind the smoothstep it's usually a polynomial of degree 3 like this one :</p>
-<iframe src="https://www.desmos.com/calculator/kzrxs4f6fk?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
-
-<h2>Mix</h2>
-<p><code>mix( col, vec3(1.0), smoothstep );</code></p>
-<p>Mix is a simple linear interpolation between 2 colors by a value in the [0, 1] range. The equivalent node in Unreal is <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#linearinterpolate">LinearInterpolate</a></p>
-<p>So as stated in the expression we're going to interpolate between the color and a white vector, using the smoothstep result as the interpolation value. And all that in a single node !</p>
-<p><img alt="Wiring the lerp and smooth node" src="/images/2DSDF/lerp-and-smooth-node.png"></p>
-<h1>Wiring everything together</h1>
-<p>Once we got all the pieces, we can mix them up using multiply and lerp and we get the final graph. I've used some Named Reroute nodes to organize the various datas we're computing and the result is not too bad !</p>
-<p><img alt="Result" src="/images/2DSDF/final-material.png"></p>
-<h1>Wrapping up</h1>
-<p>Alright this article has been long enough !</p>
-<p>Comparing the expected result I'm not completely satisfied with the result. The colors are washed out, the spacings are not exactly the same, changing the quad size results in weird stretching, we'll fix all that in the next article and from there we'll finally grind those SDF functions properly and get more than a circle !</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>The goal this time is to reproduce the overall look of IQ's shadertoy's that demos the 2D …</p>
+                <a class="readmore" href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>

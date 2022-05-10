@@ -4,8 +4,9 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>Sharundaar's Blog - Articles</title>
+        <title>Porting IQ 2D SDF Shadertoys to Unreal - Part 3</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content=".aligncenter { text-align:center } Last time we changed the look of our shader to match Inigo Quilez's demos on shadertoy, but we kind of left it..." />
 </head>
 
 <body id="index" class="home">
@@ -16,10 +17,15 @@
                     <li class="active"><a href="/category/articles.html">Articles</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-3.html" rel="bookmark"
+           title="Permalink to Porting IQ 2D SDF Shadertoys to Unreal - Part 3">Porting IQ 2D SDF Shadertoys to Unreal - Part 3</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-3.html">Porting IQ 2D SDF Shadertoys to Unreal - Part 3</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2022-05-08T00:00:00-04:00">
                 Published: Sun 08 May 2022
@@ -30,7 +36,7 @@
         </address>
 <p>In <a href="/category/articles.html">Articles</a>.</p>
 
-</footer><!-- /.post-info --><style>
+</footer><!-- /.post-info -->      <style>
 .aligncenter {
     text-align:center
 }
@@ -206,62 +212,11 @@ Porting this to our material, we conveniently have a Pixel Size input in our gra
 <p>Alright ! We've fixed the 3 major points I wanted, if we match the size of the shadertoy viewport with unreal, make some screenshot and apply a diff filter, we can actually check how accurate we are :</p>
 <p><img alt="Diffing Shadertoy and Unreal" src="/images/2DSDF/diffing-shadertoy-with-unreal.png"></p>
 <p>It's... it's not completely black... Honestly at that point it might be a whole bunch of stuff. It <i>feels</i> like some compression artifact, but I can't be bothered to go find the exact cause... It's honestly close enough and to be honest I don't think it's an issue with shadertoy or unreal in itself, it's possibly some compression artifact caused by either windows screenshots, or Paint.net paste result. So let's appreciate our hard work !</p>
-<p><img alt="Pretty shader" src="/images/2DSDF/nice-result.png"></p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p><img alt="Pretty shader" src="/images/2DSDF/nice-result.png"></p>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html" rel="bookmark"
-                           title="Permalink to Porting IQ 2D SDF Shadertoys to Unreal - Part 2">Porting IQ 2D SDF Shadertoys to Unreal - Part 2</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2022-04-29T00:00:00-04:00">
-                Published: Fri 29 April 2022
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/sharundaar.html">Sharundaar</a>
-        </address>
-<p>In <a href="/category/articles.html">Articles</a>.</p>
-
-</footer><!-- /.post-info -->                <p>As a quick refresher, we're working on reproducing the 2D signed distance field described on <a href="https://iquilezles.org/articles/distfunctions2d/">Inigo Quilez's blog</a>, we've got <a href="porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">our circle</a>, and now we're gonna inject some colors in there !</p>
-<h1>The Target</h1>
-<p>The goal this time is to reproduce the overall look of IQ's shadertoy's that demos the 2D …</p>
-                <a class="readmore" href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html" rel="bookmark"
-                           title="Permalink to Porting IQ 2D SDF Shadertoys to Unreal - Part 1">Porting IQ 2D SDF Shadertoys to Unreal - Part 1</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2022-04-24T00:00:00-04:00">
-                Published: Sun 24 April 2022
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/sharundaar.html">Sharundaar</a>
-        </address>
-<p>In <a href="/category/articles.html">Articles</a>.</p>
-
-</footer><!-- /.post-info -->                <p>I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. </p>
-<p>The source article with all the SDF we're going to try can be found <a href="https://iquilezles.org/articles/distfunctions2d/">here</a></p>
-<h1>Initial …</h1>
-                <a class="readmore" href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
