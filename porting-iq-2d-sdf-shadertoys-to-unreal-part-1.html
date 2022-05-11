@@ -1,48 +1,101 @@
 <!DOCTYPE html>
-<html lang="english">
-<head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="generator" content="Pelican" />
-        <title>Porting IQ 2D SDF Shadertoys to Unreal - Part 1</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
-        <meta name="description" content="I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez..." />
-</head>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="/">Sharundaar's Blog</a></h1>
-                <nav><ul>
-                    <li><a href="/category/about-me.html">About Me</a></li>
-                    <li class="active"><a href="/category/articles.html">Articles</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html" rel="bookmark"
-           title="Permalink to Porting IQ 2D SDF Shadertoys to Unreal - Part 1">Porting IQ 2D SDF Shadertoys to Unreal - Part 1</a></h1>
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="Sharundaar" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content=", Articles, " />
+
+<meta property="og:title" content="Porting IQ 2D SDF Shadertoys to Unreal - Part 1 "/>
+<meta property="og:url" content="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html" />
+<meta property="og:description" content=".aligncenter { text-align:center } .center { display: block; margin-left: auto; margin-right: auto; } I&#39;ve been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. The source article with all the …" />
+<meta property="og:site_name" content="Sharundaar&#39;s Blog" />
+<meta property="og:article:author" content="Sharundaar" />
+<meta property="og:article:published_time" content="2022-04-24T00:00:00-04:00" />
+<meta name="twitter:title" content="Porting IQ 2D SDF Shadertoys to Unreal - Part 1 ">
+<meta name="twitter:description" content=".aligncenter { text-align:center } .center { display: block; margin-left: auto; margin-right: auto; } I&#39;ve been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. The source article with all the …">
+
+        <title>Porting IQ 2D SDF Shadertoys to Unreal - Part 1  · Sharundaar&#39;s Blog
+</title>
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>Sharundaar's Blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/categories.html">Categories</a></li>
+                                <li ><a href="/tags.html">Tags</a></li>
+                                <li ><a href="/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">
+                Porting IQ 2D SDF Shadertoys to Unreal - Part 1
+            </a>
+        </h1>
     </header>
+</div>
 
-    <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2022-04-24T00:00:00-04:00">
-                Published: Sun 24 April 2022
-        </abbr>
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <style>
+.aligncenter {
+    text-align:center
+}
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
 
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/sharundaar.html">Sharundaar</a>
-        </address>
-<p>In <a href="/category/articles.html">Articles</a>.</p>
-
-</footer><!-- /.post-info -->      <p>I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. </p>
+<p>I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. </p>
 <p>The source article with all the SDF we're going to try can be found <a href="https://iquilezles.org/articles/distfunctions2d/">here</a></p>
 <h1>Initial Setup</h1>
-<p>Since my end goal is to make some UI shaders we're goig to setup a UI material !
-So we go right click in the content window -&gt; Materials -&gt; Material, I'm naming mine SDFMaterial for now. <img alt="New Material" src="/images/2DSDF/create-mat.png"></p>
-<p>Open the material, go to the detail panel and set the domain to User Interface.
-<img alt="Set domain to user interface" src="/images/2DSDF/set-domain.png"></p>
+<p>Since my end goal is to make some UI shaders we're going to setup a UI material !
+So we go right click in the content window -&gt; Materials -&gt; Material, I'm naming mine SDFMaterial for now. </p>
+<p><img alt="New Material" class="center" src="/images/2DSDF/create-mat.png"></p>
+<p>Open the material, go to the detail panel and set the domain to User Interface.</p>
+<p><img alt="Set domain to user interface" class="center" src="/images/2DSDF/set-domain.png"></p>
 <p>And now we're good to go !</p>
 <h1>The Simplest SDF function</h1>
 <p>The first SDF function we're going to implement is the circle since it's pretty simple and straightforward to visualize. The distance to a circle is the distance between the evaluated point and the circle center minus the radius. You'll see that all functions on Inigo's website skip the "distance between the evaluated point and the circle" part since we can just do those transformation before calling the function. This means that in all the functions we're going to write, the shape we're forming is assuming to be at coordinates (0, 0).</p>
@@ -56,69 +109,207 @@ So we go right click in the content window -&gt; Materials -&gt; Material, I'm n
 </ul>
 <h2>Getting some UVs</h2>
 <p>Let's deal with the first point, since we're doing a UI shader we have access to the GetUserInterfaceUV node. This node offers the Normalize UV pin which will give us a coordinate vector in the [0, 1] range to play with.</p>
-<p><img alt="Get UIUVNode" src="/images/2DSDF/get-user-interface-uv-node.png"></p>
+<p><img alt="Get UIUVNode" class="center" src="/images/2DSDF/get-user-interface-uv-node.png"></p>
 <p>A good tip here is to plug the node into the Final Color pin of the output to see what we're dealing with.</p>
-<p><img alt="First Preview" src="/images/2DSDF/nuv-to-fc-preview.png"></p>
+<p><img alt="First Preview" class="center" src="/images/2DSDF/nuv-to-fc-preview.png"></p>
 <p>If you've never wrote any shader you might be confused at what you're looking at but this black-red-green-yellow gradient square is typical when viewing a 2D vector going smoothly between 0 and 1 on both axis, the square corners correspond to the [0, 0] (black), [1, 0] (red), [0, 1] (green), [1, 1] (yellow) vectors respectively.</p>
 <p>Anyway, this just shows us that our Normalized UV pin does what we expect it to do :D</p>
 <h2>Constant nodes</h2>
 <p>Now for the radius, we might want to control that outside of the shader later but let's go the simplest way first and use a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant">Constant</a> node. We can set it's value to 0.25, since our space is in the [0, 1] range, using 0.25 as the radius should have our circle radius take 1/4 of the screen space.</p>
-<p><img alt="Radius Node" src="/images/2DSDF/radius-const-node.png"></p>
+<p><img alt="Radius Node" class="center" src="/images/2DSDF/radius-const-node.png"></p>
 <h2>Vector Length</h2>
 <p>Third point ! The vector's length, there's a very straightforward VectorLength node we can use here</p>
-<p><img alt="Vector Length Node" src="/images/2DSDF/vector-length-node.png"></p>
+<p><img alt="Vector Length Node" class="center" src="/images/2DSDF/vector-length-node.png"></p>
 <p>I was actually confused why there was a V3 and V2 inputs and outputs pins on it, those nodes are actually "material function" nodes that are built from more simpler node, we can double-click them to see the source !</p>
-<p><img alt="Vector Length Source" src="/images/2DSDF/vectorlength-source.png"></p>
-<p>This makes some kind of sense, computing the length of a vector is equivalent to getting the distance between the point represented by the vector and the origin. It's a bit confusing comming from GLSL (and HLSL) since there's just a length primitive function, but if it works for them, it works for me.</p>
+<p><img alt="Vector Length Source" class="center" src="/images/2DSDF/vectorlength-source.png"></p>
+<p>This makes some kind of sense, computing the length of a vector is equivalent to getting the distance between the point represented by the vector and the origin. It's a bit confusing coming from GLSL (and HLSL) since there's just a length primitive function, but if it works for them, it works for me.</p>
 <h2>Actual Math</h2>
 <p>Last point now, the last node is straightforward there's just a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#subtract">Substract</a> node.</p>
-<p><img alt="Substract Node" src="/images/2DSDF/substract-node.png"></p>
+<p><img alt="Substract Node" class="center" src="/images/2DSDF/substract-node.png"></p>
 <h2>Result</h2>
 <p>Aight, let's wire everything up !</p>
-<p><img alt="Substract Node" src="/images/2DSDF/preview-circle.png"></p>
+<p><img alt="Preview Circle" class="center" src="/images/2DSDF/preview-circle.png"></p>
 <p>And we have our circle ! Except it's a little "fuzzy"... Also it's just a forth of a circle in the corner... Well this is all expected, as we said the SDF function assumes the circle is at the origin, and here the origin is the top left of the render space ! Also it's fuzzy because we're feeding the distance directly to the output, so the value is positive going up at the border and it's negative inside. The black part inside is actually negative values but the colors are clamped to 0 before going on the screen. </p>
 <p>Before moving forward, let's move the circle to the middle of the screen and take care of the border !</p>
 <h2>Moving the Circle</h2>
 <p>We can move the circle by translating the initial UV by some vector, this is done using the same substract node as before, and we can get a vector with a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant2vector">Constant2Vector</a> node. Center of the screen is [0.5, 0.5] so let's translate our UVs by this vector.</p>
-<p><img alt="Substract Node" src="/images/2DSDF/translate-setup.png"></p>
+<p><img alt="Substract Node" class="center" src="/images/2DSDF/translate-setup.png"></p>
 <p>And tada ! Our circle is centered.</p>
-<p><img alt="Substract Node" src="/images/2DSDF/centered-circle.png"></p>
+<p><img alt="Centered Circle" class="center" src="/images/2DSDF/centered-circle.png"></p>
 <h2>Clearing the Border</h2>
 <p>Finally let's take care of the fuzzy border before moving forward, for this we'll use the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#step">Step</a> function. It's a bit confusing to use but it returns 0 when X &lt; Y, so if we input our distance as X and 0 as Y, we should get full black everywhere negative (inside) and full white everywhere positive (outside).</p>
-<p><img alt="Substract Node" src="/images/2DSDF/clear-border.png"></p>
+<p><img alt="Clear Border" class="center" src="/images/2DSDF/clear-border.png"></p>
 <p>And here's our final result :</p>
-<p><img alt="Substract Node" src="/images/2DSDF/clear-border-preview.png"></p>
+<p><img alt="Clear Border Preview" class="center" src="/images/2DSDF/clear-border-preview.png"></p>
 <p>At this point we're able to draw a simple circle on a square quad, you'll see that trying this on anything but a square will stretch the circle strangely, also if we want more color than black and white we'll need a bit more stuff. But this was the simplest setup to get the more complicated stuff running later !</p>
 <p>I haven't even referenced Inigo shadertoy or articles but this was about getting our feet in the unreal material door, we'll see in the next chapter how to do more complicated stuff !</p>
-    </div><!-- /.entry-content -->
 
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>links</h2>
-                        <ul>
-                            <li><a href="https://getpelican.com/">Pelican</a></li>
-                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
 
-                            <li><a href="https://twitter.com/Sharundaar">Twitter</a></li>
-                            <li><a href="https://github.com/Sharundaar">GitHub</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+             
+ 
+            
+            
+            
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
-                </address><!-- /#about -->
 
-                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
 
-</body>
+
+
+
+
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/about-me.html" title="Previous: About Me">About Me</a></li>
+                <li class="next-article"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html" title="Next: Porting IQ 2D SDF Shadertoys to Unreal - Part 2">Porting IQ 2D SDF Shadertoys to Unreal - Part 2</a> »</li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2022-04-24T00:00:00-04:00">Sun 24 April 2022</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#articles-ref">Articles</a>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://twitter.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Twitter" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1da1f3"/><path fill="#fff" d="M437 152a72 72 0 0 1-40 12 72 72 0 0 0 32-40 72 72 0 0 1-45 17 72 72 0 0 0-122 65 200 200 0 0 1-145-74 72 72 0 0 0 22 94 72 72 0 0 1-32-7 72 72 0 0 0 56 69 72 72 0 0 1-32 1 72 72 0 0 0 67 50 200 200 0 0 1-105 29 200 200 0 0 0 309-179 200 200 0 0 0 35-37"/></svg>
+    </a>
+    <a href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
 </html>
