@@ -91,8 +91,8 @@
 <p>As a quick refresher, we're working on reproducing the 2D signed distance field described on <a href="https://iquilezles.org/articles/distfunctions2d/">Inigo Quilez's blog</a>, we've got <a href="porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">our circle</a>, and now we're gonna inject some colors in there !</p>
 <h1>The Target</h1>
 <p>The goal this time is to reproduce the overall look of IQ's shadertoy's that demos the 2D SDF functions.</p>
-<p><img alt="Expected result" src="/images/2DSDF/iq-expected-result.png"></p>
-<p>You can go check the shadertoy <a href="https://www.shadertoy.com/view/3ltSW2">here</a> but we're gonna talk about the important lines.</p>
+<p><img alt="Expected result" class="center" src="/images/2DSDF/iq-expected-result.png"></p>
+<p>You can go check the shadertoy <a href="https://www.shadertoy.com/view/3ltSW2">here</a> but we're gonna go over the important lines.</p>
 <p>Here's the commented code we're going to port, I've removed the mouse related stuff as it's out of scope :</p>
 <div class="highlight"><pre><span></span><code>void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
@@ -113,7 +113,7 @@
 <p>As you might see there's 3 big parts to the shader:</p>
 <ul>
 <li>Computing p: transforming from the quad [0, 1] coordinates to the circle local coordinates<p></li>
-<li>Evaluating d: in our case we're juste evaluating the circle SDF function<p></li>
+<li>Evaluating d: in our case we're just evaluating the circle SDF function<p></li>
 <li>Determining col: this is the color computation we're interested about today<p></li>
 </ul>
 <p>Following the previous part you should already have p and d computed, so now we only have to port the color code, it's split into 4 parts that renders that particular look :</p>
@@ -127,25 +127,27 @@
 <h1>Picking a color</h1>
 <p>The color pick code is very simple, if d is positive we're outside and pick one color, if it's negative we're inside and pick the other color.</p>
 <p><code>vec3 col = (d&gt;0.0) ? vec3(0.9,0.6,0.3) : vec3(0.65,0.85,1.0); // inside and outside colors</code></p>
-<p>So we need 4 nodes here :
- - 2 colors or vec3<p>
- - A way to compare the distance field with a number<p>
- - A way to pick between our 2 colors depending on our condition<p></p>
+<p>So we need 4 nodes here :</p>
+<ul>
+<li>2 colors or vec3<p></li>
+<li>A way to compare the distance field with a number<p></li>
+<li>A way to pick between our 2 colors depending on our condition<p></li>
+</ul>
 <h2>Color nodes</h2>
 <p>The 2 colors are straightforward, we can do as before by using a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant3vector">Constant3Vector</a> but I think it would be nice if we could edit this value from outside the shader, so let's go with a <a href="https://docs.unrealengine.com/5.0/en-US/material-parameter-expressions-in-unreal-engine/#vectorparameter">VectorParameter</a> !</p>
-<p><img alt="Parameter Node Inside" src="/images/2DSDF/parameter-node-inside.png"></p>
+<p><img alt="Parameter Node Inside" class="center" src="/images/2DSDF/parameter-node-inside.png"></p>
 <p>When you create the node you get to give it a name, the name here is important if you want to drive the color from code or blueprint later. We're going to name it <code>Inside</code> for the inside color. And while we're at it we'll create a 2nd node named <code>Outside</code>. Let's copy the shader's value in the node and tada ! Our colors are ready.</p>
-<p><img alt="Our Two Colors" src="/images/2DSDF/the-two-colors.png"></p>
+<p><img alt="Our Two Colors" class="center" src="/images/2DSDF/the-two-colors.png"></p>
 <h2>Comparison and Branch</h2>
-<p>Actualy I lied, going into this I thought we would need 2 nodes for the condition and the comparison, kinda like in a normal blueprint. But turns out in a material the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#if">If</a> node actually does both of them at the same time. It takes 2 single float values, and outputs something depending on the 3 other pins.</p>
-<p><img alt="If Node" src="/images/2DSDF/if-node.png"></p>
+<p>Actually I lied, going into this I thought we would need 2 nodes for the condition and the comparison, kind of like in a normal blueprint. But turns out in a material the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#if">If</a> node actually does both of them at the same time. It takes 2 single float values, and outputs something depending on the 3 other pins.</p>
+<p><img alt="If Node" class="center" src="/images/2DSDF/if-node.png"></p>
 <p>Although the A pin needs to be provided, if you look at the If node details panel you'll find that you can set the B pin constant there directly, and it's 0 by default which is just what we want, lucky !</p>
 <h2>Slight Stop at the Reroute</h2>
 <p>Before wiring things up, I learned about "Named Reroute Nodes" which I believe is a great way to give name to our intermediate results and denoodelify our graph ! We're going to create one to note our signed distance field result, the variable <code>d</code> in the original shadertoy.</p>
 <p>To create one, drag from the Substract output to an empty space and create a reroute node.</p>
-<p><img alt="Reroute Declaration Node" src="/images/2DSDF/create-named-reroute-declaration-node.png"></p>
+<p><img alt="Reroute Declaration Node" class="center" src="/images/2DSDF/create-named-reroute-declaration-node.png"></p>
 <p>This will prompt you to give it a name (if you mess up you can quickly rename by selecting the node and pressing F2), let's name it d just like the shadertoy. Then we can rewire it back and see that nothing changed ! (Well aside from a better annotated shader)</p>
-<p><img alt="D Rewired Node" src="/images/2DSDF/d-node-rewired.png"></p>
+<p><img alt="D Rewired Node" class="center" src="/images/2DSDF/d-node-rewired.png"></p>
 <p>The nice thing is that afterward we can just pull the reroute node alone in a separate part of the graph without having to pull wires around. See in the right click menu.</p>
 <h2>Plug everything together</h2>
 <p>Alright let's make some noodles, starting from our previous graph we want to take the distance field value <code>d</code>, plug that into the A pin of our If node, plug the Outside color to A &gt; B (which is d &gt; 0, outside the circle) and plug the Inside color to A &lt; B (which is d &lt; 0, inside the circle).</p>
@@ -164,22 +166,22 @@
 <p>Since we've already seen the basic math node we're only going to check how to make the Abs and the Exp.</p>
 <h2>Absolute</h2>
 <p>This one is straightforward, there's a built-in <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#abs">Abs</a> node.</p>
-<p><img alt="Abs Node" src="/images/2DSDF/abs-node.png"></p>
+<p><img alt="Abs Node" class="center" src="/images/2DSDF/abs-node.png"></p>
 <p>We can add a Multiply * -6 node and wire it and we're ready for the exponential.</p>
 <h2>Exponential</h2>
 <p>Fairly easy too as it's a built-in function in GLSL and HLSL, we can just search for the exp node aaand...</p>
-<p><img alt="No Exp" src="/images/2DSDF/no-exp.png"></p>
+<p><img alt="No Exp" class="center" src="/images/2DSDF/no-exp.png"></p>
 <p>No exp ? So actually there's no exponential function node in Unreal, which I don't really understand why. Luckily, the exponential function is just putting a particular constant (<code>e</code>) to the power of the value you want (in our case the result of <code>-6*abs(d)</code>).</p>
 <p>To get e's value, we can make a constant node and do a quick google search which will give you a <a href="https://www.rapidtables.com/math/number/e_constant.html">nice value to sufficient precision</a> and learn a few things about that famous Euler's number ! Or you can just copy this <code>2.718281828459</code>.</p>
-<p>So our easy Exp node became a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#power">Power</a> node in the end, but we got what we wanted !</p>
-<p><img alt="Power Node Wired" src="/images/2DSDF/power-node-wired.png"></p>
+<p>So our easy exponential node became a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#power">Power</a> node in the end, but we got what we wanted !</p>
+<p><img alt="Power Node Wired" class="center" src="/images/2DSDF/power-node-wired.png"></p>
 <p>At that point we can open the node by clicking on the lil' arrow on the top right to see if we made any mistakes :</p>
-<p><img alt="Previewing" src="/images/2DSDF/previewed-power-node.png"></p>
-<p>It's red here because we're outputing only one channel. We've got a strong white at the outline and a quick falloff to 0 when we get out. We can already see that the scale is a bit wrong. This is because the -6 that IQ picked was dependent on the shadertoy viewport scaling he used (see his p computation), we can adjust it for our setup by switching the -6 to a -16 for exemple (lower values gives stronger falloff, test on the desmos link !).</p>
-<p><img alt="Previewing" src="/images/2DSDF/switch-to-16.png"></p>
+<p><img alt="Previewing" class="center" src="/images/2DSDF/previewed-power-node.png"></p>
+<p>It's red here because we're outputting only one channel. We've got a strong white at the outline and a quick falloff to 0 when we get out. We can already see that the scale is a bit wrong. This is because the -6 that IQ picked was dependent on the shadertoy viewport scaling he used (see his p computation), we can adjust it for our setup by switching the -6 to a -16 for example (lower values gives stronger falloff, test on the desmos link !).</p>
+<p><img alt="Previewing" class="center" src="/images/2DSDF/switch-to-16.png"></p>
 <p>We'll see other values to adjust later, I'll call them out when we get there.</p>
 <p>The value goes from 1 at the outline to 0 outside but we want the other way around, that's what the 1 - X is for ! One subtract and a multiply later we already have a lot more bumpiness to our circle</p>
-<p><img alt="Partial Result 1" src="/images/2DSDF/partial-result-1.png"></p>
+<p><img alt="Partial Result 1" class="center" src="/images/2DSDF/partial-result-1.png"></p>
 <h2 id="WavyPattern"></h2>
 
 <h1>Generate the Wavy Pattern</h1>
@@ -213,7 +215,7 @@
 <p>So as stated in the expression we're going to interpolate between the color and a white vector, using the smoothstep result as the interpolation value. And all that in a single node !</p>
 <p><img alt="Wiring the lerp and smooth node" class="center" src="/images/2DSDF/lerp-and-smooth-node.png"></p>
 <h1>Wiring everything together</h1>
-<p>Once we got all the pieces, we can mix them up using multiply and lerp and we get the final graph. I've used some Named Reroute nodes to organize the various datas we're computing and the result is not too bad !</p>
+<p>Once we got all the pieces, we can mix them up using multiply and lerp and we get the final graph. I've used some Named Reroute nodes to organize the various data we're computing and the result is not too bad !</p>
 <p><img alt="Complete Material" class="center" src="/images/2DSDF/final-material.png"></p>
 <h1>Wrapping up</h1>
 <p>Alright this article has been long enough !</p>
