@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="author" content="Sharundaar" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content=", Articles, " />
+
+<meta property="og:title" content="Porting IQ 2D SDF Shadertoys to Unreal - Part 4 "/>
+<meta property="og:url" content="/porting-iq-2d-sdf-shadertoys-to-unreal-part-4.html" />
+<meta property="og:description" content=".aligncenter { text-align:center } .center { display: block; margin-left: auto; margin-right: auto; } We&#39;ve spent the last 3 articles putting in place an environment which will allow us to quickly iterate on IQ&#39;s Shadertoy and write the SDF functions we want in a way that&#39;s easy to debug and understand. If you didn&#39;t …" />
+<meta property="og:site_name" content="Sharundaar&#39;s Blog" />
+<meta property="og:article:author" content="Sharundaar" />
+<meta property="og:article:published_time" content="2022-05-14T00:00:00-04:00" />
+<meta name="twitter:title" content="Porting IQ 2D SDF Shadertoys to Unreal - Part 4 ">
+<meta name="twitter:description" content=".aligncenter { text-align:center } .center { display: block; margin-left: auto; margin-right: auto; } We&#39;ve spent the last 3 articles putting in place an environment which will allow us to quickly iterate on IQ&#39;s Shadertoy and write the SDF functions we want in a way that&#39;s easy to debug and understand. If you didn&#39;t …">
+
+        <title>Porting IQ 2D SDF Shadertoys to Unreal - Part 4  · Sharundaar&#39;s Blog
+</title>
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>Sharundaar's Blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/categories.html">Categories</a></li>
+                                <li ><a href="/tags.html">Tags</a></li>
+                                <li ><a href="/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-4.html">
+                Porting IQ 2D SDF Shadertoys to Unreal - Part 4
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <style>
+.aligncenter {
+    text-align:center
+}
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+
+<p>We've spent the last 3 articles putting in place an environment which will allow us to quickly iterate on IQ's Shadertoy and write the SDF functions we want in a way that's easy to debug and understand.</p>
+<p>If you didn't follow <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">from the start</a>, we're going to start from this UI material blueprint :</p>
+<p class="aligncenter">
+<iframe src="https://blueprintue.com/render/j89uxb3i/" width="100%" height="600px" scrolling="no" allowfullscreen></iframe>
+</p>
+
+<h1>Setup</h1>
+<p>Today the goal is going to build up a library of SDF functions that we'll be able to reuse. There's two big categories of functions we'll be implementing :</p>
+<ul>
+<li>The shapes, those take the position input and output distances from the shape : circle, rectangles, triangles</li>
+<li>Operations, those take at least 2 distances and combine them to output a new shape, union, intersection and difference are good examples</li>
+</ul>
+<p>To encapsulate all that we're going to use <a href="https://docs.unrealengine.com/5.0/en-US/material-functions-in-unreal-engine/">Material Functions</a>, those seems to be the right way to build reusable building blocks in Unreal material system. We actually already used a bunch ! A lot of nodes are actually material functions built from simpler nodes ! If you go back to the SDF material you can double click on VectorLength for example and see what's inside.</p>
+<p><img alt="Peek Inside VectorLength" class="center" src="/images/2DSDF/peek-inside-vectorlength.png"></p>
+<p>We can see that VectorLength is actually just using a <a href="https://docs.unrealengine.com/5.0/en-US/utility-material-expressions-in-unreal-engine/#distance">distance node</a> to computes the distance between our input and the origin.</p>
+<p>Alright ! So let's setup an SDFFunctions folder and create a Circle function material.</p>
+<p><img alt="Creating the material" class="center" src="/images/2DSDF/create-material-func.png"></p>
+<p>If you look at the details panel, we'll want to set a small description, the category so it's easier to find, and the thumbnail to Plane (although as you'll see the preview isn't that useful).</p>
+<p><img alt="Set details" class="center" src="/images/2DSDF/setting-material-details.png"></p>
+<p>Now we can copy the circle computation in our SDF graph into this new material :</p>
+<p><img alt="Copying to function" class="center" src="/images/2DSDF/copying-to-material-func.png"></p>
+<p>And finally replaced the invalid reroute and the radius with <a href="https://docs.unrealengine.com/5.0/en-US/material-function-expressions-in-unreal-engine/">FunctionInput</a> nodes, this will automatically add pins to your function node. Don't forget to set proper name to the nodes !</p>
+<p>You'll also need to set the input type to Vector2 and Scalar for the position and radius input respectively (see the details panel).</p>
+<p><img alt="Set node input type" class="center" src="/images/2DSDF/set-node-input-type.png"></p>
+<p>Finally rewire everything and we're good to go ! Our circle node is ready :</p>
+<p><img alt="Circle rewired" class="center" src="/images/2DSDF/circle-rewired.png"></p>
+<p>Plop that node back into our original graph and yay ╰(<em>°▽°</em>)╯ ! The SDF computation looks much more readable !</p>
+<p><img alt="SDF Compute looks all clean now" class="center" src="/images/2DSDF/cleaned-sdf-computation.png"></p>
+<h1>Moving Forward</h1>
+<p>Alright ! We now have a good workflow to develop our functions, we can write them in the main graph, and once we're satisfied with the result, create a material function node for them that'll allow us to reuse them whenever we want.</p>
+<p>The next step now is to through <a href="https://iquilezles.org/articles/distfunctions2d/">Inigo Quilez's</a> shape list and implement the ones we'd like to use ! I won't do all of them but I'll go through the ones I find interesting, feel free to try it out ! The math isn't that crazy for most of them, but it does get tedious to make them into materials sometimes.</p>
+<h1>Rounded Box</h1>
+<p>This is a very standard shape for UI drawings, the rounded box !</p>
+<p><a href="https://www.shadertoy.com/view/4llXD7">https://www.shadertoy.com/view/4llXD7</a></p>
+<p>There's four parts of the math here that we can split up neatly, I've commented the code so we can get some clear goals :</p>
+<div class="highlight"><pre><span></span><code><span class="kt">float</span><span class="w"> </span><span class="nf">sdRoundedBox</span><span class="p">(</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">vec2</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">vec2</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">vec4</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// 1. Find radius of the closest corner from p (stored in r.x)</span>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">x</span><span class="o">&gt;</span><span class="mf">0.0</span><span class="p">)</span><span class="o">?</span><span class="n">r</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">zw</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">x</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">y</span><span class="o">&gt;</span><span class="mf">0.0</span><span class="p">)</span><span class="o">?</span><span class="n">r</span><span class="p">.</span><span class="n">x</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">y</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// 2. Find the distance between the point and a rect deflated by the closest corner radius (stored in q)</span>
+<span class="w">    </span><span class="n">vec2</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="n">b</span><span class="o">+</span><span class="n">r</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// 3. Compute the actual distance between our point and the box</span>
+<span class="w">    </span><span class="n">vec2</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">min</span><span class="p">(</span><span class="n">max</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="n">q</span><span class="p">.</span><span class="n">y</span><span class="p">),</span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">max</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// 4. Inject back the circle distance and return</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+
+<p>There's no new nodes we haven't seen before so I'm just going to show the resulting graphs, starting with computing the corner radius !</p>
+<p><img alt="Rounded Box Material, Compute corner radius" class="center" src="/images/2DSDF/rounded-box-material-1.png"></p>
+<p>Then we get Q:</p>
+<p><img alt="Rounded Box Material, Q" class="center" src="/images/2DSDF/rounded-box-material-2.png"></p>
+<p>And finally, the actual box and corner distance :</p>
+<p><img alt="Rounded Box Material, Dist" class="center" src="/images/2DSDF/rounded-box-material-3.png"></p>
+<p><img alt="Rounded Box Material, Final" class="center" src="/images/2DSDF/rounded-box-material-4.png"></p>
+<p>You can find the pastebin of this material <a href="https://blueprintue.com/blueprint/xhod6w_u/">here</a>, blueprintue doesn't seem to be handling named reroutes correctly, but if you paste it back into unreal you'll the the correct names.</p>
+<p>Let's plug our new node back into our SDF graph and appreciate the result !</p>
+<p><img alt="Plugged RoundedBox node in SDF" src="/images/2DSDF/sdf-roundedbox-plugged.png">
+<img alt="RoundedBox result" src="/images/2DSDF/rounded-rect-material.png"></p>
+<p>Looks pretty nice ! Inigo is actually animating the radius and size, let's try to reproduce that. The magic happens in this part of the shadertoy :</p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="kt">vec2</span><span class="w"> </span><span class="n">si</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span><span class="mf">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.3</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">iTime</span><span class="o">+</span><span class="kt">vec2</span><span class="p">(</span><span class="mo">0</span><span class="p">,</span><span class="mi">2</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="kt">vec4</span><span class="w"> </span><span class="n">ra</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.3</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="w"> </span><span class="mf">2.0</span><span class="o">*</span><span class="n">iTime</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="mo">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">ra</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">min</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span><span class="n">min</span><span class="p">(</span><span class="n">si</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="n">si</span><span class="p">.</span><span class="n">y</span><span class="p">));</span><span class="w"></span>
+</code></pre></div>
+
+<p>We can use a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#time">Time</a> node to represent the iTime variable !</p>
+<p><img alt="Compute si" class="center" src="/images/2DSDF/computing-varying-box-size.png"></p>
+<p><img alt="Compute ra" class="center" src="/images/2DSDF/compute-varying-corner-radius.png"></p>
+<p>And after plugging si and ra back into our rounded rect node :</p>
+<video class="center" controls>
+    <source src="/images/2DSDF/rounded-rect-anim.mp4" type="video/mp4">
+    Rounded Rect Result MP4
+</video>
+
+<p>And that's it ! We've got our first non-circle (and animated !) shape \(￣︶￣*\))</p>
+<h1>Oriented Box</h1>
+<p>This one is interesting as it involves matrix transformations, we'll see if unreal has some nodes to help us with that.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">float</span> <span class="nv">sdOrientedBox</span><span class="ss">(</span> <span class="nv">in</span> <span class="nv">vec2</span> <span class="nv">p</span>, <span class="nv">in</span> <span class="nv">vec2</span> <span class="nv">a</span>, <span class="nv">in</span> <span class="nv">vec2</span> <span class="nv">b</span>, <span class="nv">float</span> <span class="nv">th</span> <span class="ss">)</span>
+{
+    <span class="nv">float</span> <span class="nv">l</span> <span class="o">=</span> <span class="nv">length</span><span class="ss">(</span><span class="nv">b</span><span class="o">-</span><span class="nv">a</span><span class="ss">)</span><span class="c1">;</span>
+    <span class="nv">vec2</span>  <span class="nv">d</span> <span class="o">=</span> <span class="ss">(</span><span class="nv">b</span><span class="o">-</span><span class="nv">a</span><span class="ss">)</span><span class="o">/</span><span class="nv">l</span><span class="c1">;</span>
+    <span class="nv">vec2</span>  <span class="nv">q</span> <span class="o">=</span> <span class="ss">(</span><span class="nv">p</span><span class="o">-</span><span class="ss">(</span><span class="nv">a</span><span class="o">+</span><span class="nv">b</span><span class="ss">)</span><span class="o">*</span><span class="mi">0</span>.<span class="mi">5</span><span class="ss">)</span><span class="c1">;</span>
+          <span class="nv">q</span> <span class="o">=</span> <span class="nv">mat2</span><span class="ss">(</span><span class="nv">d</span>.<span class="nv">x</span>,<span class="o">-</span><span class="nv">d</span>.<span class="nv">y</span>,<span class="nv">d</span>.<span class="nv">y</span>,<span class="nv">d</span>.<span class="nv">x</span><span class="ss">)</span><span class="o">*</span><span class="nv">q</span><span class="c1">;</span>
+          <span class="nv">q</span> <span class="o">=</span> <span class="nv">abs</span><span class="ss">(</span><span class="nv">q</span><span class="ss">)</span><span class="o">-</span><span class="nv">vec2</span><span class="ss">(</span><span class="nv">l</span>,<span class="nv">th</span><span class="ss">)</span><span class="o">*</span><span class="mi">0</span>.<span class="mi">5</span><span class="c1">;</span>
+    <span class="k">return</span> <span class="nv">length</span><span class="ss">(</span><span class="nv">max</span><span class="ss">(</span><span class="nv">q</span>,<span class="mi">0</span>.<span class="mi">0</span><span class="ss">))</span> <span class="o">+</span> <span class="nv">min</span><span class="ss">(</span><span class="nv">max</span><span class="ss">(</span><span class="nv">q</span>.<span class="nv">x</span>,<span class="nv">q</span>.<span class="nv">y</span><span class="ss">)</span>,<span class="mi">0</span>.<span class="mi">0</span><span class="ss">)</span><span class="c1">;</span>
+}
+</code></pre></div>
+
+<p>I'm going to skip the math and focus on the matrix multiply as the rest is nothing we haven't done before, you can try doing it yourself and check back at the end, I'll paste the full material as usual.</p>
+<div class="highlight"><pre><span></span><code>    q = mat2(d.x,-d.y,d.y,d.x)*q;
+</code></pre></div>
+
+<p>This is building a rotation matrix using [d.x, d.y] coefficients and rotates q by that matrix. I'll get to how we can build such a matrix from just an angle later, but first we have to figure out how to do the matrix-vector multiplication in the Unreal material system.</p>
+<p>There's actually a function node that already does that in 3 dimensions :</p>
+<p><img alt="Transform3x3 Matrix Node" class="center" src="/images/2DSDF/transform3x3-matrix-node.png"></p>
+<p>So we're going to do the transform in 3 dimensions, assuming we're at <code>Z = 0</code>, and then we'll only take the [X, Y] components of the result. In GLSL this is equivalent to :</p>
+<div class="highlight"><pre><span></span><code>    vec3 tmp_q = mat3(d.x,-d.y, 0, d.y,d.x, 0, 0, 0, 1) * vec3(q, 0);
+    q = tmp_q.xy;
+</code></pre></div>
+
+<p>To noodelify, we have 4 things to do :</p>
+<ul>
+<li>Expand q to a vec3</li>
+<li>Build the BasisX vector as [d.x, -d.y, 0]</li>
+<li>Build the BasisY vector as [d.y, d.x, 0]</li>
+<li>Component mask the result as a vec2</li>
+</ul>
+<p>Let's get to it !</p>
+<p>Using a bunch of <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#appendvector">Append</a> and <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#componentmask">ComponentMask</a> nodes, we get our basis and q :</p>
+<p><img alt="Filling our Transform Node" class="center" src="/images/2DSDF/filling-the-transform-matrix.png"></p>
+<p>Q is straightforward, for the basis the idea is to cut d into d.x, d.y. Compute -d.y and swizzle everything into the 2 vectors we need.</p>
+<p>We can finally component mask the matrix output to get the X/Y components and feed that to the rest :</p>
+<p><img alt="Outputting the result" class="center" src="/images/2DSDF/component-mask-transform-node.png"></p>
+<p>Finishing writing all the nodes we get this blueprint, which is pretty big, so I won't cut it up in screenshot for my sanity :p. You can check the pastebin <a href="https://blueprintue.com/render/jlfpi7fc/">here</a> :</p>
+<iframe width="100%" height="300" class="center" src="https://blueprintue.com/render/jlfpi7fc/" scrolling="no" allowfullscreen></iframe>
+
+<p>The OrientedBox function has 3 parameters, the screen position as usual, the extreme points of our rect, and the width.</p>
+<p><img alt="Using the OrientedBox node" class="center" src="/images/2DSDF/using-oriented-box.png"></p>
+<p>This says "Put a box going from <code>[-0.25, 0.75]</code> to <code>[0.25, 0]</code> with a width of <code>0.25</code>", and the result :</p>
+<p><img alt="OrientedBox result" class="center" src="/images/2DSDF/oriented-box-result.png"></p>
+<p>Funnily enough this node can also be used to draw lines by supplying a width of 0 !</p>
+<p><img alt="Draw a cross" class="center" src="/images/2DSDF/a-cross.png"></p>
+<p>Tada ヾ(•ω•`)o, but how did I combined two lines though 🤔. I actually used a Union operation ! We'll implement those in the next part :D</p>
+<h1>Conclusion</h1>
+<p>Aight ! We've seen some basic shapes, we can now draw circles, boxes, oriented boxes and even lines ! It's a nice starting toolset to do some stuff, but before we're truly free we'll need to implement a bunch of operations. We'll see the main ones in the next part !</p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-3.html" title="Previous: Porting IQ 2D SDF Shadertoys to Unreal - Part 3">Porting IQ 2D SDF Shadertoys to Unreal - Part 3</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2022-05-14T00:00:00-04:00">Sat 14 May 2022</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#articles-ref">Articles</a>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://twitter.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Twitter" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1da1f3"/><path fill="#fff" d="M437 152a72 72 0 0 1-40 12 72 72 0 0 0 32-40 72 72 0 0 1-45 17 72 72 0 0 0-122 65 200 200 0 0 1-145-74 72 72 0 0 0 22 94 72 72 0 0 1-32-7 72 72 0 0 0 56 69 72 72 0 0 1-32 1 72 72 0 0 0 67 50 200 200 0 0 1-105 29 200 200 0 0 0 309-179 200 200 0 0 0 35-37"/></svg>
+    </a>
+    <a href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
