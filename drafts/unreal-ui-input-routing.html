@@ -22,7 +22,7 @@
 <meta property="og:description" content="Overview of input management in Unreal UI systems" />
 <meta property="og:site_name" content="Sharundaar&#39;s Blog" />
 <meta property="og:article:author" content="Sharundaar" />
-<meta property="og:article:published_time" content="2022-10-08T00:00:00-04:00" />
+<meta property="og:article:published_time" content="2022-11-13T00:00:00-05:00" />
 <meta name="twitter:title" content="Unreal UI Input Routing ">
 <meta name="twitter:description" content="Overview of input management in Unreal UI systems">
 
@@ -131,7 +131,7 @@ table tbody td:last-child {
 <p>As the comment wisely says, those are the entry points from Slate that are directly forwarded to the blueprint events. This gives us a straightforward place to put a breakpoint ! Let's make a simple menu with a button, show it, and switch the game to UI input mode. This will give us a callstack that we can study !</p>
 <div class="tony-question">
 <img src="/images/tony-think-smol.png">Wait, UI input mode ? What is this about ?<br>
-<span>Good question ! Any tutorial kinda tells you to do that without really talking about what it implies :) But we'll see first hand what exactly happens later. Just trust me for now !</span>
+<span>Good question ! Any tutorial kinda tells you to do that without really talking about what it implies :) But we'll see first hand what exactly happens a bit later. Just trust me for now !</span>
 </div>
 
 <p>Here's the menu we'll be working from, you can really do whatever you want, the only thing we need is a UButton instance. We don't even need to bind any event to it !</p>
@@ -139,8 +139,7 @@ table tbody td:last-child {
 <p>In the level blueprint I put some boilerplate code to show the menu, set us in the right mode, and show the cursor. Feel free to copy it here :)</p>
 <iframe src="https://blueprintue.com/render/zigoa3o1/" width="100%" height="600px" scrolling="no" allowfullscreen></iframe>
 
-<p>Alright, if we press play and the Tab key, we should see our menu appear ! On top of it we have full mouse control :) 
-<br>Perfect to click our little button.</p>
+<p>Alright, if we press play and the Tab key, we should see our menu appear ! On top of it we have full mouse control :) Perfect to click our little button.</p>
 <p><img alt="In game in the default unreal scene with our menu popped up" class="center" src="/images/InputRouting/test-menu-ingame.png"></p>
 <p>Here we only have to put our breakpoint in the SlateHandleClicked function of the UButton class, click our button, and pray we actually break 🙏</p>
 <p>Aaaaand...</p>
@@ -205,7 +204,7 @@ I've inlined some comments, feel free to peruse.</p>
 <td><div class="highlight"><pre><code>FSlateApplication::OnMouseUp(Type,TVector2<double>) SlateApplication.cpp:5458</code></pre></div></td>
 </tr>
 <tr>
-<td>Interesting stuff here 👀</td>
+<td>More interesting stuff 👀</td>
 <td><div class="highlight"><pre><code>FWindowsApplication::ProcessDeferredMessage(const FDeferredWindowsMessage &amp;) WindowsApplication.cpp:2210</code></pre></div></td>
 </tr>
 <tr>
@@ -213,7 +212,7 @@ I've inlined some comments, feel free to peruse.</p>
 <td><div class="highlight"><pre><code>FWindowsApplication::DeferMessage(TSharedPtr<FWindowsWindow,1> &amp;,HWND__ *,unsigned int,unsigned long long,long long,int,int,unsigned int) WindowsApplication.cpp:2699</code></pre></div></td>
 </tr>
 <tr>
-<td>More interesting stuff 👀</td>
+<td>Interesting stuff here 👀</td>
 <td><div class="highlight"><pre><code>FWindowsApplication::ProcessMessage(HWND__ *,unsigned int,unsigned long long,long long) WindowsApplication.cpp:1078</code></pre></div></td>
 </tr>
 <tr>
@@ -266,7 +265,8 @@ I've inlined some comments, feel free to peruse.</p>
 <h2>Platform land</h2>
 <p>As you can see the inputs are starting at the OS level, in this case Windows, when you press a button or the mouse, it pushes a WM_ event to a queue that the application, our friend the Unreal Engine, can pump and do stuff with.</p>
 <p>You can see that happening in the ProcessMessage function where a big ol' switch decides what goes where. If you go take a look you'll see special mentions for the ALT+F4 boy 👀, you should also take a look at the WM_INPUT event, lots of dark magic there... Anyway, generally you'll see a whole bunch of stuff a standard windows application is supposed to support, and most events ends up calling this <code>DeferMessage</code> function.</p>
-<p><code>DeferMessage</code> doesn't matter much here, its main goal is to make sure the rest of the stack goes on the Game thread, it's a fairly standard setup where it queues messages when needed, and the messages get dequeued elsewhere when the application knows it's safe to do so.</p>
+<p>@TODO rework this
+<code>DeferMessage</code> is a fairly simple function that allows unreal to always handle all messages in a predictable way in the main loop. This way you can potentially pump messages somewhere else (like on a separate thread) but still handle everything on the game thread later.</p>
 <p>After that we fall into the <code>ProcessDeferredMessage</code> function, it looks a lot like <code>ProcessMessage</code> but this time we have some guarantee that we are on the game thread ! All that thanks to the DeferMessage call. You'll see here that Unreal does some processing to the message parameter, let's review a few for taste :</p>
 <ul>
 <li><code>ClientToScreen(hwnd, &amp;CursorPoint);</code> : We see some transformation from the OS (client) space to the unreal expected screen space</li>
@@ -331,14 +331,14 @@ Fun stuff 😁
 <p><img alt="FlowGraph of the mouse up event, first the slate application receives a mouse up event, it searches for the widget under the mouse and calls OnMouseUp on it, if the element returns Handled we're done ! Otherwise we get the widgets parent " class="center" src="/images/InputRouting/mouse-up-flow-graph.png"></p>
 <p>So coming from the Slate Application, we find the element under our cursor, call the OnMouseButtonUp function common to all SWidget on it, the SButton specialisation does some shenanigans that dispatches it to the UMG UButton, that then dispatches it to the blueprint 😊 Simple enough !</p>
 <p>Well, of course the devil is in the details. In FSlateApplication::ProcessMouseButtonUpEvent we can see that an InputPreProcessor might decide to interrupt the flow :</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nv">Input</span><span class="w"> </span><span class="nv">preprocessors</span><span class="w"> </span><span class="nv">get</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">first</span><span class="w"> </span><span class="nv">chance</span><span class="w"> </span><span class="nv">at</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">input</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="ss">(</span><span class="nv">InputPreProcessors</span>.<span class="nv">HandleMouseButtonUpEvent</span><span class="ss">(</span><span class="o">*</span><span class="nv">this</span>,<span class="w"> </span><span class="nv">MouseEvent</span><span class="ss">))</span><span class="w"></span>
-<span class="w">    </span>{<span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nv">true</span><span class="c1">;</span><span class="w"></span>
-<span class="w">    </span>}<span class="w"></span>
+<div class="highlight"><pre><span></span><code>    <span class="o">//</span> <span class="nv">Input</span> <span class="nv">preprocessors</span> <span class="nv">get</span> <span class="nv">the</span> <span class="nv">first</span> <span class="nv">chance</span> <span class="nv">at</span> <span class="nv">the</span> <span class="nv">input</span>
+    <span class="k">if</span> <span class="ss">(</span><span class="nv">InputPreProcessors</span>.<span class="nv">HandleMouseButtonUpEvent</span><span class="ss">(</span><span class="o">*</span><span class="nv">this</span>, <span class="nv">MouseEvent</span><span class="ss">))</span>
+    {
+        <span class="k">return</span> <span class="nv">true</span><span class="c1">;</span>
+    }
 </code></pre></div>
 
-<div class="highlight"><pre><span></span><code><span class="nv">I</span><span class="w"> </span><span class="nv">recommend</span><span class="w"> </span><span class="nv">you</span><span class="w"> </span><span class="nv">check</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">your</span><span class="w"> </span><span class="nv">project</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">you</span><span class="w"> </span><span class="nv">have</span><span class="w"> </span><span class="nv">something</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">there</span>,<span class="w"> </span><span class="nv">it</span><span class="err">&#39;s always good to know 👀</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nv">I</span> <span class="nv">recommend</span> <span class="nv">you</span> <span class="nv">check</span> <span class="nv">in</span> <span class="nv">your</span> <span class="nv">project</span> <span class="k">if</span> <span class="nv">you</span> <span class="nv">have</span> <span class="nv">something</span> <span class="nv">in</span> <span class="nv">there</span>, <span class="nv">it</span><span class="s1">&#39;</span><span class="s">s always good to know 👀</span>
 </code></pre></div>
 
 <p>The routing could fail to find your button, it's possible that something below your button (or widget) reply that the even is handled before it got a chance to bubble to you ! In which case it can get a bit hard to track because of the recursive nature of <code>FSlateApplication::RoutePointerUpEvent</code>, I recommend setting a breakpoint that detects when the reply is handled, you can then check who decided to handle the event in your stead 😈</p>
@@ -366,7 +366,7 @@ Fun stuff 😁
         </div>
         <section id="article-sidebar" class="span2">
             <h4>Published</h4>
-            <time itemprop="dateCreated" datetime="2022-10-08T00:00:00-04:00">sam. 08 octobre 2022</time>
+            <time itemprop="dateCreated" datetime="2022-11-13T00:00:00-05:00">Sun 13 November 2022</time>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#articles-ref">Articles</a>
 <h4>Contact</h4>

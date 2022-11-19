@@ -338,8 +338,9 @@ Fun stuff 😁
     }
 </code></pre></div>
 
-<div class="highlight"><pre><span></span><code><span class="nv">I</span> <span class="nv">recommend</span> <span class="nv">you</span> <span class="nv">check</span> <span class="nv">in</span> <span class="nv">your</span> <span class="nv">project</span> <span class="k">if</span> <span class="nv">you</span> <span class="nv">have</span> <span class="nv">something</span> <span class="nv">in</span> <span class="nv">there</span>, <span class="nv">it</span><span class="s1">&#39;</span><span class="s">s always good to know 👀</span>
-</code></pre></div>
+<div class="tony-question">
+I recommend you check in your project if you have something in there, it's always good to know 👀
+</div>
 
 <p>The routing could fail to find your button, it's possible that something below your button (or widget) reply that the even is handled before it got a chance to bubble to you ! In which case it can get a bit hard to track because of the recursive nature of <code>FSlateApplication::RoutePointerUpEvent</code>, I recommend setting a breakpoint that detects when the reply is handled, you can then check who decided to handle the event in your stead 😈</p>
 <p>Now the last piece is the SButton, as I've stated earlier this is actually starting to be your home ! It's pretty easy to write a replacement to SButton and just plop it where you need it. If we take a quick look at SButton::OnMouseButtonUp we can see a whole lot of stuff happens there that might result in ExecuteOnClick not happening, for example if we set the click method to MouseDown, or if we moved the mouse outside the button between the mouse down and mouse up event, or other stuff ! Those are all design decisions that comes from the general requirement Epic wanted for their SButton ! You're free to rewrite an equivalent class that actually fit your requirement, and as we'll see that's exactly what happens with the CommonUI buttons 😲</p>
