@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
+        <meta name="google-site-verification" content="aPh1Z9SmJnMXvicC_q1nEUrpRYuhDEhxV2A5kdSl8NE" />        <meta name="author" content="Sharundaar" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content=", Articles, " />
+
+<meta property="og:title" content="A Quick Dive in Unreal Windows Contextual Commands "/>
+<meta property="og:url" content="/a-quick-dive-in-unreal-windows-contextual-commands.html" />
+<meta property="og:description" content="We&#39;re going to take a look at what happens in those unreal windows contextual menu commands." />
+<meta property="og:site_name" content="Sharundaar&#39;s Blog" />
+<meta property="og:article:author" content="Sharundaar" />
+<meta property="og:article:published_time" content="2023-03-20T00:00:00-04:00" />
+<meta name="twitter:title" content="A Quick Dive in Unreal Windows Contextual Commands ">
+<meta name="twitter:description" content="We&#39;re going to take a look at what happens in those unreal windows contextual menu commands.">
+
+        <title>A Quick Dive in Unreal Windows Contextual Commands  · Sharundaar&#39;s Blog
+</title>
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>Sharundaar's Blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/categories.html">Categories</a></li>
+                                <li ><a href="/tags.html">Tags</a></li>
+                                <li ><a href="/archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="/a-quick-dive-in-unreal-windows-contextual-commands.html">
+                A Quick Dive in Unreal Windows Contextual Commands
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <h2>Introduction</h2>
+<p>I was trying to resolve some project solution generation issues a few weeks ago and it led me to wonder: What are those ?</p>
+<p><img alt="Windows Contextual commands with Launch Game, Generate Visual Studio project files, and Switch Unreal Engine version..." class="center" src="/images/DiveInUnrealCommands/contextual-menu.png"></p>
+<p>What exactly happens when we click those commands ? Well I searched a bit and thought I'd write down my findings here 😄. Let's have fun.</p>
+<h2>The Windows Contextual Menu</h2>
+<p>In case you didn't know, the windows contextual menu is actually fairly customizable. The way it's stored is through the windows Registry in the file association department :)</p>
+<p>I invite you to go take a look at the <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/hkey-classes-root-key">documentation page</a> ! But I'm going to detail the adventure a bit.</p>
+<p>So ! Win+R to bring up the start menu, <code>regedit</code> and enter to open the registry editor ! We're in (relatively) dangerous territory here so don't change anything until you know what you're doing.</p>
+<p>It should look something like that :</p>
+<p><img alt="Naked Registry Editor window" class="center" src="/images/DiveInUnrealCommands/regedit.png"></p>
+<p>From there you might be asking what are we looking for ? There's a bajillion keys and the organization is a secret known only to the gods ! Well no worries, we actually have some piece of texts to put our foot in the door, chiefly "Switch Unreal Engine version" ! It's a sufficiently unique string that whatever match we find should represent the contextual menu command we're looking for.</p>
+<p>So, CTRL+F, input the string (we don't care about the settings just make sure Data is checked), and search ! It's going to take a little while, there's a lot of stuff in there, but it should find an entry like <code>HKEY_CLASSES_ROOT\Unreal.ProjectFile\shell\switchversion</code>. </p>
+<p>What are we looking at ? The anatomy of a registry entry is relatively simple :</p>
+<p><img alt="Screenshot of regedit pointing at HKEY_CLASSES_ROOT\Unreal.ProjectFile\shell\switchversion, arrows describe what each part is." class="center" src="/images/DiveInUnrealCommands/anatomy-registry.png"></p>
+<p>Each "folder" is a key, each key can have child keys which builds a hierarchy. Each key can also have one or multiple values associated (always at least one, the Default). And each value can have Data associated. To be noted that everything here is identified with a string.</p>
+<p>It's here that I encourage you to check the <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/hkey-classes-root-key">documentation page</a> again 😁</p>
+<p>Windows has 2 levels of file association, machine and user space, the defaults are stored in HKEY_LOCAL_MACHINE\Software\Classes, the user specifics in HKEY_CURRENT_USER\Software\Classes, and HKEY_CLASSES_ROOT is actually just a merged view of both those keys !</p>
+<p>if you've ever ran an installer and got the question "Do you want to install for all users or just the current one" now you know what's happening behind the scene ! (Well there's some subtilties depending on context but the idea is the same)</p>
+<p>Alright ! Let's take a look at this registry structure. Unreal stores all the commands under <code>HKEY_CLASSES_ROOT\Unreal.ProjectFile\shell</code>, Windows knows to display those commands thanks to the file association found in <code>HKEY_CLASSES_ROOT\.uproject</code> ! You can this key's value is set to <code>Unreal.ProjectFile</code>.</p>
+<p>If we check the structure of that key, we'll find DefaultIcon which points to the icon displayed in the explorer, and a bunch of shell commands :</p>
+<p><img alt="regedit tree view centered on the Unreal.ProjectFile key, there's a DefaultIcon and shell child keys, the shell key has 4 children : open, run, rungenproj, switchversion" class="center" src="/images/DiveInUnrealCommands/unreal-projectfile.png"></p>
+<p>Taking a look at <code>switchversion</code>, you can find the (Default) and Icon values are used by the contextual menu, while a <code>command</code> child key registers the actual shell code that runs when we click the menu item.</p>
+<p>In particular, on my current version and install : <br><code>"D:\Epic Games\Launcher\Engine\Binaries\Win64\UnrealVersionSelector.exe" /switchversion "%1"</code></p>
+<p>Alright ! One mystery solved. We now know that all those commands boils down to executing <code>UnrealVersionSelector.exe</code> with various / commands and the file path (<code>%1</code>)</p>
+<p>On to the next one, what up with UnrealVersionSelector ? ╰(<em>°▽°</em>)╯</p>
+<h2>UnrealVersionSelector</h2>
+<p>Lucky for us, the UnrealVersionSelector tool source code is available on the official Unreal github ! We can go take a look at exactly what those command arguments do, as a quick list the registered commands looks like this:</p>
+<ul>
+<li>switchversion: /switchversion</li>
+<li>rungenproj: /projectfiles</li>
+<li>run: /game</li>
+<li>open: /editor</li>
+</ul>
+<p>A quick search gives us all of the commands, and even new ones &gt;:) </p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Note: Cut down for brevity</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Add the current directory to the list of installations</span>
+<span class="w">    </span><span class="n">bRes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RegisterCurrentEngineDirectoryWithPrompt</span><span class="p">();</span><span class="w"></span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-register&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Add the current directory to the list of installations</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-register&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-unattended&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Add the current directory to the list of installations</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-fileassociations&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Update all the settings.</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-switchversion&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Associate with an engine label</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">3</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-switchversionsilent&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Associate with a specific engine label</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-editor&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Open a project with the editor</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-projectlist&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Open the editor</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-game&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Play a game using the editor executable</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Arguments</span><span class="p">.</span><span class="n">Num</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Arguments</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;-projectfiles&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Generate Visual Studio project files</span>
+<span class="k">else</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Invalid command line</span>
+</code></pre></div>
+
+<p>If we dive a bit into the code we can find a lot of details about how unreal finds installations and how it registers stuff, notably I was wondering what the GUID found under <code>EngineAssociation</code> corresponds to in the .uproject file.</p>
+<p>Well you can register custom installations of the engine by navigating to your unreal source folder and running <code>UnrealVersionSelector.exe -register</code>.</p>
+<p>This adds a key to the registry under the path <br><code>HKEY_CURRENT_USER\SOFTWARE\Epic Games\Unreal Engine\Builds</code> which matches that GUID to your install folder ! I think that was pretty interesting, if you're curious to learn more it's all happening in those files (on windows) :</p>
+<ul>
+<li><code>Source\Developer\DesktopPlatform\Private\DesktopPlatformBase.cpp</code></li>
+<li><code>Source\Developer\DesktopPlatform\Private\DesktopPlatformWindows.cpp</code></li>
+</ul>
+<p>An other interesting function to look at is <code>EnumerateLauncherEngineInstallations</code>, we can see here that everything that the Epic Launcher installs is actually saved in a .dat file in ProgramData <code>C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat</code>. I won't spoil the content but you can parse the file yourself 😏</p>
+<h2>Conclusion</h2>
+<p>I hope you liked this little dive in windows belly ! And some of those keys about the unreal version selector. I think it's good knowledge to have when we're trying to debug project setup issues 😁</p>
+<p>If you make new tools now you should be able to plug them in the contextual menu fairly easily for your clients ! And if you ever wonder what a tool does when you click its contextual menu button you should be able to find out what 😄</p>
+
+
+             
+ 
+            
+            
+            
+
+
+
+
+
+
+
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/unreal-ui-input-routing.html" title="Previous: Unreal UI Input Routing">Unreal UI Input Routing</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section id="article-sidebar" class="span2">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2023-03-20T00:00:00-04:00">Mon 20 March 2023</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#articles-ref">Articles</a>
+<h4>Contact</h4>
+<div id="sidebar-social-link">
+    <a href="https://twitter.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Twitter" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1da1f3"/><path fill="#fff" d="M437 152a72 72 0 0 1-40 12 72 72 0 0 0 32-40 72 72 0 0 1-45 17 72 72 0 0 0-122 65 200 200 0 0 1-145-74 72 72 0 0 0 22 94 72 72 0 0 1-32-7 72 72 0 0 0 56 69 72 72 0 0 1-32 1 72 72 0 0 0 67 50 200 200 0 0 1-105 29 200 200 0 0 0 309-179 200 200 0 0 0 35-37"/></svg>
+    </a>
+    <a href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
+</div>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </section>
+</div>
+</article>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="/theme/js/elegant.prod.9e9d5ce754.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

@@ -15,18 +15,18 @@
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary">
 
-<meta name="keywords" content=", Articles, " />
+<meta name="keywords" content="unreal, inputs, Articles, " />
 
-<meta property="og:title" content="Porting IQ 2D SDF Shadertoys to Unreal - Part 1 "/>
-<meta property="og:url" content="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html" />
-<meta property="og:description" content="First part where we display some circles" />
+<meta property="og:title" content="A Deeper dive in Unreal input system "/>
+<meta property="og:url" content="/a-deeper-dive-in-unreal-input-system.html" />
+<meta property="og:description" content="Continuing our dive in the Unreal Engine input system" />
 <meta property="og:site_name" content="Sharundaar&#39;s Blog" />
 <meta property="og:article:author" content="Sharundaar" />
-<meta property="og:article:published_time" content="2022-04-24T00:00:00-04:00" />
-<meta name="twitter:title" content="Porting IQ 2D SDF Shadertoys to Unreal - Part 1 ">
-<meta name="twitter:description" content="First part where we display some circles">
+<meta property="og:article:published_time" content="2022-11-26T00:00:00-05:00" />
+<meta name="twitter:title" content="A Deeper dive in Unreal input system ">
+<meta name="twitter:description" content="Continuing our dive in the Unreal Engine input system">
 
-        <title>Porting IQ 2D SDF Shadertoys to Unreal - Part 1  · Sharundaar&#39;s Blog
+        <title>A Deeper dive in Unreal input system  · Sharundaar&#39;s Blog
 </title>
 
 
@@ -67,8 +67,8 @@
 <div class="row-fluid">
     <header class="page-header span10 offset2">
         <h1>
-            <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">
-                Porting IQ 2D SDF Shadertoys to Unreal - Part 1
+            <a href="/a-deeper-dive-in-unreal-input-system.html">
+                A Deeper dive in Unreal input system
             </a>
         </h1>
     </header>
@@ -77,61 +77,12 @@
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
             
-            <p>I've been looking at learning Unreal 5 material system for some UI stuff and I thought a good way of getting up to speed was to port Inigo Quilez 2D SDF shadertoys to Unreal. </p>
-<p>The source article with all the SDF we're going to try can be found <a href="https://iquilezles.org/articles/distfunctions2d/">here</a></p>
-<h1>Initial Setup</h1>
-<p>Since my end goal is to make some UI shaders we're going to setup a UI material !
-So we go right click in the content window -&gt; Materials -&gt; Material, I'm naming mine SDFMaterial for now. </p>
-<p><img alt="New Material" class="center" src="/images/2DSDF/create-mat.png"></p>
-<p>Open the material, go to the detail panel and set the domain to User Interface.</p>
-<p><img alt="Set domain to user interface" class="center" src="/images/2DSDF/set-domain.png"></p>
-<p>And now we're good to go !</p>
-<h1>The Simplest SDF function</h1>
-<p>The first SDF function we're going to implement is the circle since it's pretty simple and straightforward to visualize. The distance to a circle is the distance between the evaluated point and the circle center minus the radius. You'll see that all functions on Inigo's website skip the "distance between the evaluated point and the circle" part since we can just do those transformation before calling the function. This means that in all the functions we're going to write, the shape we're forming is assuming to be at coordinates (0, 0).</p>
-<p>Aight let's see how to do it in practice !</p>
-<p>To get our circle, we need 4 pieces :</p>
-<ul>
-<li>A way to get a point coordinate<p></li>
-<li>A node to store our circle's radius<p></li>
-<li>Some way to compute the length of a vector<p></li>
-<li>Some way to substract two quantities<p></li>
-</ul>
-<h2>Getting some UVs</h2>
-<p>Let's deal with the first point, since we're doing a UI shader we have access to the GetUserInterfaceUV node. This node offers the Normalize UV pin which will give us a coordinate vector in the [0, 1] range to play with.</p>
-<p><img alt="Get UIUVNode" class="center" src="/images/2DSDF/get-user-interface-uv-node.png"></p>
-<p>A good tip here is to plug the node into the Final Color pin of the output to see what we're dealing with.</p>
-<p><img alt="First Preview" class="center" src="/images/2DSDF/nuv-to-fc-preview.png"></p>
-<p>If you've never wrote any shader you might be confused at what you're looking at but this black-red-green-yellow gradient square is typical when viewing a 2D vector going smoothly between 0 and 1 on both axis, the square corners correspond to the [0, 0] (black), [1, 0] (red), [0, 1] (green), [1, 1] (yellow) vectors respectively.</p>
-<p>Anyway, this just shows us that our Normalized UV pin does what we expect it to do :D</p>
-<h2>Constant nodes</h2>
-<p>Now for the radius, we might want to control that outside of the shader later but let's go the simplest way first and use a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant">Constant</a> node. We can set it's value to 0.25, since our space is in the [0, 1] range, using 0.25 as the radius should have our circle radius take 1/4 of the screen space.</p>
-<p><img alt="Radius Node" class="center" src="/images/2DSDF/radius-const-node.png"></p>
-<h2>Vector Length</h2>
-<p>Third point ! The vector's length, there's a very straightforward VectorLength node we can use here</p>
-<p><img alt="Vector Length Node" class="center" src="/images/2DSDF/vector-length-node.png"></p>
-<p>I was actually confused why there was a V3 and V2 inputs and outputs pins on it, those nodes are actually "material function" nodes that are built from more simpler node, we can double-click them to see the source !</p>
-<p><img alt="Vector Length Source" class="center" src="/images/2DSDF/vectorlength-source.png"></p>
-<p>This makes some kind of sense, computing the length of a vector is equivalent to getting the distance between the point represented by the vector and the origin. It's a bit confusing coming from GLSL (and HLSL) since there's just a length primitive function, but if it works for them, it works for me.</p>
-<h2>Actual Math</h2>
-<p>Last point now, the last node is straightforward there's just a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#subtract">Substract</a> node.</p>
-<p><img alt="Substract Node" class="center" src="/images/2DSDF/substract-node.png"></p>
-<h2>Result</h2>
-<p>Aight, let's wire everything up !</p>
-<p><img alt="Preview Circle" class="center" src="/images/2DSDF/preview-circle.png"></p>
-<p>And we have our circle ! Except it's a little "fuzzy"... Also it's just a forth of a circle in the corner... Well this is all expected, as we said the SDF function assumes the circle is at the origin, and here the origin is the top left of the render space ! Also it's fuzzy because we're feeding the distance directly to the output, so the value is positive going up at the border and it's negative inside. The black part inside is actually negative values but the colors are clamped to 0 before going on the screen. </p>
-<p>Before moving forward, let's move the circle to the middle of the screen and take care of the border !</p>
-<h2>Moving the Circle</h2>
-<p>We can move the circle by translating the initial UV by some vector, this is done using the same substract node as before, and we can get a vector with a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant2vector">Constant2Vector</a> node. Center of the screen is [0.5, 0.5] so let's translate our UVs by this vector.</p>
-<p><img alt="Substract Node" class="center" src="/images/2DSDF/translate-setup.png"></p>
-<p>And tada ! Our circle is centered.</p>
-<p><img alt="Centered Circle" class="center" src="/images/2DSDF/centered-circle.png"></p>
-<h2>Clearing the Border</h2>
-<p>Finally let's take care of the fuzzy border before moving forward, for this we'll use the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#step">Step</a> function. It's a bit confusing to use but it returns 0 when X &lt; Y, so if we input our distance as X and 0 as Y, we should get full black everywhere negative (inside) and full white everywhere positive (outside).</p>
-<p><img alt="Clear Border" class="center" src="/images/2DSDF/clear-border.png"></p>
-<p>And here's our final result :</p>
-<p><img alt="Clear Border Preview" class="center" src="/images/2DSDF/clear-border-preview.png"></p>
-<p>At this point we're able to draw a simple circle on a square quad, you'll see that trying this on anything but a square will stretch the circle strangely, also if we want more color than black and white we'll need a bit more stuff. But this was the simplest setup to get the more complicated stuff running later !</p>
-<p>I haven't even referenced Inigo shadertoy or articles but this was about getting our feet in the unreal material door, we'll see in the next chapter how to do more complicated stuff !</p>
+            <p><a href="/unreal-ui-input-routing.html">Last time</a> we've seen an overview of the unreal input stack. We've peeled a bunch of abstraction and seen how the engine goes from the OS's events to the Slate Application and down to our UI elements. I've brushed over how we got control of our little test UI by providing a small level graph... I'd like to go over that today :)</p>
+<p>Let's see which secrets are held by this <a href="https://docs.unrealengine.com/5.1/en-US/BlueprintAPI/Input/SetInputModeUIOnly/">Set Input Mode UI Only</a> that allows our elements to properly receive input events !</p>
+<p>@TODO [give me your secrets img]</p>
+<p>So ! Let's dive shall we !</p>
+<h1>Exploring the Node</h1>
+<p>"Set Input Mode" is actually a little family of node. </p>
 
 
              
@@ -150,16 +101,26 @@ So we go right click in the content window -&gt; Materials -&gt; Material, I'm n
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="next-article"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html" title="Next: Porting IQ 2D SDF Shadertoys to Unreal - Part 2">Porting IQ 2D SDF Shadertoys to Unreal - Part 2</a> »</li>
+                <li class="previous-article">« <a href="/unreal-ui-input-routing.html" title="Previous: Unreal UI Input Routing">Unreal UI Input Routing</a></li>
+                <li class="next-article"><a href="/a-quick-dive-in-unreal-windows-contextual-commands.html" title="Next: A Quick Dive in Unreal Windows Contextual Commands">A Quick Dive in Unreal Windows Contextual Commands</a> »</li>
             </ul>
             </nav>
             </aside>
         </div>
         <section id="article-sidebar" class="span2">
             <h4>Published</h4>
-            <time itemprop="dateCreated" datetime="2022-04-24T00:00:00-04:00">Sun 24 April 2022</time>
+            <time itemprop="dateCreated" datetime="2022-11-26T00:00:00-05:00">Sat 26 November 2022</time>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#articles-ref">Articles</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="/tags.html#inputs-ref">inputs
+                    <span class="superscript">1</span>
+</a></li>
+                <li><a href="/tags.html#unreal-ref">unreal
+                    <span class="superscript">1</span>
+</a></li>
+            </ul>
 <h4>Contact</h4>
 <div id="sidebar-social-link">
     <a href="https://twitter.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">

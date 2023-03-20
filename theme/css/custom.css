@@ -1,0 +1,29 @@
+
+
+.tony-question {
+	background: #282828;
+	border: 2px solid beige;
+	border-radius: var(--borderRadius);
+	color: #ebdbb2;
+	margin-bottom: 20px;
+	padding: 9.5px;
+	margin: 0 0 10px;
+}
+
+.tony-question img {
+	border: none;
+}
+
+.tony-question span::before {
+	content: "> "
+}
+
+.aligncenter {
+	text-align:center
+}
+
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
