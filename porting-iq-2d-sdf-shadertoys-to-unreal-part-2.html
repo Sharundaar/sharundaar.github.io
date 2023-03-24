@@ -175,12 +175,12 @@
 
 <h1>Generate the Wavy Pattern</h1>
 <p><code>col *= 0.8 + 0.2*cos(150.0*d);</code></p>
-<p>The goal of this equation here is to get an oscillating value centered on the circle that goes between 0.8 and 1.0, we'll be able to multiply the color by that value to get that nice wavy gradient. We can check the equation in desmos too.</p>
+<p>The goal of this equation is to remap the gradient emanating from the center of the circle to an oscillating value. To achieve this we can use the cosine function which outputs a value between -1 and 1, multiply that by .2 to get a value between -.2 and .2. And finally add .8 😀</p>
 <p class="aligncenter">
 <iframe src="https://www.desmos.com/calculator/adrorlq7xx?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
 </p>
 
-<p>The .8 and .2 controls the min and max value of the wave (min=.8 and max=(.8+.2))</p>
+<p>Those numbers control the amplitude and min/max values of the wave (center=.8, which gives us min=(.8-.2) and max=(.8+.2) !)</p>
 <p>The 150 controls the frequency, or how close each wave peaks are. With our scale we should reduce that a bunch, 60 seems to be a good value. This time I noticed that you can just input the constants in the math node directly, so that gives a pretty compact graph !</p>
 <p><img alt="The Wavy Nodes" class="center" src="/images/2DSDF/wavy-calculus.png"></p>
 <p>We multiply our previous color by the wave and we're almost there 😁</p>
