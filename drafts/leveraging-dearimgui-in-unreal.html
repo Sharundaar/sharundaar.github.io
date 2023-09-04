@@ -88,10 +88,10 @@ table tbody td:last-child {
 </style>
 
 <h1>Introduction</h1>
-<p>If we discuss tooling, I'll invariably talk about DearImGui and how it should be an essential part of all developers tool belt. It's just the kind of lib that sets such a high standard of "it just works" that even if you don't have an immediate need, I think you should check it out. On top of that, as a UI engineer, it's a good introduction to the concept of Immediate Mode UI that has some great benefits of knowing about. </p>
+<p>If we discuss tooling, I'll invariably talk about DearImGui and how it should be an essential part of all developers tool belt. It's just the kind of lib that sets such a high standard of "it just works" that even if you don't have an immediate need, I think you should check it out. On top of that, I strongly believe that knowing about the Immediate mode style of API has some great benefits for development and writing user facing libraries, and this library is an excellent example of that style.</p>
 <p>So ! What's the goal today ?</p>
 <p><img alt="Default unreal projects showing some shapes, an ImGui menu bar shows some options, a window named Actor Debugger is seen in the middle showing informations about a selected Actor" class="center" src="/images/UnrealImGui/end-result.png"></p>
-<p>We'll be building this small debugging tool that allows us to pick an actor in the scene with a line trace, and show some data about the Mesh components attached toi t. We'll also see how to add buttons that can call arbitrary code on those components. It took me about 30 minutes to build, and we'll see how little UI code we end up needing 😁</p>
+<p>We'll be building this small debugging tool that allows us to pick an actor in the scene with a line trace, and show some data about the Mesh components attached to it. We'll also see how to add buttons that can call arbitrary code on those components. It took me about 30 minutes to build, and we'll see how little UI code we end up needing 😁</p>
 <p>Let's walk through the process !</p>
 <h1>Initial Setup</h1>
 <p>First of all we need to understand that DearImGui is a completely independent library, it's meant to be plugged into any arbitrary game engine/rendering backend, and as such you can't just go on the <a href="https://github.com/ocornut/imgui">imgui github</a> and hope for it to work out of the box in Unreal. As such, in usual Unreal fashion, we want to find a plugin that already does the implementation for us !</p>
