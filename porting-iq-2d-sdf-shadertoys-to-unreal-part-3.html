@@ -123,8 +123,8 @@
 <p>Our UV coordinate ranges from [0, 1] on both axis without any consideration for the image aspect ratio, we can do a bit of math to reinject some viewport information into those values.
 Assuming we've got a vector (x, y) with <code>0 &lt;= x &lt;= 1.0</code> and <code>0 &lt;= y &lt;= 1.0</code> (our uniform UVs), and we've got a vector (width, height) representing our destination rectangle size :</p>
 <div class="highlight"><pre><span></span><code>    x                 &lt;= 1.0             | y                   &lt;= 1.0       (1)
-    x * width         &lt;= width           | y * height          &lt;= height    (2)
-    x * width / height &lt;= width / height | y * height / height &lt;= 1.0       (3)
+    x <span class="gs">* width         &lt;= width           | y *</span> height          &lt;= height    (2)
+    x <span class="gs">* width / height &lt;= width / height | y *</span> height / height &lt;= 1.0       (3)
 
 &lt;=&gt; x &lt;= 1.0 | y * aspect_ratio &lt;= aspect_ratio
 </code></pre></div>
@@ -158,11 +158,11 @@ Porting this to our material, we conveniently have a Pixel Size input in our gra
 <p>Thankfully most of those have the same root issue, we just don't work in the same coordinate system as Inigo's shader. The wave issue though... That one special and will have it's own section.</p>
 <h2>Adjusting our coordinate system</h2>
 <p>If you've been attentive, you might have noticed that I lied a little bit in the last part, and that we kind of corrected it-ish while doing the <a href="#AspectRatio">aspect ratio</a> shenanigans but I glossed over it... Let's go back to the <code>p</code> computation :</p>
-<div class="highlight"><pre><span></span><code>    // Inigo&#39;s code
-    vec2 p = (2.0*fragCoord-iResolution.xy)/iResolution.y;
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="c1">// Inigo&#39;s code</span>
+<span class="w">    </span><span class="n">vec2</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">fragCoord</span><span class="o">-</span><span class="n">iResolution</span><span class="p">.</span><span class="n">xy</span><span class="p">)</span><span class="o">/</span><span class="n">iResolution</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
 
-    // Our equivalent nodes
-    vec2 p = NormalizedUV * iResolution.xy / min(iResolution.x, iResolution.y)
+<span class="w">    </span><span class="c1">// Our equivalent nodes</span>
+<span class="w">    </span><span class="n">vec2</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">NormalizedUV</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">iResolution</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">iResolution</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">iResolution</span><span class="p">.</span><span class="n">y</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Inigo's code scale's and translates <code>p</code> directly, he has two goals :</p>

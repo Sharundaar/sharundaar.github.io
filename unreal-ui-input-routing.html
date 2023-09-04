@@ -93,12 +93,12 @@ table tbody td:last-child {
 <h1>The Basics</h1>
 <p>First step on our journey, we need a starting point. Going from the old saying I just made up <code>If something happens, some code somewhere must run</code>, we want some place to put a breakpoint. So let's find a nice test case that will give us a predictable callstack to work from.</p>
 <p>A simple use case that unreal supports well is the clickable button ! Using UMG, the button you can drag and drop is of the UButton class. If we look that class up and check the structure, we can see a bunch of "SlateHandle..." functions.</p>
-<div class="highlight"><pre><span></span><code>    /** Handle the actual click event from slate and forward it on */
-    FReply SlateHandleClicked();
-    void SlateHandlePressed();
-    void SlateHandleReleased();
-    void SlateHandleHovered();
-    void SlateHandleUnhovered();
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="o">/**</span><span class="w"> </span><span class="n">Handle</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">actual</span><span class="w"> </span><span class="n">click</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">slate</span><span class="w"> </span><span class="nb">and</span><span class="w"> </span><span class="n">forward</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="o">*/</span>
+<span class="w">    </span><span class="n">FReply</span><span class="w"> </span><span class="n">SlateHandleClicked</span><span class="p">();</span>
+<span class="w">    </span><span class="n">void</span><span class="w"> </span><span class="n">SlateHandlePressed</span><span class="p">();</span>
+<span class="w">    </span><span class="n">void</span><span class="w"> </span><span class="n">SlateHandleReleased</span><span class="p">();</span>
+<span class="w">    </span><span class="n">void</span><span class="w"> </span><span class="n">SlateHandleHovered</span><span class="p">();</span>
+<span class="w">    </span><span class="n">void</span><span class="w"> </span><span class="n">SlateHandleUnhovered</span><span class="p">();</span>
 </code></pre></div>
 
 <p>As the comment wisely says, those are the entry points from Slate that are directly forwarded to the blueprint events. This gives us a straightforward place to put a breakpoint ! Let's make a simple menu with a button, show it, and switch the game to UI input mode. This will give us a callstack that we can study !</p>
@@ -304,11 +304,11 @@ Fun stuff 😁
 <p><img alt="FlowGraph of the mouse up event, first the slate application receives a mouse up event, it searches for the widget under the mouse and calls OnMouseUp on it, if the element returns Handled we're done ! Otherwise we get the widgets parent " class="center" src="/images/InputRouting/mouse-up-flow-graph.png"></p>
 <p>So coming from the Slate Application, we find the element under our cursor, call the OnMouseButtonUp function common to all SWidget on it, the SButton specialisation does some shenanigans that dispatches it to the UMG UButton, that then dispatches it to the blueprint 😊 Simple enough !</p>
 <p>Well, of course the devil is in the details. In FSlateApplication::ProcessMouseButtonUpEvent we can see that an InputPreProcessor might decide to interrupt the flow :</p>
-<div class="highlight"><pre><span></span><code>    <span class="o">//</span> <span class="nv">Input</span> <span class="nv">preprocessors</span> <span class="nv">get</span> <span class="nv">the</span> <span class="nv">first</span> <span class="nv">chance</span> <span class="nv">at</span> <span class="nv">the</span> <span class="nv">input</span>
-    <span class="k">if</span> <span class="ss">(</span><span class="nv">InputPreProcessors</span>.<span class="nv">HandleMouseButtonUpEvent</span><span class="ss">(</span><span class="o">*</span><span class="nv">this</span>, <span class="nv">MouseEvent</span><span class="ss">))</span>
-    {
-        <span class="k">return</span> <span class="nv">true</span><span class="c1">;</span>
-    }
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="c1">// Input preprocessors get the first chance at the input</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">InputPreProcessors</span><span class="p">.</span><span class="n">HandleMouseButtonUpEvent</span><span class="p">(</span><span class="o">*</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">MouseEvent</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 </code></pre></div>
 
 <div class="tony-question">
