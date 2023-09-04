@@ -173,7 +173,7 @@ table tbody td:last-child {
 <p><img alt="Our tiny window, showing it's non-content in all its glory" class="center" src="/images/UnrealImGui/the-big-window-that-can.png"></p>
 <h1>Back to our Hello World</h1>
 <p>We have a window, we don't have CONTENT, how to fix that ?</p>
-<p>The way DearImGui work, you can add content to a window by making <code>ImGui::</code> calls in between those two <code>Begin/End</code> functions, the library will automatically take care of layouting your elements for you (vertically by default). The library comes with a lot of widgets, some would say an insane amount ! Luckily it's extremely well documented, and comes with an easily searchable and debuggable demo, we'll be opening it later to see. For now let's finish our Hello World.</p>
+<p>The way DearImGui work, you can add content to a window by making <code>ImGui::</code> calls in between those two <code>Begin/End</code> functions, the library will automatically take care of layouting your elements for you (vertically by default). The library comes with a lot of widgets - some would say an insane amount ! Luckily it's extremely well documented, and comes with an easily searchable and debuggable demo, we'll be opening it later to see. For now let's finish our Hello World.</p>
 <p>The function we want to call is <code>void ImGui::Text(const char* fmt, ...);</code> ! It display a simple Text box with the content you want, it's written with the classical <code>fmt, ...</code> that you'll find in the <code>printf</code> family of functions, so we're right at home here ☺</p>
 <p>You're code should look like this :</p>
 <div class="highlight"><pre><span></span><code><span class="n">ImGui</span><span class="o">::</span><span class="n">Begin</span><span class="p">(</span><span class="s">&quot;My Little Window :)&quot;</span><span class="p">);</span>
@@ -309,7 +309,7 @@ table tbody td:last-child {
 
 <p>The ImGui widgets we'll need are <code>ImGui::CollapsingHeader</code>, <code>ImGui::Button</code>, <code>ImGui::Text</code>. We'll also need to use 2 helpers for a reason I'll explain later : <code>ImGui::PushID</code>, and <code>ImGui::PopID</code>.</p>
 <p>Let's do it.</p>
-<p>We'll want to display the component name in the collapsing header, to do so we'll use <code>Mesh-&gt;GetName()</code>, sadly you'll notice that this function returns an FString which, at least on windows, Unreal encodes as a UTF16 string. Meaning you'll get some 16 bits <code>TCHAR*</code> instead of the standard 8 bits <code>char*</code> that ImGui expects. Luckily there's a straightforward conversion scheme that allows us to go from one to the other :)  </p>
+<p>We'll want to display the component name in the collapsing header, to do so we'll use <code>Mesh-&gt;GetName()</code>, sadly you'll notice that this function returns an <code>FString</code> which, at least on Windows, are encoded as UTF16 strings. Meaning you'll get some 16 bits <code>TCHAR*</code> instead of the standard 8 bits <code>char*</code> that ImGui expects. Luckily there's a straightforward conversion scheme that allows us to go from one to the other :)  </p>
 <div class="highlight"><pre><span></span><code><span class="c1">// This is you plan to reuse the name</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">NameANSI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StringCast</span><span class="o">&lt;</span><span class="n">ANSICHAR</span><span class="o">&gt;</span><span class="p">(</span><span class="o">*</span><span class="n">Mesh</span><span class="o">-&gt;</span><span class="n">GetName</span><span class="p">());</span>
 <span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NameANSI</span><span class="p">.</span><span class="n">Get</span><span class="p">();</span>
@@ -318,7 +318,7 @@ table tbody td:last-child {
 <span class="n">ImGui</span><span class="o">::</span><span class="n">CollapsingHeader</span><span class="p">(</span><span class="n">StringCast</span><span class="o">&lt;</span><span class="n">ANSICHAR</span><span class="o">&gt;</span><span class="p">(</span><span class="o">*</span><span class="n">Mesh</span><span class="o">-&gt;</span><span class="n">GetName</span><span class="p">()).</span><span class="n">Get</span><span class="p">());</span>
 </code></pre></div>
 
-<p>Perfect ! We can easily convert <code>FString</code> to the needed <code>const char*</code>. We can now setup our header and add some content ! Let's show the mesh name and if it's Nanite enabled for funsies.</p>
+<p>Perfect ! We can easily convert <code>FString</code> to the needed <code>const char*</code>. Let's setup our header and add some content ! We'll be showing the mesh name, and if it's Nanite enabled.</p>
 <div class="highlight"><pre><span></span><code><span class="k">auto</span><span class="w"> </span><span class="n">NameANSI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StringCast</span><span class="o">&lt;</span><span class="n">ANSICHAR</span><span class="o">&gt;</span><span class="p">(</span><span class="o">*</span><span class="n">Mesh</span><span class="o">-&gt;</span><span class="n">GetName</span><span class="p">());</span>
 <span class="k">if</span><span class="p">(</span><span class="n">ImGui</span><span class="o">::</span><span class="n">CollapsingHeader</span><span class="p">(</span><span class="n">NameANSI</span><span class="p">.</span><span class="n">Get</span><span class="p">(),</span><span class="w"> </span><span class="n">ImGuiTreeNodeFlags_DefaultOpen</span><span class="p">))</span>
 <span class="p">{</span>
@@ -332,7 +332,8 @@ table tbody td:last-child {
 
 <p>Note that I'm using the <code>%ls</code> modifier to print <code>TCHAR*</code> and <code>%s</code> for <code>char*</code>.</p>
 <p>Simple enough !</p>
-<p>Alright last part, we'll want to add a button, that when clicked send a force to the static mesh to make it jump. To test this out I made a simple Actor with 3 static meshes set as Movable and with gravity enabled. We'll want to call the <code>AddForce</code> function on them to make them jump.</p>
+<p>Alright last part, we want to add a button that, when clicked, send a force to the static mesh to make it jump. To test this out I made a simple Actor with 3 static meshes set as Movable and with gravity enabled. The <code>AddForce</code> function will work for us here.</p>
+<p><img alt="Our actor with 3 static meshes, set with gravity enabled" class="center" src="/images/UnrealImGui/three-shapes-actor.png"></p>
 <p>With that added in our scene, we just need the following code !</p>
 <div class="highlight"><pre><span></span><code><span class="k">if</span><span class="p">(</span><span class="n">Mesh</span><span class="o">-&gt;</span><span class="n">IsSimulatingPhysics</span><span class="p">())</span>
 <span class="p">{</span>
