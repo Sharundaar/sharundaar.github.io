@@ -97,7 +97,11 @@ table tbody td:last-child {
 <p>Let's walk through the process !</p>
 <h1>Initial Setup</h1>
 <p>First of all we need to understand that DearImGui is a completely independent library, it's meant to be plugged into any arbitrary game engine/rendering backend, and as such you can't just go on the <a href="https://github.com/ocornut/imgui">imgui github</a> and hope for it to work out of the box in Unreal. As such, in usual Unreal fashion, we want to find a plugin that already does the implementation for us !</p>
-<p>Luckily there's a few, I've been using this one : <a href="https://github.com/segross/UnrealImGui">https://github.com/segross/UnrealImGui</a>, unfortunately it stopped support at Unreal 4.26, but if you look at the forks there's a lot of them that supports Unreal &gt;5.0 ! BenUI has one that should be up to date : <a href="https://github.com/benui-dev/UnrealImGui">https://github.com/benui/UnrealImGui</a></p>
+<p>Luckily there's a few, I've been using this one : <a href="https://github.com/segross/UnrealImGui">https://github.com/segross/UnrealImGui</a>, unfortunately it stopped support at Unreal 4.26, but if you look at the forks there's a lot of them that supports Unreal &gt;5.0 ! Here's two I can vouch for :</p>
+<ul>
+<li>IDI-Systems seems to be the most up to date : <a href="https://github.com/IDI-Systems/UnrealImGui">https://github.com/IDI-Systems/UnrealImGui</a></li>
+<li>BenUI : <a href="https://github.com/benui-dev/UnrealImGui">https://github.com/benui/UnrealImGui</a></li>
+</ul>
 <p>Clone the repo in your Plugins folder, then you'll need to go to your .uplugin and add the following under <code>"Plugins": [</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ImGui&quot;</span><span class="p">,</span>
@@ -199,7 +203,7 @@ table tbody td:last-child {
 <p><img alt="Our window full of EVEN MORE CONTENT" class="center" src="/images/UnrealImGui/window-with-camera-position.png"></p>
 <p>Alright ! At this point I think it's good to talk about the Demo !</p>
 <h1>Bringing up the Demo</h1>
-<p>ImGui comes with a full demo of all its features, very easy to search, very easy to copy code from. You'll find its code in <a href="https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp">imgui_demo.cpp</a>, and to show it you just have to call <code>ImGui::ShowDemo( bOpenDemo )</code> ! What's that <code>bOpenDemo</code> you say ? Well it's part of a very common technique to easily spin up ImGui windows without too much fuss that relies on local static variables to persist states :)</p>
+<p>ImGui comes with a full demo of all its features, very easy to search, very easy to copy code from. You'll find its code in <a href="https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp">imgui_demo.cpp</a>, and to show it you just have to call <code>ImGui::ShowDemo( &amp;bOpenDemo )</code> ! What's that <code>bOpenDemo</code> you say ? Well it's part of a very common technique to easily spin up ImGui windows without too much fuss that relies on local static variables to persist states :)</p>
 <p>A fundamental philosophy of ImGui is that you provide all the external parameters of a widget directly at the callsite, this allows us to construct fairly complex UIs with no setup code (we don't retain any information about the widget state), and as a result we need to do fairly little book keeping to make the widgets behave like we want.</p>
 <p>Here the <code>ShowDemo</code> function is expecting a boolean (that it might modify, hence the ptr), that will tell it if it's open or not. We have to store this boolean on our side, you can do it any way you like (member variable, global variable, local static), but I'll show you a way that makes sense for quick prototypes.</p>
 <p>Paste the following code outside of your hello world window (make sure you're before the <code>Begin</code>, or past the <code>End</code> !) :</p>
@@ -432,9 +436,11 @@ table tbody td:last-child {
 <p>In this article, I've <em>tried</em> to refer to the lib as DearImGui most of the time. If you look online, the term ImGui kinda became ubiquitous with this lib (for good reasons), but ImGui actually refers to Immediate GUI, which is a UI API paradigm opposed to Retained UI.</p>
 <p>Retained UI would be your more standard UI library, like UMG/Slate, Windows Form, Qt. The main characteristic is that the UI data book keeping responsability is put in the hand of the user of the library. You have to instantiate stuff (with SNew calls, or NewObject), keep pointers around, check internal states for response...  This generally results in very bloated code to describe a UI presentation, and a lot of caching issues.</p>
 <p>Opposed to that, Immediate UI posits that you should just be able to describe the UI layout and widgets as a part of the program, and the backend should take care of all the state retention. (<a href="https://github.com/ocornut/imgui/wiki/About-the-IMGUI-paradigm">read this for more information</a>)</p>
-<p>Now DearImGui as a library embodies those concepts ! But there's other libs that are worth taking a look :
- - <a href="https://github.com/vurtun/nuklear">Nuklear</a>
- - <a href="https://github.com/rxi/microui">microui</a></p>
+<p>Now DearImGui as a library embodies those concepts ! But there's other libs that are worth taking a look :</p>
+<ul>
+<li><a href="https://github.com/vurtun/nuklear">Nuklear</a></li>
+<li><a href="https://github.com/rxi/microui">microui</a></li>
+</ul>
 <p>There's also ways to write retained UI in an immediate mode kind of API, I think it's important to understand the core concepts to simplify how we might write UI backend code in the future !</p>
 <p><tag id="toggle-demo-window-code"></tag></p>
 <h2>Toggle Demo window code</h2>
