@@ -54,8 +54,8 @@ void UDevGuiSubsystem::ActorDebugger(bool& bActorDebuggerOpened)
 					| ECC_TO_BITFIELD(ECC_PhysicsBody));
 				
 				PickedActor = nullptr;
-				if(FHitResult OutHit;
-					World->LineTraceSingleByObjectType(
+				FHitResult OutHit;
+				if(World->LineTraceSingleByObjectType(
 						OutHit,
 						WorldPosition + WorldDirection * 100.0,
 						WorldPosition + WorldDirection * 10000.0,

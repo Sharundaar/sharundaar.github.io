@@ -271,8 +271,8 @@ table tbody td:last-child {
 <span class="w">            </span><span class="p">);</span>
 
 <span class="w">            </span><span class="n">PickedActor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="c1">// &lt;-- Reset the actor</span>
-<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">FHitResult</span><span class="w"> </span><span class="n">OutHit</span><span class="p">;</span>
-<span class="w">                </span><span class="n">World</span><span class="o">-&gt;</span><span class="n">LineTraceSingleByObjectType</span><span class="p">(</span><span class="w"> </span><span class="c1">// &lt;-- Actually doing the trace</span>
+<span class="w">            </span><span class="n">FHitResult</span><span class="w"> </span><span class="n">OutHit</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">World</span><span class="o">-&gt;</span><span class="n">LineTraceSingleByObjectType</span><span class="p">(</span><span class="w"> </span><span class="c1">// &lt;-- Actually doing the trace</span>
 <span class="w">                    </span><span class="n">OutHit</span><span class="p">,</span>
 <span class="w">                    </span><span class="n">WorldPosition</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">WorldDirection</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span>
 <span class="w">                    </span><span class="n">WorldPosition</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">WorldDirection</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">,</span>
@@ -428,8 +428,8 @@ table tbody td:last-child {
 <p>Hopefully you can see how easy and quick we can now develop visualization and debugging tool ! In everything we've written the actual UI code comprised very little, and that's one of the biggest strength of DearImGui, it doesn't get in the way ! From there don't hesitate to just read <a href="https://github.com/ocornut/imgui/blob/master/imgui.h">imgui.h</a> and spend time getting familiar with the imgui demo. You'll find a lot of interesting and useful widgets are available 😊</p>
 <p>You can find the complete code we've written here : </p>
 <ul>
-<li><a href="/code/DevGuiSubsystem.cpp">Implementation</a></li>
-<li><a href="/code/DevGuiSubsystem.h">Header</a></li>
+<li><a href="/code/DevGuiSubsystem.cpp">DevGuiSubsystem.cpp</a></li>
+<li><a href="/code/DevGuiSubsystem.h">DevGuiSubsystem.h</a></li>
 </ul>
 <h1>Annexe</h1>
 <h2>DearImGui or ImGui</h2>
