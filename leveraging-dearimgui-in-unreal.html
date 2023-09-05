@@ -245,7 +245,7 @@ table tbody td:last-child {
 <p>From there, we want to fill up <code>PickedActor</code> ! Next part is only Unreal code (well.. almost, I left a surprise at the end) :</p>
 <div class="highlight"><pre><span></span><code><span class="n">UWorld</span><span class="o">*</span><span class="w"> </span><span class="n">World</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GEngine</span><span class="o">-&gt;</span><span class="n">GetWorldFromContextObject</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">EGetWorldErrorMode</span><span class="o">::</span><span class="n">LogAndReturnNull</span><span class="p">);</span>
 <span class="n">ULocalPlayer</span><span class="o">*</span><span class="w"> </span><span class="n">LP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">World</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">World</span><span class="o">-&gt;</span><span class="n">GetFirstLocalPlayerFromController</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
-<span class="k">if</span><span class="p">(</span><span class="n">bPickingActor</span><span class="p">)</span>
+<span class="k">if</span><span class="p">(</span><span class="n">bIsPickingActor</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">LP</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">LP</span><span class="o">-&gt;</span><span class="n">ViewportClient</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
@@ -282,12 +282,12 @@ table tbody td:last-child {
 <span class="w">                </span><span class="n">PickedActor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OutHit</span><span class="p">.</span><span class="n">GetActor</span><span class="p">();</span><span class="w"> </span><span class="c1">// &lt;-- Set on hit !</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="o">/</span>
 
 <span class="w">    </span><span class="c1">// Exiting Actor Picking mode if we click the Left button !</span>
 <span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">ImGui</span><span class="o">::</span><span class="n">IsMouseClicked</span><span class="p">(</span><span class="n">ImGuiMouseButton_Left</span><span class="p">))</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">bPickingActor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">        </span><span class="n">bIsPickingActor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>

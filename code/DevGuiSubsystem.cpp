@@ -12,8 +12,9 @@ UE_DISABLE_OPTIMIZATION
 
 void UDevGuiSubsystem::ActorDebugger(bool& bActorDebuggerOpened)
 {
-	static bool bPickingActor;
-	static TWeakObjectPtr<AActor> PickedActor;
+	static bool bIsPickingActor = false;
+	static TWeakObjectPtr<AActor> PickedActor = nullptr;
+
 	if(!bActorDebuggerOpened)
 	{
 		return;
@@ -21,14 +22,14 @@ void UDevGuiSubsystem::ActorDebugger(bool& bActorDebuggerOpened)
 	
 	ImGui::Begin("Actor Debugger");
 
-	if(ImGui::Button(bPickingActor ? "Stop Picking" : "Start Picking"))
+	if(ImGui::Button(bIsPickingActor ? "Stop Picking" : "Start Picking"))
 	{
-		bPickingActor = !bPickingActor;
+		bIsPickingActor = !bIsPickingActor;
 	}
 
 	UWorld* World = GEngine->GetWorldFromContextObject(this, EGetWorldErrorMode::LogAndReturnNull);
 	ULocalPlayer* LP = World ? World->GetFirstLocalPlayerFromController() : nullptr;
-	if(bPickingActor)
+	if(bIsPickingActor)
 	{
 		if (LP && LP->ViewportClient)
 		{
@@ -68,7 +69,7 @@ void UDevGuiSubsystem::ActorDebugger(bool& bActorDebuggerOpened)
 
 		if(ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 		{
-			bPickingActor = false;
+			bIsPickingActor = false;
 		}
 	}
 
