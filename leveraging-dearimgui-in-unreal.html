@@ -316,7 +316,7 @@ table tbody td:last-child {
 <p>The ImGui widgets we'll need are <code>ImGui::CollapsingHeader</code>, <code>ImGui::Button</code>, <code>ImGui::Text</code>. We'll also need to use 2 helpers for a reason I'll explain later : <code>ImGui::PushID</code>, and <code>ImGui::PopID</code>.</p>
 <p>Let's do it.</p>
 <p>We'll want to display the component name in the collapsing header, to do so we'll use <code>Mesh-&gt;GetName()</code>, sadly you'll notice that this function returns an <code>FString</code> which, at least on Windows, are encoded as UTF16 strings. Meaning you'll get some 16 bits <code>TCHAR*</code> instead of the standard 8 bits <code>char*</code> that ImGui expects. Luckily there's a straightforward conversion scheme that allows us to go from one to the other :)  </p>
-<div class="highlight"><pre><span></span><code><span class="c1">// This is you plan to reuse the name</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// We&#39;re planning on reusing the name, so let&#39;s store the cast result.</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">NameANSI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StringCast</span><span class="o">&lt;</span><span class="n">ANSICHAR</span><span class="o">&gt;</span><span class="p">(</span><span class="o">*</span><span class="n">Mesh</span><span class="o">-&gt;</span><span class="n">GetName</span><span class="p">());</span>
 <span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NameANSI</span><span class="p">.</span><span class="n">Get</span><span class="p">();</span>
 
@@ -386,7 +386,9 @@ table tbody td:last-child {
 <p>We have a debugger, the demo window, a little hello world. As you start developing more tools you might wonder: How to organize everything ? Enter the Main Menu Bar.</p>
 <p>It's a simple tool bar DearImGui proposes that shows at the top of the screen. You can push buttons, text, sub-menus... anything really, to that menu bar. So let's set that up !</p>
 <p>At the end of your Tick function, write the following :</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// Only show the bars if we have ImGui inputs enabled</span>
+<div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="n">bActorDebuggerOpened</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="c1">// @TODO: Use this to control the actor debugger visibility !</span>
+
+<span class="c1">// Only show the bars if we have ImGui inputs enabled</span>
 <span class="k">if</span><span class="p">(</span><span class="n">FImGuiModule</span><span class="o">::</span><span class="n">Get</span><span class="p">().</span><span class="n">GetProperties</span><span class="p">().</span><span class="n">IsInputEnabled</span><span class="p">())</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">ImGui</span><span class="o">::</span><span class="n">BeginMainMenuBar</span><span class="p">())</span>
