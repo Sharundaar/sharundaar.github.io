@@ -203,14 +203,14 @@ table tbody td:last-child {
 <p><img alt="Our window full of EVEN MORE CONTENT" class="center" src="/images/UnrealImGui/window-with-camera-position.png"></p>
 <p>Alright ! At this point I think it's good to talk about the Demo !</p>
 <h1>Bringing up the Demo</h1>
-<p>ImGui comes with a full demo of all its features, very easy to search, very easy to copy code from. You'll find its code in <a href="https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp">imgui_demo.cpp</a>, and to show it you just have to call <code>ImGui::ShowDemo( &amp;bOpenDemo )</code> ! What's that <code>bOpenDemo</code> you say ? Well it's part of a very common technique to easily spin up ImGui windows without too much fuss that relies on local static variables to persist states :)</p>
+<p>ImGui comes with a full demo of all its features, very easy to search, very easy to copy code from. You'll find its code in <a href="https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp">imgui_demo.cpp</a>, and to show it you just have to call <code>ImGui::ShowDemoWindow( &amp;bOpenDemo )</code> ! What's that <code>bOpenDemo</code> you say ? Well it's part of a very common technique to easily spin up ImGui windows without too much fuss that relies on local static variables to persist states :)</p>
 <p>A fundamental philosophy of ImGui is that you provide all the external parameters of a widget directly at the callsite, this allows us to construct fairly complex UIs with no setup code (we don't retain any information about the widget state), and as a result we need to do fairly little book keeping to make the widgets behave like we want.</p>
-<p>Here the <code>ShowDemo</code> function is expecting a boolean (that it might modify, hence the ptr), that will tell it if it's open or not. We have to store this boolean on our side, you can do it any way you like (member variable, global variable, local static), but I'll show you a way that makes sense for quick prototypes.</p>
+<p>Here the <code>ShowDemoWindow</code> function is expecting a boolean (that it might modify, hence the ptr), that will tell it if it's open or not. We have to store this boolean on our side, you can do it any way you like (member variable, global variable, local static), but I'll show you a way that makes sense for quick prototypes.</p>
 <p>Paste the following code outside of your hello world window (make sure you're before the <code>Begin</code>, or past the <code>End</code> !) :</p>
 <div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">bShowDemo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
 <span class="k">if</span><span class="p">(</span><span class="n">bShowDemo</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">ImGui</span><span class="o">::</span><span class="n">ShowDemo</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bShowDemo</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ImGui</span><span class="o">::</span><span class="n">ShowDemoWindow</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bShowDemo</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 
