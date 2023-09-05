@@ -406,7 +406,7 @@ table tbody td:last-child {
 <span class="w">        </span><span class="n">ImGui</span><span class="o">::</span><span class="n">EndMainMenuBar</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">ImGui</span><span class="o">::</span><span class="n">BeginMainMenuBar</span><span class="p">())</span><span class="w"> </span><span class="c1">// BeginMainMenuBar calls actually appends to the menu ! So you set it up in multiple chunks</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">ImGui</span><span class="o">::</span><span class="n">BeginMainMenuBar</span><span class="p">())</span><span class="w"> </span><span class="c1">// BeginMainMenuBar calls append to the bar ! So we can set it up in multiple chunks</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">ImGui</span><span class="o">::</span><span class="n">BeginMenu</span><span class="p">(</span><span class="s">&quot;ImGui Misc&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">// Creating a sub-menu</span>
 <span class="w">        </span><span class="p">{</span>
