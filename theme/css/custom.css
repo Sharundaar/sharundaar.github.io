@@ -33,3 +33,7 @@ h2 {
 	font-size: 1.3em;
 	border-bottom: var(--headingBorderBottomWidth) var(--headingBorderBottomStyle) lightcoral;
 }
+
+pre code {
+	white-space: pre;
+}
