@@ -89,16 +89,15 @@
 <p><img alt="Figma design authored in 720p" src="/images/UnravelingDPIMysteries/figma-design-720p.png"></p>
 <p>This UI has been authored in 720p (or a resolution of 1280x720), this will help me demonstrate a point later 🙈 But usually you'd probably author in 1080p since that's the most common screen size.</p>
 <p>Anyways ! That's our target look, we can go and do the most naïve implementation in unreal, which, and don't yell at me, involves a canvas, a vertical box, and a couple of leaf widgets :</p>
-<p><img alt="Ported figma design to UMG" src="/images/UnravelingDPIMysteries/design-in-umg.png">
-<a href="..%2Fdeploy.bat">deploy.bat</a>
-Let's spawn it at runtime and see what it looks like !
-<img alt="Live design in-game" src="/images/UnravelingDPIMysteries/design-in-game.png">
-Perfect 😄 Exactly as expected ! I didn't go as far as copying the exact font but you get the idea. What's important is that we have the expected layout, and if we go and measure the space between the various elements we'll find them to be the same as the Figma design (～￣▽￣)～</p>
+<p><img alt="Ported figma design to UMG" src="/images/UnravelingDPIMysteries/design-in-umg.png"></p>
+<p>Let's spawn it at runtime and see what it looks like !</p>
+<p><img alt="Live design in-game" src="/images/UnravelingDPIMysteries/design-in-game.png"></p>
+<p>Perfect 😄 Exactly as expected ! I didn't go as far as copying the exact font but you get the idea. What's important is that we have the expected layout, and if we go and measure the space between the various elements we'll find them to be the same as the Figma design (～￣▽￣)～</p>
 <p>Ok, we have a screen in 720p, but if we look at <a href="https://store.steampowered.com/hwsurvey/Steam-Hardware-Software-Survey-Welcome-to-Steam">the steam hardware survey</a>, most desktop users have a 1080p screen, so what happens if we just stretch our window to be that resolution ?</p>
-<p><img alt="Live design in-game stretched to 1080p" src="/images/UnravelingDPIMysteries/design-in-game-1080p.png">
-Uuh, that's wrong ? Maybe we've just been too naïve though, maybe our setup is just really bad, let's put some reasonable anchors at least...</p>
-<p><img alt="Live design in-game stretched to 1080p with correct canvas anchors" src="/images/UnravelingDPIMysteries/design-in-game-1080p-anchored.png">
-That's a bit better, but the space between the title and the list is pretty wack...  I can hear my designer's complaints already and QA filing weirdly specific bugs. So how do we solve this ?</p>
+<p><img alt="Live design in-game stretched to 1080p" src="/images/UnravelingDPIMysteries/design-in-game-1080p.png"></p>
+<p>Uuh, that's wrong ? Maybe we've just been too naïve though, maybe our setup is just really bad, let's put some reasonable anchors at least...</p>
+<p><img alt="Live design in-game stretched to 1080p with correct canvas anchors" src="/images/UnravelingDPIMysteries/design-in-game-1080p-anchored.png"></p>
+<p>That's a bit better, but the space between the title and the list is pretty wack...  I can hear my designer's complaints already and QA filing weirdly specific bugs. So how do we solve this ?</p>
 <p>Well we can start with the very simple observation that we don't actually need to support <em>all</em> arbitrary window size. In practice, most screen resolutions falls in, or are close to, a few very specific aspect ratios. Aspect ratio ? That's simply the ratio between the width and the height of your screen, or render area. If we look at the previous hardware survey and instead of sorting by pure resolution, we sort by aspect ratio, we can pull the following table :</p>
 <table>
 <thead>
