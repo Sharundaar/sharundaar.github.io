@@ -80,25 +80,24 @@
         <div class="span8 offset2 article-content">
             
             <h2>Introduction</h2>
-<p>True responsiveness in UI design is difficult to achieve. Building user interfaces that will correctly accommodate for a wide breadth of screen aspect ratios and sizes often requires a lot of work and forefront thinking that we can rarely afford. To help us there are a couple of techniques we can use that will automatically rescale the screen, and although they're not perfect, they're often good enough for most cases. In this article we're going to dig a bit into a specific solution to this problem and how it's implemented in Unreal (^_^)</p>
-<p>Strap in 'cause we're going to do some math.</p>
+<p>True responsiveness in UI design is difficult to achieve. Building interfaces that will correctly accommodate a wide breadth of screens aspect ratio and size, often requires a lot of work. To help us, there are a couple of techniques we can use that will automatically rescale the screen. Although they're not perfect, they're often good enough for most cases. In this article we're going to dig a bit into a specific solution to this problem and how it's implemented in Unreal (^_^)</p>
 <h2>The Problem</h2>
 <p>Ok, what does "responsiveness" involves exactly, let's try to build an example to demonstrate the problem.</p>
-<p>We're going to build a simple vertical menu such as you can find in older games, this menu would present basic options like start a new game, pick a save file, access the settings menu, quit... We're not interested in what the buttons do but more in the general layout :)</p>
+<p>We're going to build a simple vertical menu such as you can find in older games. This menu would present basic options like start a new game, pick a save file, and so on... We're not interested in what the buttons do but more in the general layout.</p>
 <p>Here's grossly the idea laid out in Figma :</p>
 <p><img alt="Figma design authored in 720p" src="/images/UnravelingDPIMysteries/figma-design-720p.png"></p>
-<p>This UI has been authored in 720p (or a resolution of 1280x720), this will help me demonstrate a point later 🙈 But usually you'd probably author in 1080p since that's the most common screen size.</p>
-<p>Anyways ! That's our target look, we can go and do the most naïve implementation in unreal, which, and don't yell at me, involves a canvas, a vertical box, and a couple of leaf widgets :</p>
+<p>This UI has been authored in 720p (or a resolution of 1280x720) (this will help me demonstrate a point later 🙈). But usually you'd probably author in 1080p since that's the most common screen size.</p>
+<p>In any case, That's our target look, we can go and do the most naïve implementation in unreal, which, and don't yell at me, involves a canvas, a vertical box, and a couple of leaf widgets :</p>
 <p><img alt="Ported figma design to UMG" src="/images/UnravelingDPIMysteries/design-in-umg.png"></p>
 <p>Let's spawn it at runtime and see what it looks like !</p>
 <p><img alt="Live design in-game" src="/images/UnravelingDPIMysteries/design-in-game.png"></p>
-<p>Perfect 😄 Exactly as expected ! I didn't go as far as copying the exact font but you get the idea. What's important is that we have the expected layout, and if we go and measure the space between the various elements we'll find them to be the same as the Figma design (～￣▽￣)～</p>
-<p>Ok, we have a screen in 720p, but if we look at <a href="https://store.steampowered.com/hwsurvey/Steam-Hardware-Software-Survey-Welcome-to-Steam">the steam hardware survey</a>, most desktop users have a 1080p screen, so what happens if we just stretch our window to be that resolution ?</p>
+<p>Perfect 😄 It appeared exactly as expected ! I didn't go as far as copying the exact font but you get the idea. What's important is that we have the expected layout, and if we go and measure the space between the various elements we'll find them to be the same as the Figma design (～￣▽￣)～</p>
+<p>Ok, we have a screen in 720p, but if we look at <a href="https://store.steampowered.com/hwsurvey/Steam-Hardware-Software-Survey-Welcome-to-Steam">the steam hardware survey</a>, most desktop users have a 1080p screen. So what happens if we just stretch our window to match that resolution ?</p>
 <p><img alt="Live design in-game stretched to 1080p" src="/images/UnravelingDPIMysteries/design-in-game-1080p.png"></p>
-<p>Uuh, that's wrong ? Maybe we've just been too naïve though, maybe our setup is just really bad, let's put some reasonable anchors at least...</p>
+<p>Uuh, that's wrong ? Maybe we've just been too naïve though, maybe our setup is just really bad. let's put some reasonable anchors at least...</p>
 <p><img alt="Live design in-game stretched to 1080p with correct canvas anchors" src="/images/UnravelingDPIMysteries/design-in-game-1080p-anchored.png"></p>
-<p>That's a bit better, but the space between the title and the list is pretty wack...  I can hear my designer's complaints already and QA filing weirdly specific bugs. So how do we solve this ?</p>
-<p>Well we can start with the very simple observation that we don't actually need to support <em>all</em> arbitrary window size. In practice, most screen resolutions falls in, or are close to, a few very specific aspect ratios. Aspect ratio ? That's simply the ratio between the width and the height of your screen, or render area. If we look at the previous hardware survey and instead of sorting by pure resolution, we sort by aspect ratio, we can pull the following table :</p>
+<p>That's a bit better, but the space between the title and the list is pretty wack...  I can hear my designer's complaints already, and QA filing weirdly specific bugs. So how do we solve this ?</p>
+<p>Well we can start with the very simple observation that we don't actually need to support <em>all</em> arbitrary sizes. In practice, most resolutions falls in, or are close to, a few very specific aspect ratios. Aspect ratio ? That's simply the ratio between the width and the height of your screen, or render area. If we look at the previous hardware survey and instead of sorting by pure resolution, we sort by aspect ratio, we can pull the following table:</p>
 <table>
 <thead>
 <tr>
@@ -141,13 +140,13 @@
 </tr>
 </tbody>
 </table>
-<p>This means that the vast majority of user's screen (85%) actually have the same 16:9 aspect ratio, if we add to that the 16:10 aspect ratio which is very similar, we reach a total of 93% of desktop users in this survey for whom, although their screen doesn't have the same <em>size</em>, they are <em>similar</em> and just a scaling factor away from each other !</p>
+<p>This means that the vast majority of user's (85%) actually have the same 16:9 aspect ratio. If we add to that the 16:10 aspect ratio which is very similar, we reach a total of 93% of desktop users. This means that 93% of users have <em>similar</em> screens that are just a scaling factor away from each other !</p>
 <p>Enter the notion of DPI （＾-＾）</p>
 <h2>What is DPI and can I eat it ?</h2>
 <p>Ok what the heck is DPI ? In theory it means Dots per Inch, in practice it's the kind of historically loaded word that have a slightly different meaning depending on context... In our case we'll look at how Windows interprets it first, I recommend taking a look at this page : <a href="https://learn.microsoft.com/en-us/windows/win32/learnwin32/dpi-and-device-independent-pixels">DPI and Device Independent Pixels</a></p>
-<p>To sum up, it's a bit of a mess due to historical hacks and decisions. DPI mean Dots per Inch, and in the windows world, Dots means Pixels, but not your screen pixel, a device independent pixel that windows defines such as 96 of those pixels makes one inch. Buut not your ruler inch ! What they call a "logical inch", which is conveniently circularly defined as being 96 device independent pixels :)</p>
-<p>Anyways, the point here is to allow the OS to have developers design in a unified unit system, then windows can perform a scaling operation to bring the interface to any arbitrary screen. It's kind of like designing some plans with a meter unit, and the giving them to someone who is then free to reproduce them at 1/16th scale, or 2x scale, or whatever scale they deem more appropriate to their current audience.</p>
-<p>Alright ! How does this translate in Slate ? Well Unreal is a well behaved application with regards to DPI <nobr>(～￣▽￣)～</nobr>, it is what we call <em>DPI Aware</em>. This means that whenever you actually draw a UI element with Slate, a scaling transform is applied that contains the current user's DPI setting. Let's look at some code :</p>
+<p>To sum up, it's a bit of a mess due to historical hacks and decisions. DPI mean Dots per Inch, and in the windows world, Dots means Pixels, but not your screen pixel, a device independent pixel. Windows defines those such that 96 of them makes one inch. Buut not your ruler inch ! What they call a "logical inch", which is circularly defined as being 96 device independent pixels, convenient...</p>
+<p>Anyways, the point here is to allow the OS to have developers design in a unified unit system, then windows can perform a scaling operation to bring the interface to any arbitrary screen. It's kind of like designing some plans with a meter unit, and then giving them to someone who is free to reproduce them at 1/16th scale, or 2x scale, or whatever scale they deem more appropriate to their current audience.</p>
+<p>Alright ! How does this looks like in Slate ? Well Unreal is a well behaved application with regards to DPI <nobr>(～￣▽￣)～</nobr>, it is what we call <em>DPI Aware</em>. This means that whenever you actually draw a UI element with Slate, a scaling transform is applied that contains the current user's DPI setting. Let's look at some code :</p>
 <div class="highlight"><pre><span></span><code><span class="n">int32</span><span class="w"> </span><span class="nf">SWindow::PaintWindow</span><span class="p">(</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">CurrentTime</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">DeltaTime</span><span class="p">,</span><span class="w"> </span><span class="n">FSlateWindowElementList</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OutDrawElements</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">FWidgetStyle</span><span class="o">&amp;</span><span class="w"> </span><span class="n">InWidgetStyle</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">bParentEnabled</span><span class="w"> </span><span class="p">)</span><span class="w">  </span>
 <span class="p">{</span><span class="w">  </span>
 <span class="w">    </span><span class="c1">// code ommited...</span>
@@ -163,11 +162,10 @@
 <span class="w">    </span><span class="c1">// code ommited...</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">MaxLayerIdPainted</span><span class="p">;</span><span class="w">  </span>
-
 <span class="p">}</span>
 </code></pre></div>
 
-<p>This is where Slate UI rendering starts, as a quick reminder Slate is a hierarchical UI library where things are drawn back to front, the highest level widget is the SWindow, and it recursively draws its content by calling <code>OnPaint</code>, here initiated by <code>PaintInvalidationRoot</code>. Each widget is being given a geometry into which they will accumulate their transform and pass that down to any child widget. Thus if you scale, rotate or translate a widget, it will be pushed to the geometry and sent down to children, who are going to inherit all those transformations.</p>
+<p>This function is where Slate UI rendering starts. As a quick reminder Slate is a hierarchical UI library where things are drawn back to front. The highest level widget is the SWindow, and it recursively draws its content by calling <code>OnPaint</code>, here initiated by <code>PaintInvalidationRoot</code>. Each widget is being given a geometry into which they will accumulate their transform and pass that down to any children. Thus if you scale, rotate or translate a widget, it will be pushed to the geometry and sent down the stack. The children will then inherit all those transformations.</p>
 <p>Let's look at <code>GetWindowGeometryInWindow()</code>  :</p>
 <div class="highlight"><pre><span></span><code><span class="n">FGeometry</span><span class="w"> </span><span class="nf">SWindow::GetWindowGeometryInWindow</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w">  </span>
 <span class="p">{</span><span class="w">  </span>
@@ -182,9 +180,9 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>So what this code does is simply apply a uniform scaling transform equal to whatever the OS gives us as a DPI scale factor modulated by an arbitrary application scale value (this allows the user to simply scale the application as they wish without having to modify their OS values)</p>
-<p>If we dig a <em>little</em> bit more on Windows, we'll find that this DPI factor comes from this function, calling into <a href="https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor">GetDpiForMonitor</a> :</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// functions are trimmed down ab it for simplicity</span>
+<p>What this code does is simply apply a uniform scaling transform equal to whatever the OS gives us as a DPI scale factor. Which is then modulated by an arbitrary application scale value. We won't care about this application scale, it's mainly a knob that unreal gives us to rescale the UI without changing OS settings.</p>
+<p>If we dig a <em>little</em> bit more, we'll find that this DPI factor comes from this function on Windows, using <a href="https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor">GetDpiForMonitor</a> :</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// code trimmed down for simplicity</span>
 <span class="kt">float</span><span class="w"> </span><span class="nf">FWindowsPlatformApplicationMisc::GetDPIScaleFactorAtPoint</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">Y</span><span class="p">)</span><span class="w">  </span>
 <span class="p">{</span><span class="w">  </span>
 <span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">Scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span><span class="w">  </span>
@@ -198,54 +196,64 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>And this event that SWindow reacts to, again edited for simplicity:</p>
-<div class="highlight"><pre><span></span><code><span class="k">case</span><span class="w"> </span><span class="no">WM_DPICHANGED</span><span class="p">:</span><span class="w">  </span>
+<p>And this event that SWindow reacts to:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// code trimmed down for simplicity</span>
+<span class="k">case</span><span class="w"> </span><span class="no">WM_DPICHANGED</span><span class="p">:</span><span class="w">  </span>
 <span class="w">    </span><span class="p">{</span><span class="w">  </span>
-<span class="w">       </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">CurrentNativeEventWindowPtr</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span><span class="w">  </span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">CurrentNativeEventWindowPtr</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span><span class="w">  </span>
 <span class="w">       </span><span class="p">{</span>
 <span class="w">           </span><span class="c1">// Historical 96DPI value appears here too !</span>
 <span class="w">           </span><span class="n">CurrentNativeEventWindowPtr</span><span class="o">-&gt;</span><span class="n">SetDPIScaleFactor</span><span class="p">(</span><span class="n">LOWORD</span><span class="p">(</span><span class="n">wParam</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">96.0f</span><span class="p">);</span>
 <span class="w">           </span><span class="n">LPRECT</span><span class="w"> </span><span class="n">NewRect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">LPRECT</span><span class="p">)</span><span class="n">lParam</span><span class="p">;</span>
 <span class="w">           </span><span class="n">SetWindowPos</span><span class="p">(</span><span class="n">hwnd</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">right</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">bottom</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">SWP_NOZORDER</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">SWP_NOACTIVATE</span><span class="p">);</span>
-<span class="w">        </span><span class="p">}</span>
+<span class="w">       </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
 </code></pre></div>
 
 <p>See the <a href="https://learn.microsoft.com/en-us/windows/win32/hidpi/wm-dpichanged">WM_DPICHANGED</a> event page for more detail, it's pretty interesting 😄</p>
 <h2>Getting Physical</h2>
-<p>Let's test this out ! We want to get a physical understanding of what changing the DPI does, to achieve this we'll be making an editor utility widget associated with some code that will grab a bunch of metrics out of the UI stack and display them on screen, I won't go through the code it's fairly boring boilerplate, <a href="https://github.com/Sharundaar/UECodeGolfing/blob/main/Source/UIMetrics.h">code available here</a>. We'll also use this material that draws a Checkerboard in pixel space, such that each square is 25 pixels :
+<p>Let's test this out ! We want to get a physical understanding of what changing the DPI does. To achieve this we'll be making an editor utility widget associated with some code that will grab a bunch of metrics out of the UI stack and display them on screen. I won't go through the code it's fairly boring boilerplate, <a href="https://github.com/Sharundaar/UECodeGolfing/blob/main/Source/UIMetrics.h">feel free to grab it here</a>. </p>
+<p>We'll also use this material that draws a Checkerboard in pixel space, such that each square is 25 pixels :
 <img alt="Material node showing a checkerboard-material" src="/images/UnravelingDPIMysteries/checkerboard-material.png"></p>
 <p>Finally we make this editor utility widget with a few text boxes and our material in the middle, the text above the image will help us track its absolute size, the text below will show its local size (which should be constant).
 <img alt="Editor Utility Widget" src="/images/UnravelingDPIMysteries/editor-utility-widget-15dpi.png"></p>
 <p>Here's the corresponding blueprint code for reference, nothing complicated, mostly formatting :</p>
-<iframe src="https://blueprintue.com/render/xah00_-1/" scrolling="no" allowfullscreen></iframe>
+<iframe src="https://blueprintue.com/render/xah00_-1/" width="100%" height="600px" scrolling="no" allowfullscreen></iframe>
 
 <p>So far so good. Now that we have all this, we can open the Editor Utility Widget ! The designer already spoiled us some insights, but let's watch in its own window without the noise <nobr>( •̀ ω •́ )✧</nobr></p>
 <p><img alt="Editor Utility Widget live window" src="/images/UnravelingDPIMysteries/editor-utility-widget-live.png"></p>
-<p>Awesome ! I've put this widget on a 2560x1440 screen, with an interface scaling of 100% (or 96 DPI, remember the last chapter !) and we can see that everything matches :D This is expected since we're checking our utility widget's geometry, and when they're added to an SWindow they'll take all available space, in the same way the image inside should be 100 pixel's wide :D</p>
-<p>Ok, now what happen if we go to the window OS settings and modify the user interface scaling, set it to 150% for example ?</p>
+<p>Awesome ! I've put this widget on a 2560x1440 screen, with an interface scaling of 100% (or 96 DPI, remember the last chapter !) and we can see that everything matches. </p>
+<p>Ok, now what happen if we go to the OS settings and modify the user interface scaling, set it to 150% for example ?</p>
 <p><img alt="Windows UI scaling setting" src="/images/UnravelingDPIMysteries/screen-scaling-windows-2.png"></p>
 <p>And boom ! Watch our utility widget automatically updates without us having to do anything more 😁</p>
 <p><img alt="Editor Utility Widget live window at 1.5 DPI" src="/images/UnravelingDPIMysteries/editor-utility-widget-live-1.5dpi.png"></p>
-<p>You'll notice that none of our local sizes have changed, from our editor utility widget local perspective, it's still 1274x682 (well, ± one pixel). And our image's local size is still 100. But the screen space values have all been multiplied by 1.5 ! Our window has been physically resized to 1920x1080, and our little checkboard widget visually grew 2 more squares on each side. Our square is still centered, our text is still snuggly on the top left and top right, and if you measure all spacing you'll see they've all grown by 150%. This hopefully demonstrates how Unreal uniformly scale everything from the middle of the window to respect the OS DPI setting 😊</p>
+<p>You'll notice that none of our local sizes have changed, from our editor utility widget local perspective, it's still 1274x682 (well, ± one pixel). And our image's local size is still 100 units. But the screen space values have all been multiplied by 1.5 ! Our window has been physically resized to 1920x1080, and our little checkerboard widget visually grew 2 more squares on each side. Our checkerboard is still centered, our text is still snugly on the top left and top right. If you measure all spacing you'll see they've all grown by 150%. This hopefully demonstrates how Unreal uniformly scales everything from the middle of the window to respect the OS DPI setting 😊</p>
 <p>Ok, let's circle back to our initial menu and in-game UI. As usual things are a <em>little</em> bit more complicated there, but don't worry, it's not by much 😄</p>
 <h2>Back in the Game</h2>
-<p>Where we left it off we had built out menu in 720p and were distraught when scaling it to 1080p altered a bunch of properties about the menu that we want to keep, like proportionality of different atoms and margins.</p>
+<p>Where we left it off we had built out menu in 720p. We were distraught, when scaling it to 1080p altered a bunch of properties about the menu that we wanted to keep, like proportionality of different elements and margins.</p>
 <p><img alt="Design in-game" src="/images/UnravelingDPIMysteries/design-in-game.png">
 <img alt="Design in-game at 1080p with proper anchors" src="/images/UnravelingDPIMysteries/design-in-game-1080p-anchored.png"></p>
-<p>So ! What can we do about this ? Weeell, I might have lied a little, or <em>disabled</em> some default features of unreal to guide ourselves towards what DPI is at the OS level. Because you see, if you tried to repro the menu I've shown (or at least an adapted version for 1080p), you would probably not have seen the same issue when scaling the window up or down. Or even worse, you might have been confused as to why you have a hard time reproing the 720p design look in the designer for a 720p window !</p>
-<p>And the reason for that is because Epic's people already thought and implemented an extension of that idea of DPI at the OS level, but pushed it at the rendered window level. Instead of using the OS DPI, it uses <em>some</em> heuristics (and we have a choice there) to compute a pseudo DPI for authoring, then it's able to compute a scaling factor taking the current window size, that heuristic, and the authored window size ! This is everything that falls under the "DPI Scaling" category of unreal's project settings.</p>
+<p>What can we do about this ? Weeell, I might have lied a little... I <em>disabled</em> some default features of unreal to guide ourselves towards what DPI is at the OS level. You see, if you tried to repro the menu I've shown, you would probably not have seen the same issue when scaling the window up or down. Or even worse, you might have had a hard time making the 720p design look hte same in the designer as in game.</p>
+<p>And the reason for that is because Epic's people already thought and implemented that idea of DPI at the OS level, but pushed it at the rendered window level. Instead of using the OS DPI, it uses <em>some</em> heuristics (and we have a choice here) to compute a pseudo DPI for authoring, then it's able to compute a scaling factor taking the current window size, that heuristic, and the authored window size ! This is everything that falls under the "DPI Scaling" category of Unreal's project settings.</p>
 <p><img alt="DPI scaling settings" src="/images/UnravelingDPIMysteries/dpi-scaling-settings.png"></p>
-<p>So as you can see, in my project I've set the DPI curve such as it returns 1 for all sizes, oopsie... Well let's fix that ! As I've said I've authored the design in 720p so it'll be my scale factor of 1 as a baseline, then 1080p is 1.5 times that, then we pick a max resolution of 8k so it scales linearly up to that, which is 12 times 720p, and finally we do the same down to a minimal resolution, 480p here. See the resulting curve :
-<img alt="DPI Curve setting" src="/images/UnravelingDPIMysteries/dpi-curve-setting.png">
-720p is our 1.0 scale point, and we want things to be more or less linear from there :)</p>
+<p>So as you can see, in my project I've set the DPI curve such as it returns 1 for all sizes, oopsie... Well let's fix that ! As I've said I've authored the design in 720p so it'll be my scale factor of 1 as a baseline. Then 1080p is 1.5 times that, then we pick a max resolution of 8k so it scales linearly, which is 12 times 720p. Finally we do the same for a minimal resolution, 480p here. See the resulting curve :
+<img alt="DPI Curve setting" src="/images/UnravelingDPIMysteries/dpi-curve-setting.png"></p>
+<p>720p is our 1.0 scale point, and we want things to be more or less linear from there :)</p>
 <p>Let's open our game in 1080p and see the result ! We'd expect it to be nicely scaled up by a factor of 1.5 :3
 <img alt="Design in-game with proper 1080p DPI settings" src="/images/UnravelingDPIMysteries/design-in-game-1080p-dpicorrect.png"></p>
-<p>And that's exactly what we get ! Perfect, now we have a very nice solution to automatically adapt our design to fit <em>most</em> screens resolutions, remember our initial numbers showed approx. 85% of users have close to a 16:9 screen ! Interestingly, with the "short side" heuristic and properly centering your menus as necessary, this solution also works for most wide screens setup, since they are usually born from 16:9 monitors "duplicated" horizontally, kinda like putting 2 1080p monitors side by side. Here's the same screen but simulating a typical wide screen monitor aspect ratio.
+<p>And that's what we get ! Perfect, now we have a very nice solution to automatically adapt our design to fit <em>most</em> screens resolutions, remember our initial numbers showed approximately 85% of users have close to a 16:9 screen. Interestingly, with the "short side" heuristic and proper anchoring, this solution also works for most wide screens setup. Wide screens are usually born from 16:9 monitors "duplicated" horizontally, kinda like putting 2 1080p monitors side by side. Here's the same screen but with a simulated wide screen monitor aspect ratio.
 <img alt="Design in-game in widescreen format" src="/images/UnravelingDPIMysteries/design-in-game-widescreen.png"></p>
-<p>Anyways, for a PC/Console game I usually just keep the default settings, but if you're developing for mobile in portrait mode for example you'll probably want to change those curves to adapt a bit better, although mobile is a whooole other can of worm...</p>
+<p>Anyways, for a PC and console games I usually just keep the default settings, but if you're developing for mobile in portrait mode for example you'll probably want to change those curves to adapt a bit better, although mobile is a whooole other can of worm...</p>
 <h2>Conclusion</h2>
-<p>I hope this venture into what is DPI (or what we should probably call PPI now...) was interesting and demystifies this part of the engine :) Hopefully it also taught a trick or two about debugging the UI. I recommend testing the metric visualization code in a bunch of situations and try to recompose what transformations happens to your widget which makes it go from those local metrics to the absolute/pixel metrics ! It can be satisfying to figure out the proper math behind these things, and really helpful in a pinch (we didn't need to do any projections here...)</p>
+<p>I hope this venture into what is DPI (or what we should probably call PPI now...) was interesting and demystifies this part of the engine :) </p>
+<p>Hopefully it also taught you a trick or two about debugging the UI. I recommend testing the metric visualization code in a bunch of situations and try to recompose what transformations happens which makes your widget go from local space to the pixel space metrics ! It can be satisfying to figure out the proper math behind these things, and really helpful in a pinch (we didn't need to do any projections here...)</p>
+<h2>Links</h2>
+<p>Links found in this article and a few more for easy access :
+ - https://en.wikipedia.org/wiki/Dots_per_inch
+ - https://learn.microsoft.com/en-us/windows/win32/learnwin32/dpi-and-device-independent-pixels
+ - https://learn.microsoft.com/en-us/windows/win32/hidpi/setting-the-default-dpi-awareness-for-a-process
+ - https://learn.microsoft.com/en-us/windows/win32/hidpi/wm-dpichanged
+ - https://github.com/Sharundaar/UECodeGolfing/blob/main/Source/UIMetrics.h</p>
 
 
              
