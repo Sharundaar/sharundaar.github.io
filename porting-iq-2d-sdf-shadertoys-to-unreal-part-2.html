@@ -1,91 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
-
-        <link rel="dns-prefetch" href="//fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-
-        <meta name="google-site-verification" content="aPh1Z9SmJnMXvicC_q1nEUrpRYuhDEhxV2A5kdSl8NE" />        <meta name="author" content="Sharundaar" />
-
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary">
-
-<meta name="keywords" content=", Articles, " />
-
-<meta property="og:title" content="Porting IQ 2D SDF Shadertoys to Unreal - Part 2 "/>
-<meta property="og:url" content="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html" />
-<meta property="og:description" content="Part 2 where we setup a nice environment to develop SDF functions" />
-<meta property="og:site_name" content="Sharundaar&#39;s Blog" />
-<meta property="og:article:author" content="Sharundaar" />
-<meta property="og:article:published_time" content="2022-04-29T00:00:00-04:00" />
-<meta name="twitter:title" content="Porting IQ 2D SDF Shadertoys to Unreal - Part 2 ">
-<meta name="twitter:description" content="Part 2 where we setup a nice environment to develop SDF functions">
-
-        <title>Porting IQ 2D SDF Shadertoys to Unreal - Part 2  · Sharundaar&#39;s Blog
-</title>
+  <head>
+        <title>Sharundaar's Blog - Porting IQ 2D SDF Shadertoys to Unreal - Part 2</title>
+      <meta charset="utf-8" />
+      <meta name="generator" content="Pelican" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+      <script src="./theme/scripts/dropdown.js" defer></script>
+      <script src="./theme/scripts/copy-to-clipboard.js" defer></script>
+      <link rel="stylesheet" type="text/css" href="./theme/css/style.css" />
+      <link rel="stylesheet" type="text/css" href="./theme/css/code-highlights.css" />
 
 
 
-<script async data-id="101425269" src="//static.getclicky.com/js"></script>
 
-    </head>
-    <body>
-        <div id="content">
-            <div class="navbar navbar-static-top">
-                <div class="navbar-inner">
-                    <div class="container-fluid">
-                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </a>
-                        <a class="brand" href="/"><span class=site-name>Sharundaar's Blog</span></a>
-                        <div class="nav-collapse collapse">
-                            <ul class="nav pull-right top-menu">
-                                <li >
-                                    <a href=
-                                       "/"
-                                    >Home</a>
-                                </li>
-                                <li ><a href="/categories.html">Categories</a></li>
-                                <li ><a href="/tags.html">Tags</a></li>
-                                <li ><a href="/archives.html">Archives</a></li>
-                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-fluid">
-                <div class="row-fluid">
-                    <div class="span1"></div>
-                    <div class="span10">
-<article itemscope>
-<div class="row-fluid">
-    <header class="page-header span10 offset2">
-        <h1>
-            <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html">
-                Porting IQ 2D SDF Shadertoys to Unreal - Part 2
-            </a>
-        </h1>
-    </header>
+
+  </head>
+
+  <body class="bg-dark d-flex mb-4">
+    <aside class="sh-offcanvas sh-offcanvas-start d-lg-block me-4 bg-dark flex-shrink-0" tabindex="-1" id="offcanvas-sidebar" aria-labelledby="sidebarLabel">
+      <div class="sticky-top ms-4">
+        <div>
+            <hgroup class="d-inline-flex align-items-center">
+                <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="./theme/images/tony-slurp.jpg">
+                <h1 class="flex-shrink-1">Sharundaar</h1>
+            </hgroup>
+            <div class="d-flex justify-content-between">
+            <div>
+<a class="social-link" href=".">
+<svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="24px" height="24px" viewBox="0 0 495.398 495.398"
+    xml:space="preserve">
+<g><g><g>
+    <path d="M487.083,225.514l-75.08-75.08V63.704c0-15.682-12.708-28.391-28.413-28.391c-15.669,0-28.377,12.709-28.377,28.391
+        v29.941L299.31,37.74c-27.639-27.624-75.694-27.575-103.27,0.05L8.312,225.514c-11.082,11.104-11.082,29.071,0,40.158
+        c11.087,11.101,29.089,11.101,40.172,0l187.71-187.729c6.115-6.083,16.893-6.083,22.976-0.018l187.742,187.747
+        c5.567,5.551,12.825,8.312,20.081,8.312c7.271,0,14.541-2.764,20.091-8.312C498.17,254.586,498.17,236.619,487.083,225.514z"/>
+    <path d="M257.561,131.836c-5.454-5.451-14.285-5.451-19.723,0L72.712,296.913c-2.607,2.606-4.085,6.164-4.085,9.877v120.401
+        c0,28.253,22.908,51.16,51.16,51.16h81.754v-126.61h92.299v126.61h81.755c28.251,0,51.159-22.907,51.159-51.159V306.79
+        c0-3.713-1.465-7.271-4.085-9.877L257.561,131.836z"/>
+    </g></g></g>
+</svg>
+</a>            </div>
+            <div class="m-0">
+<div id="sidebar-social-link" class="d-flex">
+    <a class="social-link" href="https://bsky.app/profile/sharundaar.bsky.social" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z" style="fill:#fff;"/><clipPath id="_clip1"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z"/></clipPath><g clip-path="url(#_clip1)"><path d="M12,11.006c-0.9,-1.75 -3.35,-5.012 -5.628,-6.62c-2.183,-1.54 -3.015,-1.274 -3.561,-1.026c-0.631,0.284 -0.747,1.254 -0.747,1.824c0,0.571 0.313,4.678 0.517,5.364c0.675,2.266 3.074,3.031 5.285,2.785c0.113,-0.016 0.228,-0.032 0.344,-0.046c-0.115,0.018 -0.229,0.033 -0.344,0.046c-3.239,0.481 -6.116,1.661 -2.343,5.861c4.15,4.297 5.688,-0.922 6.477,-3.567c0.789,2.645 1.697,7.676 6.403,3.567c3.533,-3.567 0.97,-5.38 -2.269,-5.861c-0.115,-0.012 -0.229,-0.028 -0.344,-0.046c0.116,0.014 0.231,0.03 0.344,0.046c2.211,0.246 4.61,-0.519 5.285,-2.785c0.204,-0.685 0.517,-4.794 0.517,-5.363c-0,-0.572 -0.116,-1.541 -0.747,-1.827c-0.546,-0.247 -1.378,-0.513 -3.561,1.027c-2.278,1.61 -4.728,4.872 -5.628,6.621Z" style="fill:#3088d4;fill-rule:nonzero;"/></g></svg>
+    </a>
+    <a class="social-link" href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a class="social-link" href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
 </div>
-
-<div class="row-fluid">
-        <div class="span8 offset2 article-content">
-            
-            <p>As a quick refresher, we're working on reproducing the 2D signed distance field described on <a href="https://iquilezles.org/articles/distfunctions2d/">Inigo Quilez's blog</a>, we've got <a href="porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">our circle</a>, and now we're gonna inject some colors in there !</p>
-<h1>The Target</h1>
+            </div>
+            </div>
+        </div>
+        <nav>
+            <ul class="list-unstyled ps-0 pt-4">
+  <li class="mb-1">
+    <div id="toc"><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#the-target" title="The Target">The Target</a><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#PickCol" title=""></a></li></ul></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#picking-a-color_1" title="Picking a color">Picking a color</a><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#color-nodes" title="Color nodes">Color nodes</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#comparison-and-branch" title="Comparison and Branch">Comparison and Branch</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#slight-stop-at-the-reroute" title="Slight Stop at the Reroute">Slight Stop at the Reroute</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#plug-everything-together" title="Plug everything together">Plug everything together</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#DarkenCol" title=""></a></li></ul></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#create-the-shadow_1" title="Create the Shadow">Create the Shadow</a><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#absolute" title="Absolute">Absolute</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#exponential" title="Exponential">Exponential</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#WavyPattern" title=""></a></li></ul></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#generate-the-wavy-pattern_1" title="Generate the Wavy Pattern">Generate the Wavy Pattern</a><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#GenOutline" title=""></a></li></ul></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#strongify-the-outline_1" title="Strongify the Outline">Strongify the Outline</a><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#smoothstep" title="Smoothstep">Smoothstep</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#mix" title="Mix">Mix</a></li></ul></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#wiring-everything-together_1" title="Wiring everything together">Wiring everything together</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#wrapping-up" title="Wrapping up">Wrapping up</a></li></ul></div>
+  </div>
+            </ul>
+        </nav>
+        </div>
+    </aside>
+    <main class="container overflow-auto">
+      <div class="d-lg-none">
+      <div class="d-flex justify-content-between align-items-center">
+        <hgroup class="d-inline-flex align-items-center">
+        <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="./theme/images/tony-slurp.jpg">
+        <h1 class="flex-shrink-1">Sharundaar</h1>
+        </hgroup>
+        <button class="btn btn-dark d-lg-none m-2 d-flex align-items-center justify-content-center" 
+        type="button" 
+        data-bs-toggle="offcanvas" 
+        data-bs-target="#offcanvas-sidebar" 
+        aria-controls="offcanvas-sidebar">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="d-flex justify-content-between">
+        <div>
+<a class="social-link" href=".">
+<svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="24px" height="24px" viewBox="0 0 495.398 495.398"
+    xml:space="preserve">
+<g><g><g>
+    <path d="M487.083,225.514l-75.08-75.08V63.704c0-15.682-12.708-28.391-28.413-28.391c-15.669,0-28.377,12.709-28.377,28.391
+        v29.941L299.31,37.74c-27.639-27.624-75.694-27.575-103.27,0.05L8.312,225.514c-11.082,11.104-11.082,29.071,0,40.158
+        c11.087,11.101,29.089,11.101,40.172,0l187.71-187.729c6.115-6.083,16.893-6.083,22.976-0.018l187.742,187.747
+        c5.567,5.551,12.825,8.312,20.081,8.312c7.271,0,14.541-2.764,20.091-8.312C498.17,254.586,498.17,236.619,487.083,225.514z"/>
+    <path d="M257.561,131.836c-5.454-5.451-14.285-5.451-19.723,0L72.712,296.913c-2.607,2.606-4.085,6.164-4.085,9.877v120.401
+        c0,28.253,22.908,51.16,51.16,51.16h81.754v-126.61h92.299v126.61h81.755c28.251,0,51.159-22.907,51.159-51.159V306.79
+        c0-3.713-1.465-7.271-4.085-9.877L257.561,131.836z"/>
+    </g></g></g>
+</svg>
+</a>        </div>
+        <div class="m-0">
+<div id="sidebar-social-link" class="d-flex">
+    <a class="social-link" href="https://bsky.app/profile/sharundaar.bsky.social" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z" style="fill:#fff;"/><clipPath id="_clip1"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z"/></clipPath><g clip-path="url(#_clip1)"><path d="M12,11.006c-0.9,-1.75 -3.35,-5.012 -5.628,-6.62c-2.183,-1.54 -3.015,-1.274 -3.561,-1.026c-0.631,0.284 -0.747,1.254 -0.747,1.824c0,0.571 0.313,4.678 0.517,5.364c0.675,2.266 3.074,3.031 5.285,2.785c0.113,-0.016 0.228,-0.032 0.344,-0.046c-0.115,0.018 -0.229,0.033 -0.344,0.046c-3.239,0.481 -6.116,1.661 -2.343,5.861c4.15,4.297 5.688,-0.922 6.477,-3.567c0.789,2.645 1.697,7.676 6.403,3.567c3.533,-3.567 0.97,-5.38 -2.269,-5.861c-0.115,-0.012 -0.229,-0.028 -0.344,-0.046c0.116,0.014 0.231,0.03 0.344,0.046c2.211,0.246 4.61,-0.519 5.285,-2.785c0.204,-0.685 0.517,-4.794 0.517,-5.363c-0,-0.572 -0.116,-1.541 -0.747,-1.827c-0.546,-0.247 -1.378,-0.513 -3.561,1.027c-2.278,1.61 -4.728,4.872 -5.628,6.621Z" style="fill:#3088d4;fill-rule:nonzero;"/></g></svg>
+    </a>
+    <a class="social-link" href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a class="social-link" href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
+</div>
+        </div>
+      </div>
+      </div>
+  <article class="mb-4 mt-4">
+    <header class="mb-4">
+      <h1 class="mb-0">
+        <a href="./porting-iq-2d-sdf-shadertoys-to-unreal-part-2.html" rel="bookmark"
+           title="Permalink to Porting IQ 2D SDF Shadertoys to Unreal - Part 2">
+           Porting IQ 2D SDF Shadertoys to Unreal - Part 2
+        </a>
+      </h1>
+      <time datetime="2022-04-29T00:00:00-04:00">29 Apr 2022</time>
+      
+    </header>
+    <div data-bs-spy="scroll" data-bs-target="#toc">
+    <p>As a quick refresher, we're working on reproducing the 2D signed distance field described on <a href="https://iquilezles.org/articles/distfunctions2d/">Inigo Quilez's blog</a>, we've got <a href="porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html">our circle</a>, and now we're gonna inject some colors in there !</p>
+<h1 id="the-target">The Target</h1>
 <p>The goal this time is to reproduce the overall look of IQ's shadertoy's that demos the 2D SDF functions.</p>
-<p><img alt="Expected result" class="center" src="/images/2DSDF/iq-expected-result.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Expected result" class="img-fluid" src="./images/2DSDF/iq-expected-result.png" title="Expected result"/></p>
+</p>
 <p>You can go check the shadertoy <a href="https://www.shadertoy.com/view/3ltSW2">here</a> but we're gonna go over the important lines.</p>
 <p>Here's the commented code we're going to port, I've removed the mouse related stuff as it's out of scope :</p>
-<div class="highlight"><pre><span></span><code>void mainImage( out vec4 fragColor, in vec2 fragCoord )
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code>void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 p = (2.0*fragCoord-iResolution.xy)/iResolution.y; // our pixel position on screen
 
@@ -99,289 +163,173 @@
 
     fragColor = vec4(col,1.0);
 }
-</code></pre></div>
-
+</code></pre></div></td></tr></table></div>
 <p>As you might see there's 3 big parts to the shader:</p>
 <ul>
-<li>Computing p: transforming from the quad [0, 1] coordinates to the circle local coordinates<p></li>
-<li>Evaluating d: in our case we're just evaluating the circle SDF function<p></li>
-<li>Determining col: this is the color computation we're interested about today<p></li>
+<li>Computing p: transforming from the quad [0, 1] coordinates to the circle local coordinates<p></p></li>
+<li>Evaluating d: in our case we're just evaluating the circle SDF function<p></p></li>
+<li>Determining col: this is the color computation we're interested about today<p></p></li>
 </ul>
 <p>Following the previous part you should already have p and d computed, so now we only have to port the color code, it's split into 4 parts that renders that particular look :</p>
 <p><a href="#PickCol">[1]</a> Picking a color depending if we're inside or outside the shape<p>
- <a href="#DarkenCol">[2]</a> Darken that color if we're near the outline<p>
- <a href="#WavyPattern">[3]</a> Generate the wavy pattern centered on the SDF<p>
- <a href="#GenOutline">[4]</a> Add a thin white outline where the SDF goes from positive to negative</p>
+<a href="#DarkenCol">[2]</a> Darken that color if we're near the outline<p>
+<a href="#WavyPattern">[3]</a> Generate the wavy pattern centered on the SDF<p>
+<a href="#GenOutline">[4]</a> Add a thin white outline where the SDF goes from positive to negative</p>
 <p>Let's tackle those one by one.</p>
 <h2 id="PickCol"></h2>
-
-<h1>Picking a color</h1>
+<h1 id="picking-a-color_1">Picking a color</h1>
 <p>The color pick code is very simple, if d is positive we're outside and pick one color, if it's negative we're inside and pick the other color.</p>
 <p><code>vec3 col = (d&gt;0.0) ? vec3(0.9,0.6,0.3) : vec3(0.65,0.85,1.0); // inside and outside colors</code></p>
 <p>So we need 4 nodes here :</p>
 <ul>
-<li>2 colors or vec3<p></li>
-<li>A way to compare the distance field with a number<p></li>
-<li>A way to pick between our 2 colors depending on our condition<p></li>
+<li>2 colors or vec3<p></p></li>
+<li>A way to compare the distance field with a number<p></p></li>
+<li>A way to pick between our 2 colors depending on our condition<p></p></li>
 </ul>
-<h2>Color nodes</h2>
+<div class="section" id="color-nodes">
+<h2 id="color-nodes">Color nodes</h2>
 <p>The 2 colors are straightforward, we can do as before by using a <a href="https://docs.unrealengine.com/5.0/en-US/constant-material-expressions-in-unreal-engine/#constant3vector">Constant3Vector</a> but I think it would be nice if we could edit this value from outside the shader, so let's go with a <a href="https://docs.unrealengine.com/5.0/en-US/material-parameter-expressions-in-unreal-engine/#vectorparameter">VectorParameter</a> !</p>
-<p><img alt="Parameter Node Inside" class="center" src="/images/2DSDF/parameter-node-inside.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Parameter Node Inside" class="img-fluid" src="./images/2DSDF/parameter-node-inside.png" title="Parameter Node Inside"/></p>
+</p>
 <p>When you create the node you get to give it a name, the name here is important if you want to drive the color from code or blueprint later. We're going to name it <code>Inside</code> for the inside color. And while we're at it we'll create a 2nd node named <code>Outside</code>. Let's copy the shader's value in the node and tada ! Our colors are ready.</p>
-<p><img alt="Our Two Colors" class="center" src="/images/2DSDF/the-two-colors.png"></p>
-<h2>Comparison and Branch</h2>
+<p>
+<p class="text-center img-wrapper"><img alt="Our Two Colors" class="img-fluid" src="./images/2DSDF/the-two-colors.png" title="Our Two Colors"/></p>
+</p>
+</div>
+<div class="section" id="comparison-and-branch">
+<h2 id="comparison-and-branch">Comparison and Branch</h2>
 <p>Actually I lied, going into this I thought we would need 2 nodes for the condition and the comparison, kind of like in a normal blueprint. But turns out in a material the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#if">If</a> node actually does both of them at the same time. It takes 2 single float values, and outputs something depending on the 3 other pins.</p>
-<p><img alt="If Node" class="center" src="/images/2DSDF/if-node.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="If Node" class="img-fluid" src="./images/2DSDF/if-node.png" title="If Node"/></p>
+</p>
 <p>Although the A pin needs to be provided, if you look at the If node details panel you'll find that you can set the B pin constant there directly, and it's 0 by default which is just what we want, lucky !</p>
-<h2>Slight Stop at the Reroute</h2>
+</div>
+<div class="section" id="slight-stop-at-the-reroute">
+<h2 id="slight-stop-at-the-reroute">Slight Stop at the Reroute</h2>
 <p>Before wiring things up, I learned about "Named Reroute Nodes" which I believe is a great way to give name to our intermediate results and denoodelify our graph ! We're going to create one to note our signed distance field result, the variable <code>d</code> in the original shadertoy.</p>
 <p>To create one, drag from the Substract output to an empty space and create a reroute node.</p>
-<p><img alt="Reroute Declaration Node" class="center" src="/images/2DSDF/create-named-reroute-declaration-node.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Reroute Declaration Node" class="img-fluid" src="./images/2DSDF/create-named-reroute-declaration-node.png" title="Reroute Declaration Node"/></p>
+</p>
 <p>This will prompt you to give it a name (if you mess up you can quickly rename by selecting the node and pressing F2), let's name it d just like the shadertoy. Then we can rewire it back and see that nothing changed ! (Well aside from a better annotated shader)</p>
-<p><img alt="D Rewired Node" class="center" src="/images/2DSDF/d-node-rewired.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="D Rewired Node" class="img-fluid" src="./images/2DSDF/d-node-rewired.png" title="D Rewired Node"/></p>
+</p>
 <p>The nice thing is that afterward we can just pull the reroute node alone in a separate part of the graph without having to pull wires around. See in the right click menu.</p>
-<h2>Plug everything together</h2>
+</div>
+<div class="section" id="plug-everything-together">
+<h2 id="plug-everything-together">Plug everything together</h2>
 <p>Alright let's make some noodles, starting from our previous graph we want to take the distance field value <code>d</code>, plug that into the A pin of our If node, plug the Outside color to A &gt; B (which is d &gt; 0, outside the circle) and plug the Inside color to A &lt; B (which is d &lt; 0, inside the circle).</p>
 <p>Finally you can move or delete the Step node and plug the If output to the Final Color pin and enjoy the result !</p>
-<p><img alt="Wiring" src="/images/2DSDF/everything-plugged.png"> <img alt="Result" src="/images/2DSDF/result-dual-color.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Wiring" class="img-fluid" src="./images/2DSDF/everything-plugged.png" title="Wiring"/></p>
+<p class="text-center img-wrapper"><img alt="Result" class="img-fluid" src="./images/2DSDF/result-dual-color.png" title="Result"/></p>
+</p>
 <p>You might notice that the colors are washed out even though we have the same RGB, we'll go over that in an other article because there's some interesting technical details between shadertoy and unreal UI materials there</p>
 <h2 id="DarkenCol"></h2>
-
-<h1>Create the Shadow</h1>
+<h1 id="create-the-shadow_1">Create the Shadow</h1>
 <p>Next step is to create the dark shadow around the outline, it's done by evaluating an exponential function that results in a very low value when the input is 0 and a value near 1 when the input is 1 with a strong falloff</p>
 <p><code>col *= 1.0 - exp(-6.0*abs(d));</code></p>
 <p>We can plug this in <a href="https://www.desmos.com/calculator/xqlptifxfu">desmos</a> and see what it looks like :</p>
-<iframe src="https://www.desmos.com/calculator/xqlptifxfu?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
-
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/xqlptifxfu?embed" style="border: 1px solid #ccc" width="500"></iframe>
 <p>As I said, 0 at 0, 1 at 1, with strong falloff closer to 0.</p>
 <p>Since we've already seen the basic math node we're only going to check how to make the Abs and the Exp.</p>
-<h2>Absolute</h2>
+</div>
+<div class="section" id="absolute">
+<h2 id="absolute">Absolute</h2>
 <p>This one is straightforward, there's a built-in <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#abs">Abs</a> node.</p>
-<p><img alt="Abs Node" class="center" src="/images/2DSDF/abs-node.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Abs Node" class="img-fluid" src="./images/2DSDF/abs-node.png" title="Abs Node"/></p>
+</p>
 <p>We can add a Multiply * -6 node and wire it and we're ready for the exponential.</p>
-<h2>Exponential</h2>
+</div>
+<div class="section" id="exponential">
+<h2 id="exponential">Exponential</h2>
 <p>Fairly easy too as it's a built-in function in GLSL and HLSL, we can just search for the exp node aaand...</p>
-<p><img alt="No Exp" class="center" src="/images/2DSDF/no-exp.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="No Exp" class="img-fluid" src="./images/2DSDF/no-exp.png" title="No Exp"/></p>
+</p>
 <p>No exp ? So actually there's no exponential function node in Unreal, which I don't really understand why. Luckily, the exponential function is just putting a particular constant (<code>e</code>) to the power of the value you want (in our case the result of <code>-6*abs(d)</code>).</p>
 <p>To get e's value, we can make a constant node and do a quick google search which will give you a <a href="https://www.rapidtables.com/math/number/e_constant.html">nice value to sufficient precision</a> and learn a few things about that famous Euler's number ! Or you can just copy this <code>2.718281828459</code>.</p>
 <p>So our easy exponential node became a <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#power">Power</a> node in the end, but we got what we wanted !</p>
-<p><img alt="Power Node Wired" class="center" src="/images/2DSDF/power-node-wired.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Power Node Wired" class="img-fluid" src="./images/2DSDF/power-node-wired.png" title="Power Node Wired"/></p>
+</p>
 <p>At that point we can open the node by clicking on the lil' arrow on the top right to see if we made any mistakes :</p>
-<p><img alt="Previewing" class="center" src="/images/2DSDF/previewed-power-node.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Previewing" class="img-fluid" src="./images/2DSDF/previewed-power-node.png" title="Previewing"/></p>
+</p>
 <p>It's red here because we're outputting only one channel. We've got a strong white at the outline and a quick falloff to 0 when we get out. We can already see that the scale is a bit wrong. This is because the -6 that IQ picked was dependent on the shadertoy viewport scaling he used (see his p computation), we can adjust it for our setup by switching the -6 to a -16 for example (lower values gives stronger falloff, test on the desmos link !).</p>
-<p><img alt="Previewing" class="center" src="/images/2DSDF/switch-to-16.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Previewing" class="img-fluid" src="./images/2DSDF/switch-to-16.png" title="Previewing"/></p>
+</p>
 <p>We'll see other values to adjust later, I'll call them out when we get there.</p>
 <p>The value goes from 1 at the outline to 0 outside but we want the other way around, that's what the 1 - X is for ! One subtract and a multiply later we already have a lot more bumpiness to our circle</p>
-<p><img alt="Partial Result 1" class="center" src="/images/2DSDF/partial-result-1.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Partial Result 1" class="img-fluid" src="./images/2DSDF/partial-result-1.png" title="Partial Result 1"/></p>
+</p>
 <h2 id="WavyPattern"></h2>
-
-<h1>Generate the Wavy Pattern</h1>
+<h1 id="generate-the-wavy-pattern_1">Generate the Wavy Pattern</h1>
 <p><code>col *= 0.8 + 0.2*cos(150.0*d);</code></p>
 <p>The goal of this equation is to remap the gradient emanating from the center of the circle to an oscillating value. To achieve this we can use the cosine function which outputs a value between -1 and 1, multiply that by .2 to get a value between -.2 and .2. And finally add .8 😀</p>
 <p class="aligncenter">
-<iframe src="https://www.desmos.com/calculator/adrorlq7xx?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/adrorlq7xx?embed" style="border: 1px solid #ccc" width="500"></iframe>
 </p>
-
 <p>Those numbers control the amplitude and min/max values of the wave (center=.8, which gives us min=(.8-.2) and max=(.8+.2) !)</p>
 <p>The 150 controls the frequency, or how close each wave peaks are. With our scale we should reduce that a bunch, 60 seems to be a good value. This time I noticed that you can just input the constants in the math node directly, so that gives a pretty compact graph !</p>
-<p><img alt="The Wavy Nodes" class="center" src="/images/2DSDF/wavy-calculus.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="The Wavy Nodes" class="img-fluid" src="./images/2DSDF/wavy-calculus.png" title="The Wavy Nodes"/></p>
+</p>
 <p>We multiply our previous color by the wave and we're almost there 😁</p>
-<p><img alt="Wavy Result" class="center" src="/images/2DSDF/result-wavy.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Wavy Result" class="img-fluid" src="./images/2DSDF/result-wavy.png" title="Wavy Result"/></p>
+</p>
 <h2 id="GenOutline"></h2>
-
-<h1>Strongify the Outline</h1>
+<h1 id="strongify-the-outline_1">Strongify the Outline</h1>
 <p>Ok last part of the color equation, the small outline.</p>
 <p><code>col = mix( col, vec3(1.0), 1.0-smoothstep(0.0,0.01,abs(d)) );</code></p>
 <p>This one is a bit more esoteric, we can see 2 built-in GLSL functions <a href="https://docs.gl/sl4/mix">mix</a> and <a href="https://docs.gl/sl4/smoothstep">smoothstep</a>. We'll go from the inside to the outside starting with the smoothstep.</p>
-<h2>Smoothstep</h2>
+</div>
+<div class="section" id="smoothstep">
+<h2 id="smoothstep">Smoothstep</h2>
 <p><code>1.0 - smoothstep(0.0, 0.01, abs( d ) );</code></p>
 <p>We've seen the <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#step">Step</a> function in Part 1, <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#smoothstep">Smoothstep</a> is equivalent but generates a gradient instead of a hard line.</p>
-<p><img alt="Smooth Step vs Step" class="center" src="/images/2DSDF/smoothsteo-vs-step.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Smooth Step vs Step" class="img-fluid" src="./images/2DSDF/smoothsteo-vs-step.png" title="Smooth Step vs Step"/></p>
+</p>
 <p>If you're curious about the math behind the smoothstep it's usually a polynomial of degree 3 like this one :</p>
-<iframe class="center" src="https://www.desmos.com/calculator/kzrxs4f6fk?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
-
-<h2>Mix</h2>
+<iframe class="center" frameborder="0" height="500" src="https://www.desmos.com/calculator/kzrxs4f6fk?embed" style="border: 1px solid #ccc" width="500"></iframe>
+</div>
+<div class="section" id="mix">
+<h2 id="mix">Mix</h2>
 <p><code>mix( col, vec3(1.0), smoothstep );</code></p>
 <p>Mix is a simple linear interpolation between 2 colors by a value in the [0, 1] range. The equivalent node in Unreal is <a href="https://docs.unrealengine.com/5.0/en-US/math-material-expressions-in-unreal-engine/#linearinterpolate">LinearInterpolate</a></p>
 <p>So as stated in the expression we're going to interpolate between the color and a white vector, using the smoothstep result as the interpolation value. And all that in a single node !</p>
-<p><img alt="Wiring the lerp and smooth node" class="center" src="/images/2DSDF/lerp-and-smooth-node.png"></p>
-<h1>Wiring everything together</h1>
+<p>
+<p class="text-center img-wrapper"><img alt="Wiring the lerp and smooth node" class="img-fluid" src="./images/2DSDF/lerp-and-smooth-node.png" title="Wiring the lerp and smooth node"/></p>
+</p>
+<h1 id="wiring-everything-together_1">Wiring everything together</h1>
 <p>Once we got all the pieces, we can mix them up using multiply and lerp and we get the final graph. I've used some Named Reroute nodes to organize the various data we're computing and the result is not too bad !</p>
-<p><img alt="Complete Material" class="center" src="/images/2DSDF/final-material.png"></p>
-<h1>Wrapping up</h1>
+<p>
+<p class="text-center img-wrapper"><img alt="Complete Material" class="img-fluid" src="./images/2DSDF/final-material.png" title="Complete Material"/></p>
+</p>
+<h1 id="wrapping-up">Wrapping up</h1>
 <p>Alright this article has been long enough !</p>
-<p><img alt="Current Result" class="center" src="/images/2DSDF/part2-result.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Current Result" class="img-fluid" src="./images/2DSDF/part2-result.png" title="Current Result"/></p>
+</p>
 <p>Compared to the expected result I'm not completely satisfied with what we have. The colors are washed out, the spacings are not exactly the same, changing the quad size results in weird stretching, we'll fix all that in the next article and from there we'll finally grind those SDF functions properly and get more than a circle !</p>
-
-
-             
- 
-            
-            
-            
-
-
-
-
-
-
-
-            <hr/>
-            <aside>
-            <nav>
-            <ul class="articles-timeline">
-                <li class="previous-article">« <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-1.html" title="Previous: Porting IQ 2D SDF Shadertoys to Unreal - Part 1">Porting IQ 2D SDF Shadertoys to Unreal - Part 1</a></li>
-                <li class="next-article"><a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-3.html" title="Next: Porting IQ 2D SDF Shadertoys to Unreal - Part 3">Porting IQ 2D SDF Shadertoys to Unreal - Part 3</a> »</li>
-            </ul>
-            </nav>
-            </aside>
-        </div>
-        <section id="article-sidebar" class="span2">
-            <h4>Published</h4>
-            <time itemprop="dateCreated" datetime="2022-04-29T00:00:00-04:00">Fri 29 April 2022</time>
-            <h4>Category</h4>
-            <a class="category-link" href="/categories.html#articles-ref">Articles</a>
-<h4>Contact</h4>
-<div id="sidebar-social-link">
-    <a href="https://twitter.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Twitter" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1da1f3"/><path fill="#fff" d="M437 152a72 72 0 0 1-40 12 72 72 0 0 0 32-40 72 72 0 0 1-45 17 72 72 0 0 0-122 65 200 200 0 0 1-145-74 72 72 0 0 0 22 94 72 72 0 0 1-32-7 72 72 0 0 0 56 69 72 72 0 0 1-32 1 72 72 0 0 0 67 50 200 200 0 0 1-105 29 200 200 0 0 0 309-179 200 200 0 0 0 35-37"/></svg>
-    </a>
-    <a href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
-    </a>
-    <a href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
-    </a>
-</div>
-            
-
-
-
-
-
-            
-
-
-
-
-
-        </section>
-</div>
-</article>
-<!-- Root element of PhotoSwipe. Must have class pswp. -->
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe.
-         It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-        <!-- Container that holds slides.
-            PhotoSwipe keeps only 3 of them in the DOM to save memory.
-            Don't modify these 3 pswp__item elements, data is added later on. -->
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                <!--  Controls are self-explanatory. Order can be changed. -->
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
-                <!-- element will get class pswp__preloader--active when preloader is running -->
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                      <div class="pswp__preloader__cut">
-                        <div class="pswp__preloader__donut"></div>
-                      </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
+</div></p></p></p>
     </div>
-
-</div>                    </div>
-                    <div class="span1"></div>
-                </div>
-            </div>
-        </div>
-<footer>
-
-
-
-
-    <div id="fpowered">
-        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
-        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
-    </div>
-</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-        <script src="/theme/js/elegant.prod.9e9d5ce754.js"></script>
-        <script>
-            function validateForm(query)
-            {
-                return (query.length > 0);
-            }
-        </script>
-
-    <script>
-    (function () {
-        if (window.location.hash.match(/^#comment-\d+$/)) {
-            $('#comment_thread').collapse('show');
-        }
-    })();
-    window.onhashchange=function(){
-        if (window.location.hash.match(/^#comment-\d+$/))
-            window.location.reload(true);
-    }
-    $('#comment_thread').on('shown', function () {
-        var link = document.getElementById('comment-accordion-toggle');
-        var old_innerHTML = link.innerHTML;
-        $(link).fadeOut(200, function() {
-            $(this).text('Click here to hide comments').fadeIn(200);
-        });
-        $('#comment_thread').on('hidden', function () {
-            $(link).fadeOut(200, function() {
-                $(this).text(old_innerHTML).fadeIn(200);
-            });
-        })
-    })
-</script>
-
-    </body>
-    <!-- Theme: Elegant built for Pelican
-        License : MIT -->
+  </article>
+    </main>
+    <footer class="fixed-bottom py-1 d-flex flex-wrap justify-content-center align-items-center border-top bg-dark">
+        <a href="#" class="text-center link-body-emphasis text-decoration-none rounded">Back to top</a>
+        <!-- <address class="col-md-4 text-body-secondary text-end m-1">
+          Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>,
+          which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+        </address> -->
+    </footer>
+  </body>
 </html>

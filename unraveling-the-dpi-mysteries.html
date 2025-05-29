@@ -1,103 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
-
-        <link rel="dns-prefetch" href="//fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-
-        <meta name="google-site-verification" content="aPh1Z9SmJnMXvicC_q1nEUrpRYuhDEhxV2A5kdSl8NE" />        <meta name="author" content="Sharundaar" />
-
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary">
-
-<meta name="keywords" content=", Articles, " />
-
-<meta property="og:title" content="Unraveling the DPI mysteries "/>
-<meta property="og:url" content="/unraveling-the-dpi-mysteries.html" />
-<meta property="og:description" content="Taking a dive into what DPI is and use that knowledge to make more responsive UI" />
-<meta property="og:site_name" content="Sharundaar&#39;s Blog" />
-<meta property="og:article:author" content="Sharundaar" />
-<meta property="og:article:published_time" content="2024-12-03T00:00:00-05:00" />
-<meta name="twitter:title" content="Unraveling the DPI mysteries ">
-<meta name="twitter:description" content="Taking a dive into what DPI is and use that knowledge to make more responsive UI">
-<meta property="og:image" content="/images/UnravelingDPIMysteries/editor-utility-widget-live.png" />
-<meta name="twitter:image" content="/images/UnravelingDPIMysteries/editor-utility-widget-live.png" >
-
-        <title>Unraveling the DPI mysteries  · Sharundaar&#39;s Blog
-</title>
+  <head>
+        <title>Sharundaar's Blog - Unraveling the DPI mysteries</title>
+      <meta charset="utf-8" />
+      <meta name="generator" content="Pelican" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+      <script src="./theme/scripts/dropdown.js" defer></script>
+      <script src="./theme/scripts/copy-to-clipboard.js" defer></script>
+      <link rel="stylesheet" type="text/css" href="./theme/css/style.css" />
+      <link rel="stylesheet" type="text/css" href="./theme/css/code-highlights.css" />
 
 
 
-<script async data-id="101425269" src="//static.getclicky.com/js"></script>
 
-    </head>
-    <body>
-        <div id="content">
-            <div class="navbar navbar-static-top">
-                <div class="navbar-inner">
-                    <div class="container-fluid">
-                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </a>
-                        <a class="brand" href="/"><span class=site-name>Sharundaar's Blog</span></a>
-                        <div class="nav-collapse collapse">
-                            <ul class="nav pull-right top-menu">
-                                <li >
-                                    <a href=
-                                       "/"
-                                    >Home</a>
-                                </li>
-                                <li ><a href="/categories.html">Categories</a></li>
-                                <li ><a href="/tags.html">Tags</a></li>
-                                <li ><a href="/archives.html">Archives</a></li>
-                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-fluid">
-                <div class="row-fluid">
-                    <div class="span1"></div>
-                    <div class="span10">
-<article itemscope>
-<div class="row-fluid">
-    <header class="page-header span10 offset2">
-        <h1>
-            <a href="/unraveling-the-dpi-mysteries.html">
-                Unraveling the DPI mysteries
-            </a>
-        </h1>
-    </header>
+
+  </head>
+
+  <body class="bg-dark d-flex mb-4">
+    <aside class="sh-offcanvas sh-offcanvas-start d-lg-block me-4 bg-dark flex-shrink-0" tabindex="-1" id="offcanvas-sidebar" aria-labelledby="sidebarLabel">
+      <div class="sticky-top ms-4">
+        <div>
+            <hgroup class="d-inline-flex align-items-center">
+                <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="./theme/images/tony-slurp.jpg">
+                <h1 class="flex-shrink-1">Sharundaar</h1>
+            </hgroup>
+            <div class="d-flex justify-content-between">
+            <div>
+<a class="social-link" href=".">
+<svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="24px" height="24px" viewBox="0 0 495.398 495.398"
+    xml:space="preserve">
+<g><g><g>
+    <path d="M487.083,225.514l-75.08-75.08V63.704c0-15.682-12.708-28.391-28.413-28.391c-15.669,0-28.377,12.709-28.377,28.391
+        v29.941L299.31,37.74c-27.639-27.624-75.694-27.575-103.27,0.05L8.312,225.514c-11.082,11.104-11.082,29.071,0,40.158
+        c11.087,11.101,29.089,11.101,40.172,0l187.71-187.729c6.115-6.083,16.893-6.083,22.976-0.018l187.742,187.747
+        c5.567,5.551,12.825,8.312,20.081,8.312c7.271,0,14.541-2.764,20.091-8.312C498.17,254.586,498.17,236.619,487.083,225.514z"/>
+    <path d="M257.561,131.836c-5.454-5.451-14.285-5.451-19.723,0L72.712,296.913c-2.607,2.606-4.085,6.164-4.085,9.877v120.401
+        c0,28.253,22.908,51.16,51.16,51.16h81.754v-126.61h92.299v126.61h81.755c28.251,0,51.159-22.907,51.159-51.159V306.79
+        c0-3.713-1.465-7.271-4.085-9.877L257.561,131.836z"/>
+    </g></g></g>
+</svg>
+</a>            </div>
+            <div class="m-0">
+<div id="sidebar-social-link" class="d-flex">
+    <a class="social-link" href="https://bsky.app/profile/sharundaar.bsky.social" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z" style="fill:#fff;"/><clipPath id="_clip1"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z"/></clipPath><g clip-path="url(#_clip1)"><path d="M12,11.006c-0.9,-1.75 -3.35,-5.012 -5.628,-6.62c-2.183,-1.54 -3.015,-1.274 -3.561,-1.026c-0.631,0.284 -0.747,1.254 -0.747,1.824c0,0.571 0.313,4.678 0.517,5.364c0.675,2.266 3.074,3.031 5.285,2.785c0.113,-0.016 0.228,-0.032 0.344,-0.046c-0.115,0.018 -0.229,0.033 -0.344,0.046c-3.239,0.481 -6.116,1.661 -2.343,5.861c4.15,4.297 5.688,-0.922 6.477,-3.567c0.789,2.645 1.697,7.676 6.403,3.567c3.533,-3.567 0.97,-5.38 -2.269,-5.861c-0.115,-0.012 -0.229,-0.028 -0.344,-0.046c0.116,0.014 0.231,0.03 0.344,0.046c2.211,0.246 4.61,-0.519 5.285,-2.785c0.204,-0.685 0.517,-4.794 0.517,-5.363c-0,-0.572 -0.116,-1.541 -0.747,-1.827c-0.546,-0.247 -1.378,-0.513 -3.561,1.027c-2.278,1.61 -4.728,4.872 -5.628,6.621Z" style="fill:#3088d4;fill-rule:nonzero;"/></g></svg>
+    </a>
+    <a class="social-link" href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a class="social-link" href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
 </div>
-
-<div class="row-fluid">
-        <div class="span8 offset2 article-content">
-            
-            <h2>Introduction</h2>
+            </div>
+            </div>
+        </div>
+        <nav>
+            <ul class="list-unstyled ps-0 pt-4">
+  <li class="mb-1">
+    <div id="toc"><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#introduction" title="Introduction">Introduction</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#the-problem" title="The Problem">The Problem</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#what-is-dpi-and-can-i-eat-it" title="What is DPI and can I eat it ?">What is DPI and can I eat it ?</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#getting-physical" title="Getting Physical">Getting Physical</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#back-in-the-game" title="Back in the Game">Back in the Game</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#conclusion" title="Conclusion">Conclusion</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#annex" title="Annex">Annex</a></li></ul></div>
+  </div>
+            </ul>
+        </nav>
+        </div>
+    </aside>
+    <main class="container overflow-auto">
+      <div class="d-lg-none">
+      <div class="d-flex justify-content-between align-items-center">
+        <hgroup class="d-inline-flex align-items-center">
+        <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="./theme/images/tony-slurp.jpg">
+        <h1 class="flex-shrink-1">Sharundaar</h1>
+        </hgroup>
+        <button class="btn btn-dark d-lg-none m-2 d-flex align-items-center justify-content-center" 
+        type="button" 
+        data-bs-toggle="offcanvas" 
+        data-bs-target="#offcanvas-sidebar" 
+        aria-controls="offcanvas-sidebar">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="d-flex justify-content-between">
+        <div>
+<a class="social-link" href=".">
+<svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="24px" height="24px" viewBox="0 0 495.398 495.398"
+    xml:space="preserve">
+<g><g><g>
+    <path d="M487.083,225.514l-75.08-75.08V63.704c0-15.682-12.708-28.391-28.413-28.391c-15.669,0-28.377,12.709-28.377,28.391
+        v29.941L299.31,37.74c-27.639-27.624-75.694-27.575-103.27,0.05L8.312,225.514c-11.082,11.104-11.082,29.071,0,40.158
+        c11.087,11.101,29.089,11.101,40.172,0l187.71-187.729c6.115-6.083,16.893-6.083,22.976-0.018l187.742,187.747
+        c5.567,5.551,12.825,8.312,20.081,8.312c7.271,0,14.541-2.764,20.091-8.312C498.17,254.586,498.17,236.619,487.083,225.514z"/>
+    <path d="M257.561,131.836c-5.454-5.451-14.285-5.451-19.723,0L72.712,296.913c-2.607,2.606-4.085,6.164-4.085,9.877v120.401
+        c0,28.253,22.908,51.16,51.16,51.16h81.754v-126.61h92.299v126.61h81.755c28.251,0,51.159-22.907,51.159-51.159V306.79
+        c0-3.713-1.465-7.271-4.085-9.877L257.561,131.836z"/>
+    </g></g></g>
+</svg>
+</a>        </div>
+        <div class="m-0">
+<div id="sidebar-social-link" class="d-flex">
+    <a class="social-link" href="https://bsky.app/profile/sharundaar.bsky.social" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z" style="fill:#fff;"/><clipPath id="_clip1"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z"/></clipPath><g clip-path="url(#_clip1)"><path d="M12,11.006c-0.9,-1.75 -3.35,-5.012 -5.628,-6.62c-2.183,-1.54 -3.015,-1.274 -3.561,-1.026c-0.631,0.284 -0.747,1.254 -0.747,1.824c0,0.571 0.313,4.678 0.517,5.364c0.675,2.266 3.074,3.031 5.285,2.785c0.113,-0.016 0.228,-0.032 0.344,-0.046c-0.115,0.018 -0.229,0.033 -0.344,0.046c-3.239,0.481 -6.116,1.661 -2.343,5.861c4.15,4.297 5.688,-0.922 6.477,-3.567c0.789,2.645 1.697,7.676 6.403,3.567c3.533,-3.567 0.97,-5.38 -2.269,-5.861c-0.115,-0.012 -0.229,-0.028 -0.344,-0.046c0.116,0.014 0.231,0.03 0.344,0.046c2.211,0.246 4.61,-0.519 5.285,-2.785c0.204,-0.685 0.517,-4.794 0.517,-5.363c-0,-0.572 -0.116,-1.541 -0.747,-1.827c-0.546,-0.247 -1.378,-0.513 -3.561,1.027c-2.278,1.61 -4.728,4.872 -5.628,6.621Z" style="fill:#3088d4;fill-rule:nonzero;"/></g></svg>
+    </a>
+    <a class="social-link" href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a class="social-link" href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
+</div>
+        </div>
+      </div>
+      </div>
+  <article class="mb-4 mt-4">
+    <header class="mb-4">
+      <h1 class="mb-0">
+        <a href="./unraveling-the-dpi-mysteries.html" rel="bookmark"
+           title="Permalink to Unraveling the DPI mysteries">
+           Unraveling the DPI mysteries
+        </a>
+      </h1>
+      <time datetime="2024-12-03T00:00:00-05:00">03 Dec 2024</time>
+      
+    </header>
+    <div data-bs-spy="scroll" data-bs-target="#toc">
+    <div class="section" id="introduction">
+<h2 id="introduction">Introduction</h2>
 <p>True responsiveness in UI design is difficult to achieve. Building interfaces that will correctly accommodate a wide breadth of screens aspect ratio and size, often requires a lot of work. To help us, there are a couple of techniques we can use that will automatically rescale the screen. Although they're not perfect, they're often good enough for most cases. In this article we're going to dig a bit into a specific solution to this problem and how it's implemented in Unreal (^_^)</p>
-<h2>The Problem</h2>
+</div>
+<div class="section" id="the-problem">
+<h2 id="the-problem">The Problem</h2>
 <p>Ok, what does "responsiveness" involves exactly, let's try to build an example to demonstrate the problem.</p>
 <p>We're going to build a simple vertical menu such as you can find in older games. This menu would present basic options like start a new game, pick a save file, and so on... We're not interested in what the buttons do but more in the general layout.</p>
 <p>Here's roughly the idea laid out in Figma :</p>
-<p><img alt="Figma design authored in 720p" class="center" src="/images/UnravelingDPIMysteries/figma-design-720p.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Figma design authored in 720p" class="img-fluid" src="./images/UnravelingDPIMysteries/figma-design-720p.png" title="Figma design authored in 720p"/></p>
+</p>
 <p>This UI has been authored in 720p (or a resolution of 1280x720) (this will help me demonstrate a point later 🙈). But usually you'd probably author in 1080p since that's the most common screen size.</p>
-<p>In any case, That's our target look, we can go and do the most naïve implementation in unreal, which, and don't yell at me, involves a canvas, a vertical box, and a couple of leaf widgets :</p>
-<p><img alt="Ported figma design to UMG" class="center" src="/images/UnravelingDPIMysteries/design-in-umg.png"></p>
+<p>In any case, That's our target look, we can go and do the most na&iuml;ve implementation in unreal, which, and don't yell at me, involves a canvas, a vertical box, and a couple of leaf widgets :</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Ported figma design to UMG" class="img-fluid" src="./images/UnravelingDPIMysteries/design-in-umg.png" title="Ported figma design to UMG"/></p>
+</p>
 <p>Let's spawn it at runtime and see what it looks like !</p>
-<p><img alt="Live design in-game" class="center" src="/images/UnravelingDPIMysteries/design-in-game.png"></p>
-<p>Perfect 😄 It appeared exactly as expected ! I didn't go as far as copying the exact font but you get the idea. What's important is that we have the expected layout, and if we go and measure the space between the various elements we'll find them to be the same as the Figma design (～￣▽￣)～</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Live design in-game" class="img-fluid" src="./images/UnravelingDPIMysteries/design-in-game.png" title="Live design in-game"/></p>
+</p>
+<p>Perfect 😄 It appeared exactly as expected ! I didn't go as far as copying the exact font but you get the idea. What's important is that we have the expected layout, and if we go and measure the space between the various elements we'll find them to be the same as the Figma design (～￣&xdtri;￣)～</p>
 <p>Ok, we have a screen in 720p, but if we look at <a href="https://store.steampowered.com/hwsurvey/Steam-Hardware-Software-Survey-Welcome-to-Steam">the steam hardware survey</a>, most desktop users have a 1080p screen. So what happens if we just stretch our window to match that resolution ?</p>
-<p><img alt="Live design in-game stretched to 1080p" class="center" src="/images/UnravelingDPIMysteries/design-in-game-1080p.png"></p>
-<p>Uuh, that's wrong ? Maybe we've just been too naïve though, maybe our setup is just really bad. let's put some reasonable anchors at least...</p>
-<p><img alt="Live design in-game stretched to 1080p with correct canvas anchors" class="center" src="/images/UnravelingDPIMysteries/design-in-game-1080p-anchored.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Live design in-game stretched to 1080p" class="img-fluid" src="./images/UnravelingDPIMysteries/design-in-game-1080p.png" title="Live design in-game stretched to 1080p"/></p>
+</p>
+<p>Uuh, that's wrong ? Maybe we've just been too na&iuml;ve though, maybe our setup is just really bad. let's put some reasonable anchors at least...</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Live design in-game stretched to 1080p with correct canvas anchors" class="img-fluid" src="./images/UnravelingDPIMysteries/design-in-game-1080p-anchored.png" title="Live design in-game stretched to 1080p with correct canvas anchors"/></p>
+</p>
 <p>That's a bit better, but the space between the title and the list is pretty wack...  I can hear my designer's complaints already, and QA filing weirdly specific bugs. So how do we solve this ?</p>
 <p>Well we can start with the very simple observation that we don't actually need to support <em>all</em> arbitrary sizes. In practice, most resolutions falls in, or are close to, a few very specific aspect ratios. Aspect ratio ? That's simply the ratio between the width and the height of your screen, or render area. If we look at the previous hardware survey and instead of sorting by pure resolution, we sort by aspect ratio, we can pull the following table:</p>
 <table>
@@ -144,32 +204,58 @@
 </table>
 <p>This means that the vast majority of user's (85%) actually have the same 16:9 aspect ratio. If we add to that the 16:10 aspect ratio which is very similar, we reach a total of 93% of desktop users. This means that 93% of users have <em>similar</em> screens that are just a scaling factor away from each other !</p>
 <p>Enter the notion of DPI （＾-＾）</p>
-<h2>What is DPI and can I eat it ?</h2>
-<p>Ok what the heck is DPI ? In theory it means Dots per Inch, in practice it's the kind of historically loaded word that have a slightly different meaning depending on context... In our case we'll look at how Windows interprets it first, I recommend taking a look at this page : <a class="center" href="https://learn.microsoft.com/en-us/windows/win32/learnwin32/dpi-and-device-independent-pixels">DPI and Device Independent Pixels</a></p>
+</div>
+<div class="section" id="what-is-dpi-and-can-i-eat-it">
+<h2 id="what-is-dpi-and-can-i-eat-it">What is DPI and can I eat it ?</h2>
+<p>Ok what the heck is DPI ? In theory it means Dots per Inch, in practice it's the kind of historically loaded word that have a slightly different meaning depending on context... In our case we'll look at how Windows interprets it first, I recommend taking a look at this page : <a href="https://learn.microsoft.com/en-us/windows/win32/learnwin32/dpi-and-device-independent-pixels">DPI and Device Independent Pixels</a></p>
 <p>To sum up, it's a bit of a mess due to historical hacks and decisions. DPI mean Dots per Inch, and in the windows world, Dots means Pixels, but not your screen pixel, a device independent pixel. Windows defines those such that 96 of them makes one inch. Buut not your ruler inch ! An inch that's called a "logical inch", which is circularly defined as being 96 device independent pixels, convenient...</p>
 <p>Anyways, the point here is to allow the OS to have developers design in a unified unit system, then windows can perform a scaling operation to bring the interface to any arbitrary screen. It's kind of like designing some plans with a meter unit, and then giving them to someone who is free to reproduce them at 1/16th scale, or 2x scale, or whatever scale they deem more appropriate to their current audience.</p>
-<p>Alright ! How does this looks like in Slate ? Well Unreal is a well behaved application with regards to DPI <nobr>(～￣▽￣)～</nobr>, it is what we call <em>DPI Aware</em>. This means that whenever you actually draw a UI element with Slate, a scaling transform is applied that contains the current user's DPI setting. Let's look at some code :</p>
-<div class="highlight"><pre><span></span><code><span class="n">int32</span><span class="w"> </span><span class="nf">SWindow::PaintWindow</span><span class="p">(</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">CurrentTime</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">DeltaTime</span><span class="p">,</span><span class="w"> </span><span class="n">FSlateWindowElementList</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OutDrawElements</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">FWidgetStyle</span><span class="o">&amp;</span><span class="w"> </span><span class="n">InWidgetStyle</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">bParentEnabled</span><span class="w"> </span><span class="p">)</span><span class="w">  </span>
-<span class="p">{</span><span class="w">  </span>
+<p>Alright ! How does this looks like in Slate ? Well Unreal is a well behaved application with regards to DPI <nobr>(～￣&xdtri;￣)～</nobr>, it is what we call <em>DPI Aware</em>. This means that whenever you actually draw a UI element with Slate, a scaling transform is applied that contains the current user's DPI setting. Let's look at some code :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">int32</span><span class="w"> </span><span class="nf">SWindow::PaintWindow</span><span class="p">(</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">CurrentTime</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">DeltaTime</span><span class="p">,</span><span class="w"> </span><span class="n">FSlateWindowElementList</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OutDrawElements</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">FWidgetStyle</span><span class="o">&amp;</span><span class="w"> </span><span class="n">InWidgetStyle</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">bParentEnabled</span><span class="w"> </span><span class="p">)</span>
+<span class="p">{</span>
 <span class="w">    </span><span class="c1">// code ommited...</span>
 
-<span class="w">    </span><span class="n">FSlateInvalidationContext</span><span class="w"> </span><span class="n">Context</span><span class="p">(</span><span class="n">OutDrawElements</span><span class="p">,</span><span class="w"> </span><span class="n">InWidgetStyle</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="n">FSlateInvalidationContext</span><span class="w"> </span><span class="n">Context</span><span class="p">(</span><span class="n">OutDrawElements</span><span class="p">,</span><span class="w"> </span><span class="n">InWidgetStyle</span><span class="p">);</span>
 <span class="w">    </span><span class="n">Context</span><span class="p">.</span><span class="n">LayoutScaleMultiplier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FSlateApplicationBase</span><span class="o">::</span><span class="n">Get</span><span class="p">().</span><span class="n">GetApplicationScale</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GetDPIScaleFactor</span><span class="p">();</span><span class="w"> </span><span class="c1">// &lt;-- DPI present here</span>
 
-<span class="w">    </span><span class="c1">// Always set the window geometry and visibility  </span>
-<span class="w">    </span><span class="n">PersistentState</span><span class="p">.</span><span class="n">AllottedGeometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWindowGeometryInWindow</span><span class="p">();</span><span class="w"> </span><span class="c1">// &lt;-- DPI is also baked in here 👀</span>
-
-<span class="w">    </span><span class="n">FSlateInvalidationResult</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PaintInvalidationRoot</span><span class="p">(</span><span class="n">Context</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="c1">// Always set the window geometry and visibility</span>
+<span class="hll"><span class="w">    </span><span class="n">PersistentState</span><span class="p">.</span><span class="n">AllottedGeometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWindowGeometryInWindow</span><span class="p">();</span><span class="w"> </span><span class="c1">// &lt;-- DPI is also baked in here 👀</span>
+</span>
+<span class="w">    </span><span class="n">FSlateInvalidationResult</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PaintInvalidationRoot</span><span class="p">(</span><span class="n">Context</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// code ommited...</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">MaxLayerIdPainted</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">MaxLayerIdPainted</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div>
-
+</code></pre></div></td></tr></table></div>
 <p>This function is where Slate UI rendering starts. As a quick reminder Slate is a hierarchical UI library where things are drawn back to front. The highest level widget is the SWindow, and it recursively draws its content by calling <code>OnPaint</code>, here initiated by <code>PaintInvalidationRoot</code>. Each widget is being given a geometry into which they will accumulate their transform and pass that down to any children. Thus if you scale, rotate or translate a widget, it will be pushed to the geometry and sent down the stack. The children will then inherit all those transformations.</p>
 <p>Let's look at <code>GetWindowGeometryInWindow()</code>  :</p>
-<div class="highlight"><pre><span></span><code><span class="n">FGeometry</span><span class="w"> </span><span class="nf">SWindow::GetWindowGeometryInWindow</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w">  </span>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">FGeometry</span><span class="w"> </span><span class="nf">SWindow::GetWindowGeometryInWindow</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w">  </span>
 <span class="p">{</span><span class="w">  </span>
 <span class="w">    </span><span class="n">FSlateLayoutTransform</span><span class="w"> </span><span class="n">LocalToWindow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetLocalToWindowTransform</span><span class="p">();</span><span class="w"> </span><span class="c1">// &lt;-- 👀</span>
 <span class="w">    </span><span class="n">FVector2f</span><span class="w"> </span><span class="n">ViewSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetViewportSize</span><span class="p">();</span><span class="w">  </span>
@@ -180,11 +266,21 @@
 <span class="p">{</span><span class="w">  </span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">FSlateLayoutTransform</span><span class="p">(</span><span class="n">FSlateApplicationBase</span><span class="o">::</span><span class="n">Get</span><span class="p">().</span><span class="n">GetApplicationScale</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GetDPIScaleFactor</span><span class="p">());</span><span class="w"> </span><span class="c1">// &lt;-- There it is</span>
 <span class="p">}</span>
-</code></pre></div>
-
+</code></pre></div></td></tr></table></div>
 <p>What this code does is simply apply a uniform scaling transform equal to whatever the OS gives us as a DPI scale factor. Which is then modulated by an arbitrary application scale value. We won't care about this application scale, it's mainly a knob that unreal gives us to rescale the UI without changing OS settings.</p>
 <p>If we dig a <em>little</em> bit more, we'll find that this DPI factor comes from this function on Windows, using <a href="https://learn.microsoft.com/en-us/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor">GetDpiForMonitor</a> :</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// code trimmed down for simplicity</span>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// code trimmed down for simplicity</span>
 <span class="kt">float</span><span class="w"> </span><span class="nf">FWindowsPlatformApplicationMisc::GetDPIScaleFactorAtPoint</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">Y</span><span class="p">)</span><span class="w">  </span>
 <span class="p">{</span><span class="w">  </span>
 <span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">Scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span><span class="w">  </span>
@@ -196,10 +292,19 @@
 <span class="w">    </span><span class="n">Scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">DPIX</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">96.0f</span><span class="p">;</span><span class="w"> </span><span class="c1">// &lt;-- The historical 96 DPI, which is 100% scale</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Scale</span><span class="p">;</span><span class="w">  </span>
 <span class="p">}</span>
-</code></pre></div>
-
+</code></pre></div></td></tr></table></div>
 <p>And this event that SWindow reacts to:</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// code trimmed down for simplicity</span>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// code trimmed down for simplicity</span>
 <span class="k">case</span><span class="w"> </span><span class="no">WM_DPICHANGED</span><span class="p">:</span><span class="w">  </span>
 <span class="w">    </span><span class="p">{</span><span class="w">  </span>
 <span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">CurrentNativeEventWindowPtr</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span><span class="w">  </span>
@@ -210,46 +315,67 @@
 <span class="w">           </span><span class="n">SetWindowPos</span><span class="p">(</span><span class="n">hwnd</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">right</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">bottom</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">NewRect</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">SWP_NOZORDER</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">SWP_NOACTIVATE</span><span class="p">);</span>
 <span class="w">       </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
-</code></pre></div>
-
+</code></pre></div></td></tr></table></div>
 <p>See the <a href="https://learn.microsoft.com/en-us/windows/win32/hidpi/wm-dpichanged">WM_DPICHANGED</a> event page for more detail, it's pretty interesting 😄</p>
-<h2>Getting Physical</h2>
+</div>
+<div class="section" id="getting-physical">
+<h2 id="getting-physical">Getting Physical</h2>
 <p>Let's test this out ! We want to get a physical understanding of what changing the DPI does. To achieve this we'll be making an editor utility widget associated with some code that will grab a bunch of metrics out of the UI stack and display them on screen. I won't go through the code it's fairly boring boilerplate, <a href="https://github.com/Sharundaar/UECodeGolfing/blob/main/Source/UIMetrics.h">feel free to grab it here</a>. </p>
 <p>We'll also use <a href="#checkeboard-code">this material</a> that draws a Checkerboard in pixel space, such that each square is 25 pixels :
-<img alt="Material node showing a checkerboard-material" class="center" src="/images/UnravelingDPIMysteries/checkerboard-material.png"></p>
+<p class="text-center img-wrapper"><img alt="Material node showing a checkerboard-material" class="img-fluid" src="./images/UnravelingDPIMysteries/checkerboard-material.png" title="Material node showing a checkerboard-material"/></p>
+</p>
 <p>Finally we make this editor utility widget with a few text boxes and our material in the middle, the text above the image will help us track its absolute size, the text below will show its local size (which should be constant).
-<img alt="Editor Utility Widget" class="center" src="/images/UnravelingDPIMysteries/editor-utility-widget-15dpi.png"></p>
+<p class="text-center img-wrapper"><img alt="Editor Utility Widget" class="img-fluid" src="./images/UnravelingDPIMysteries/editor-utility-widget-15dpi.png" title="Editor Utility Widget"/></p>
+</p>
 <p>Here's the corresponding blueprint code for reference, nothing complicated, mostly formatting :</p>
-<iframe src="https://blueprintue.com/render/j5z2kfsv/" width="100%" height="600px" scrolling="no" allowfullscreen></iframe>
-
-<p>So far so good. Now that we have all this, we can open the Editor Utility Widget ! The designer already spoiled us some insights, but let's watch in its own window without the noise <nobr>( •̀ ω •́ )✧</nobr></p>
-<p><img alt="Editor Utility Widget live window" class="center" src="/images/UnravelingDPIMysteries/editor-utility-widget-live.png"></p>
+<iframe allowfullscreen="" height="600px" scrolling="no" src="https://blueprintue.com/render/j5z2kfsv/" width="100%"></iframe>
+<p>So far so good. Now that we have all this, we can open the Editor Utility Widget ! The designer already spoiled us some insights, but let's watch in its own window without the noise <nobr>( &bull;̀ &omega; &bull;́ )✧</nobr></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Editor Utility Widget live window" class="img-fluid" src="./images/UnravelingDPIMysteries/editor-utility-widget-live.png" title="Editor Utility Widget live window"/></p>
+</p>
 <p>Awesome ! I've put this widget on a 2560x1440 screen, with an interface scaling of 100% (or 96 DPI, remember the last chapter !) and we can see that everything matches. </p>
 <p>Ok, now what happen if we go to the OS settings and modify the user interface scaling, set it to 150% for example ?</p>
-<p><img alt="Windows UI scaling setting" class="center" src="/images/UnravelingDPIMysteries/screen-scaling-windows-2.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Windows UI scaling setting" class="img-fluid" src="./images/UnravelingDPIMysteries/screen-scaling-windows-2.png" title="Windows UI scaling setting"/></p>
+</p>
 <p>And boom ! Watch our utility widget automatically updates without us having to do anything more 😁</p>
-<p><img alt="Editor Utility Widget live window at 1.5 DPI" class="center" src="/images/UnravelingDPIMysteries/editor-utility-widget-live-1.5dpi.png"></p>
-<p>You'll notice that none of our local sizes have changed, from our editor utility widget local perspective, it's still 1274x682 (well, ± one pixel). And our image's local size is still 100 units. But the screen space values have all been multiplied by 1.5 ! Our window has been physically resized to 1920x1080, and our little checkerboard widget visually grew 2 more squares on each side. Our checkerboard is still centered, our text is still snugly on the top left and top right. If you measure all spacing you'll see they've all grown by 150%. This hopefully demonstrates how Unreal uniformly scales everything from the middle of the window to respect the OS DPI setting 😊</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Editor Utility Widget live window at 1.5 DPI" class="img-fluid" src="./images/UnravelingDPIMysteries/editor-utility-widget-live-1.5dpi.png" title="Editor Utility Widget live window at 1.5 DPI"/></p>
+</p>
+<p>You'll notice that none of our local sizes have changed, from our editor utility widget local perspective, it's still 1274x682 (well, &plusmn; one pixel). And our image's local size is still 100 units. But the screen space values have all been multiplied by 1.5 ! Our window has been physically resized to 1920x1080, and our little checkerboard widget visually grew 2 more squares on each side. Our checkerboard is still centered, our text is still snugly on the top left and top right. If you measure all spacing you'll see they've all grown by 150%. This hopefully demonstrates how Unreal uniformly scales everything from the middle of the window to respect the OS DPI setting 😊</p>
 <p>Ok, let's circle back to our initial menu and in-game UI. As usual things are a <em>little</em> bit more complicated there, but don't worry, it's not by much 😄</p>
-<h2>Back in the Game</h2>
+</div>
+<div class="section" id="back-in-the-game">
+<h2 id="back-in-the-game">Back in the Game</h2>
 <p>Where we left it off we had built out menu in 720p. We were distraught, when scaling it to 1080p altered a bunch of properties about the menu that we wanted to keep, like proportionality of different elements and margins.</p>
-<p><img alt="Design in-game" class="center" src="/images/UnravelingDPIMysteries/design-in-game.png">
-<img alt="Design in-game at 1080p with proper anchors" class="center" src="/images/UnravelingDPIMysteries/design-in-game-1080p-anchored.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Design in-game" class="img-fluid" src="./images/UnravelingDPIMysteries/design-in-game.png" title="Design in-game"/></p>
+<p class="text-center img-wrapper"><img alt="Design in-game at 1080p with proper anchors" class="img-fluid" src="./images/UnravelingDPIMysteries/design-in-game-1080p-anchored.png" title="Design in-game at 1080p with proper anchors"/></p>
+</p>
 <p>What can we do about this ? Weeell, I might have lied a little... I <em>disabled</em> some default features of unreal to guide ourselves towards what DPI is at the OS level. You see, if you tried to repro the menu I've shown, you would probably not have seen the same issue when scaling the window up or down. Or even worse, you might have had a hard time making the 720p design look hte same in the designer as in game.</p>
 <p>And the reason for that is because Epic's people already thought and implemented that idea of DPI at the OS level, but pushed it at the rendered window level. Instead of using the OS DPI, it uses <em>some</em> heuristics (and we have a choice here) to compute a pseudo DPI for authoring, then it's able to compute a scaling factor taking the current window size, that heuristic, and the authored window size ! This is everything that falls under the "DPI Scaling" category of Unreal's project settings.</p>
-<p><img alt="DPI scaling settings" class="center" src="/images/UnravelingDPIMysteries/dpi-scaling-settings.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="DPI scaling settings" class="img-fluid" src="./images/UnravelingDPIMysteries/dpi-scaling-settings.png" title="DPI scaling settings"/></p>
+</p>
 <p>So as you can see, in my project I've set the DPI curve such as it returns 1 for all sizes, oopsie... Well let's fix that ! As I've said I've authored the design in 720p so it'll be my scale factor of 1 as a baseline. Then 1080p is 1.5 times that, then we pick a max resolution of 8k so it scales linearly, which is 12 times 720p. Finally we do the same for a minimal resolution, 480p here. See the resulting curve :
-<img alt="DPI Curve setting" class="center" src="/images/UnravelingDPIMysteries/dpi-curve-setting.png"></p>
+<p class="text-center img-wrapper"><img alt="DPI Curve setting" class="img-fluid" src="./images/UnravelingDPIMysteries/dpi-curve-setting.png" title="DPI Curve setting"/></p>
+</p>
 <p>720p is our 1.0 scale point, and we want things to be more or less linear from there :)</p>
 <p>Let's open our game in 1080p and see the result ! We'd expect it to be nicely scaled up by a factor of 1.5 :3
-<img alt="Design in-game with proper 1080p DPI settings" class="center" src="/images/UnravelingDPIMysteries/design-in-game-1080p-dpicorrect.png"></p>
+<p class="text-center img-wrapper"><img alt="Design in-game with proper 1080p DPI settings" class="img-fluid" src="./images/UnravelingDPIMysteries/design-in-game-1080p-dpicorrect.png" title="Design in-game with proper 1080p DPI settings"/></p>
+</p>
 <p>And that's what we get ! Perfect, now we have a very nice solution to automatically adapt our design to fit <em>most</em> screens resolutions, remember our initial numbers showed approximately 85% of users have close to a 16:9 screen. Interestingly, with the "short side" heuristic and proper anchoring, this solution also works for most wide screens setup. Wide screens are usually born from 16:9 monitors "duplicated" horizontally, kinda like putting 2 1080p monitors side by side. Here's the same screen but with a simulated wide screen monitor aspect ratio.
-<img alt="Design in-game in widescreen format" class="center" src="/images/UnravelingDPIMysteries/design-in-game-widescreen.png"></p>
+<p class="text-center img-wrapper"><img alt="Design in-game in widescreen format" class="img-fluid" src="./images/UnravelingDPIMysteries/design-in-game-widescreen.png" title="Design in-game in widescreen format"/></p>
+</p>
 <p>Anyways, for a PC and console games I usually just keep the default settings, but if you're developing for mobile in portrait mode for example you'll probably want to change those curves to adapt a bit better, although mobile is a whooole other can of worm...</p>
-<h2>Conclusion</h2>
+</div>
+<div class="section" id="conclusion">
+<h2 id="conclusion">Conclusion</h2>
 <p>I hope this venture into what is DPI (or what we should probably call PPI now...) was interesting and demystifies this part of the engine :) </p>
 <p>Hopefully it also taught you a trick or two about debugging the UI. I recommend testing the metric visualization code in a bunch of situations and try to recompose what transformations happens which makes your widget go from local space to the pixel space metrics ! It can be satisfying to figure out the proper math behind these things, and really helpful in a pinch (we didn't need to do any projections here...)</p>
-<h2>Annex</h2>
+</div>
+<div class="section" id="annex">
+<h2 id="annex">Annex</h2>
 <p>Links found in this article and a few more for easy access :</p>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Dots_per_inch">https://en.wikipedia.org/wiki/Dots_per_inch</a></li>
@@ -260,181 +386,27 @@
 </ul>
 <h4 id="checkeboard-code"></h4>
 <p>Checkerboard shader code :</p>
-<p><img alt="Material node showing a checkerboard-material" class="center" src="/images/UnravelingDPIMysteries/checkerboard-material.png"></p>
-<div class="highlight"><pre><span></span><code><span class="kt">float</span><span class="w"> </span><span class="n">DoubleSquareSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">50.0</span><span class="p">;</span>
+<p>
+<p class="text-center img-wrapper"><img alt="Material node showing a checkerboard-material" class="img-fluid" src="./images/UnravelingDPIMysteries/checkerboard-material.png" title="Material node showing a checkerboard-material"/></p>
+</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">float</span><span class="w"> </span><span class="n">DoubleSquareSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">50.0</span><span class="p">;</span>
 <span class="n">float2</span><span class="w"> </span><span class="n">PxPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PxSize</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">UV</span><span class="p">;</span>
 <span class="n">PxPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frac</span><span class="p">(</span><span class="n">PxPos</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DoubleSquareSize</span><span class="p">);</span>
 <span class="k">return</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">step</span><span class="p">(</span><span class="n">PxPos</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">))</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">step</span><span class="p">(</span><span class="n">PxPos</span><span class="p">.</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">));</span>
-</code></pre></div>
-
-
-             
- 
-            
-            
-            
-
-
-
-
-
-
-
-            <hr/>
-            <aside>
-            <nav>
-            <ul class="articles-timeline">
-                <li class="previous-article">« <a href="/leveraging-dearimgui-in-unreal.html" title="Previous: Leveraging DearImGui in Unreal">Leveraging DearImGui in Unreal</a></li>
-            </ul>
-            </nav>
-            </aside>
-        </div>
-        <section id="article-sidebar" class="span2">
-            <h4>Published</h4>
-            <time itemprop="dateCreated" datetime="2024-12-03T00:00:00-05:00">Tue 03 December 2024</time>
-            <h4>Category</h4>
-            <a class="category-link" href="/categories.html#articles-ref">Articles</a>
-<h4>Contact</h4>
-<div id="sidebar-social-link">
-    <a href="https://twitter.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Twitter" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1da1f3"/><path fill="#fff" d="M437 152a72 72 0 0 1-40 12 72 72 0 0 0 32-40 72 72 0 0 1-45 17 72 72 0 0 0-122 65 200 200 0 0 1-145-74 72 72 0 0 0 22 94 72 72 0 0 1-32-7 72 72 0 0 0 56 69 72 72 0 0 1-32 1 72 72 0 0 0 67 50 200 200 0 0 1-105 29 200 200 0 0 0 309-179 200 200 0 0 0 35-37"/></svg>
-    </a>
-    <a href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
-    </a>
-    <a href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
-    </a>
+</code></pre></div></td></tr></table></div>
 </div>
-            
-
-
-
-
-
-            
-
-
-
-
-
-        </section>
-</div>
-</article>
-<!-- Root element of PhotoSwipe. Must have class pswp. -->
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe.
-         It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-        <!-- Container that holds slides.
-            PhotoSwipe keeps only 3 of them in the DOM to save memory.
-            Don't modify these 3 pswp__item elements, data is added later on. -->
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                <!--  Controls are self-explanatory. Order can be changed. -->
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
-                <!-- element will get class pswp__preloader--active when preloader is running -->
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                      <div class="pswp__preloader__cut">
-                        <div class="pswp__preloader__donut"></div>
-                      </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
     </div>
-
-</div>                    </div>
-                    <div class="span1"></div>
-                </div>
-            </div>
-        </div>
-<footer>
-
-
-
-
-    <div id="fpowered">
-        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
-        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
-    </div>
-</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-        <script src="/theme/js/elegant.prod.9e9d5ce754.js"></script>
-        <script>
-            function validateForm(query)
-            {
-                return (query.length > 0);
-            }
-        </script>
-
-    <script>
-    (function () {
-        if (window.location.hash.match(/^#comment-\d+$/)) {
-            $('#comment_thread').collapse('show');
-        }
-    })();
-    window.onhashchange=function(){
-        if (window.location.hash.match(/^#comment-\d+$/))
-            window.location.reload(true);
-    }
-    $('#comment_thread').on('shown', function () {
-        var link = document.getElementById('comment-accordion-toggle');
-        var old_innerHTML = link.innerHTML;
-        $(link).fadeOut(200, function() {
-            $(this).text('Click here to hide comments').fadeIn(200);
-        });
-        $('#comment_thread').on('hidden', function () {
-            $(link).fadeOut(200, function() {
-                $(this).text(old_innerHTML).fadeIn(200);
-            });
-        })
-    })
-</script>
-
-    </body>
-    <!-- Theme: Elegant built for Pelican
-        License : MIT -->
+  </article>
+    </main>
+    <footer class="fixed-bottom py-1 d-flex flex-wrap justify-content-center align-items-center border-top bg-dark">
+        <a href="#" class="text-center link-body-emphasis text-decoration-none rounded">Back to top</a>
+        <!-- <address class="col-md-4 text-body-secondary text-end m-1">
+          Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>,
+          which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+        </address> -->
+    </footer>
+  </body>
 </html>

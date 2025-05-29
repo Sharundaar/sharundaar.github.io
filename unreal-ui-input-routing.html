@@ -1,85 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.prod.9e9d5ce754.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
-
-        <link rel="dns-prefetch" href="//fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-
-        <meta name="google-site-verification" content="aPh1Z9SmJnMXvicC_q1nEUrpRYuhDEhxV2A5kdSl8NE" />        <meta name="author" content="Sharundaar" />
-
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary">
-
-<meta name="keywords" content=", Articles, " />
-
-<meta property="og:title" content="Unreal UI Input Routing "/>
-<meta property="og:url" content="/unreal-ui-input-routing.html" />
-<meta property="og:description" content="Overview of input management in Unreal UI systems" />
-<meta property="og:site_name" content="Sharundaar&#39;s Blog" />
-<meta property="og:article:author" content="Sharundaar" />
-<meta property="og:article:published_time" content="2022-11-13T00:00:00-05:00" />
-<meta name="twitter:title" content="Unreal UI Input Routing ">
-<meta name="twitter:description" content="Overview of input management in Unreal UI systems">
-
-        <title>Unreal UI Input Routing  · Sharundaar&#39;s Blog
-</title>
+  <head>
+        <title>Sharundaar's Blog - Unreal UI Input Routing</title>
+      <meta charset="utf-8" />
+      <meta name="generator" content="Pelican" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+      <script src="./theme/scripts/dropdown.js" defer></script>
+      <script src="./theme/scripts/copy-to-clipboard.js" defer></script>
+      <link rel="stylesheet" type="text/css" href="./theme/css/style.css" />
+      <link rel="stylesheet" type="text/css" href="./theme/css/code-highlights.css" />
 
 
 
-<script async data-id="101425269" src="//static.getclicky.com/js"></script>
 
-    </head>
-    <body>
-        <div id="content">
-            <div class="navbar navbar-static-top">
-                <div class="navbar-inner">
-                    <div class="container-fluid">
-                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </a>
-                        <a class="brand" href="/"><span class=site-name>Sharundaar's Blog</span></a>
-                        <div class="nav-collapse collapse">
-                            <ul class="nav pull-right top-menu">
-                                <li >
-                                    <a href=
-                                       "/"
-                                    >Home</a>
-                                </li>
-                                <li ><a href="/categories.html">Categories</a></li>
-                                <li ><a href="/tags.html">Tags</a></li>
-                                <li ><a href="/archives.html">Archives</a></li>
-                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-fluid">
-                <div class="row-fluid">
-                    <div class="span1"></div>
-                    <div class="span10">
-<article itemscope>
-<div class="row-fluid">
-    <header class="page-header span10 offset2">
-        <h1>
-            <a href="/unreal-ui-input-routing.html">
-                Unreal UI Input Routing
-            </a>
-        </h1>
-    </header>
+
+  </head>
+
+  <body class="bg-dark d-flex mb-4">
+    <aside class="sh-offcanvas sh-offcanvas-start d-lg-block me-4 bg-dark flex-shrink-0" tabindex="-1" id="offcanvas-sidebar" aria-labelledby="sidebarLabel">
+      <div class="sticky-top ms-4">
+        <div>
+            <hgroup class="d-inline-flex align-items-center">
+                <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="./theme/images/tony-slurp.jpg">
+                <h1 class="flex-shrink-1">Sharundaar</h1>
+            </hgroup>
+            <div class="d-flex justify-content-between">
+            <div>
+<a class="social-link" href=".">
+<svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="24px" height="24px" viewBox="0 0 495.398 495.398"
+    xml:space="preserve">
+<g><g><g>
+    <path d="M487.083,225.514l-75.08-75.08V63.704c0-15.682-12.708-28.391-28.413-28.391c-15.669,0-28.377,12.709-28.377,28.391
+        v29.941L299.31,37.74c-27.639-27.624-75.694-27.575-103.27,0.05L8.312,225.514c-11.082,11.104-11.082,29.071,0,40.158
+        c11.087,11.101,29.089,11.101,40.172,0l187.71-187.729c6.115-6.083,16.893-6.083,22.976-0.018l187.742,187.747
+        c5.567,5.551,12.825,8.312,20.081,8.312c7.271,0,14.541-2.764,20.091-8.312C498.17,254.586,498.17,236.619,487.083,225.514z"/>
+    <path d="M257.561,131.836c-5.454-5.451-14.285-5.451-19.723,0L72.712,296.913c-2.607,2.606-4.085,6.164-4.085,9.877v120.401
+        c0,28.253,22.908,51.16,51.16,51.16h81.754v-126.61h92.299v126.61h81.755c28.251,0,51.159-22.907,51.159-51.159V306.79
+        c0-3.713-1.465-7.271-4.085-9.877L257.561,131.836z"/>
+    </g></g></g>
+</svg>
+</a>            </div>
+            <div class="m-0">
+<div id="sidebar-social-link" class="d-flex">
+    <a class="social-link" href="https://bsky.app/profile/sharundaar.bsky.social" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z" style="fill:#fff;"/><clipPath id="_clip1"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z"/></clipPath><g clip-path="url(#_clip1)"><path d="M12,11.006c-0.9,-1.75 -3.35,-5.012 -5.628,-6.62c-2.183,-1.54 -3.015,-1.274 -3.561,-1.026c-0.631,0.284 -0.747,1.254 -0.747,1.824c0,0.571 0.313,4.678 0.517,5.364c0.675,2.266 3.074,3.031 5.285,2.785c0.113,-0.016 0.228,-0.032 0.344,-0.046c-0.115,0.018 -0.229,0.033 -0.344,0.046c-3.239,0.481 -6.116,1.661 -2.343,5.861c4.15,4.297 5.688,-0.922 6.477,-3.567c0.789,2.645 1.697,7.676 6.403,3.567c3.533,-3.567 0.97,-5.38 -2.269,-5.861c-0.115,-0.012 -0.229,-0.028 -0.344,-0.046c0.116,0.014 0.231,0.03 0.344,0.046c2.211,0.246 4.61,-0.519 5.285,-2.785c0.204,-0.685 0.517,-4.794 0.517,-5.363c-0,-0.572 -0.116,-1.541 -0.747,-1.827c-0.546,-0.247 -1.378,-0.513 -3.561,1.027c-2.278,1.61 -4.728,4.872 -5.628,6.621Z" style="fill:#3088d4;fill-rule:nonzero;"/></g></svg>
+    </a>
+    <a class="social-link" href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a class="social-link" href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
 </div>
-
-<div class="row-fluid">
-        <div class="span8 offset2 article-content">
-            
-            <style>
+            </div>
+            </div>
+        </div>
+        <nav>
+            <ul class="list-unstyled ps-0 pt-4">
+  <li class="mb-1">
+    <div id="toc"><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#the-basics" title="The Basics">The Basics</a><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#platform-land" title="Platform land">Platform land</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#application-land" title="Application land">Application land</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#taking-a-step-back" title="Taking a step back">Taking a step back</a></li></ul></li></ul></div>
+  </div>
+            </ul>
+        </nav>
+        </div>
+    </aside>
+    <main class="container overflow-auto">
+      <div class="d-lg-none">
+      <div class="d-flex justify-content-between align-items-center">
+        <hgroup class="d-inline-flex align-items-center">
+        <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="./theme/images/tony-slurp.jpg">
+        <h1 class="flex-shrink-1">Sharundaar</h1>
+        </hgroup>
+        <button class="btn btn-dark d-lg-none m-2 d-flex align-items-center justify-content-center" 
+        type="button" 
+        data-bs-toggle="offcanvas" 
+        data-bs-target="#offcanvas-sidebar" 
+        aria-controls="offcanvas-sidebar">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="d-flex justify-content-between">
+        <div>
+<a class="social-link" href=".">
+<svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="24px" height="24px" viewBox="0 0 495.398 495.398"
+    xml:space="preserve">
+<g><g><g>
+    <path d="M487.083,225.514l-75.08-75.08V63.704c0-15.682-12.708-28.391-28.413-28.391c-15.669,0-28.377,12.709-28.377,28.391
+        v29.941L299.31,37.74c-27.639-27.624-75.694-27.575-103.27,0.05L8.312,225.514c-11.082,11.104-11.082,29.071,0,40.158
+        c11.087,11.101,29.089,11.101,40.172,0l187.71-187.729c6.115-6.083,16.893-6.083,22.976-0.018l187.742,187.747
+        c5.567,5.551,12.825,8.312,20.081,8.312c7.271,0,14.541-2.764,20.091-8.312C498.17,254.586,498.17,236.619,487.083,225.514z"/>
+    <path d="M257.561,131.836c-5.454-5.451-14.285-5.451-19.723,0L72.712,296.913c-2.607,2.606-4.085,6.164-4.085,9.877v120.401
+        c0,28.253,22.908,51.16,51.16,51.16h81.754v-126.61h92.299v126.61h81.755c28.251,0,51.159-22.907,51.159-51.159V306.79
+        c0-3.713-1.465-7.271-4.085-9.877L257.561,131.836z"/>
+    </g></g></g>
+</svg>
+</a>        </div>
+        <div class="m-0">
+<div id="sidebar-social-link" class="d-flex">
+    <a class="social-link" href="https://bsky.app/profile/sharundaar.bsky.social" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z" style="fill:#fff;"/><clipPath id="_clip1"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z"/></clipPath><g clip-path="url(#_clip1)"><path d="M12,11.006c-0.9,-1.75 -3.35,-5.012 -5.628,-6.62c-2.183,-1.54 -3.015,-1.274 -3.561,-1.026c-0.631,0.284 -0.747,1.254 -0.747,1.824c0,0.571 0.313,4.678 0.517,5.364c0.675,2.266 3.074,3.031 5.285,2.785c0.113,-0.016 0.228,-0.032 0.344,-0.046c-0.115,0.018 -0.229,0.033 -0.344,0.046c-3.239,0.481 -6.116,1.661 -2.343,5.861c4.15,4.297 5.688,-0.922 6.477,-3.567c0.789,2.645 1.697,7.676 6.403,3.567c3.533,-3.567 0.97,-5.38 -2.269,-5.861c-0.115,-0.012 -0.229,-0.028 -0.344,-0.046c0.116,0.014 0.231,0.03 0.344,0.046c2.211,0.246 4.61,-0.519 5.285,-2.785c0.204,-0.685 0.517,-4.794 0.517,-5.363c-0,-0.572 -0.116,-1.541 -0.747,-1.827c-0.546,-0.247 -1.378,-0.513 -3.561,1.027c-2.278,1.61 -4.728,4.872 -5.628,6.621Z" style="fill:#3088d4;fill-rule:nonzero;"/></g></svg>
+    </a>
+    <a class="social-link" href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a class="social-link" href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
+</div>
+        </div>
+      </div>
+      </div>
+  <article class="mb-4 mt-4">
+    <header class="mb-4">
+      <h1 class="mb-0">
+        <a href="./unreal-ui-input-routing.html" rel="bookmark"
+           title="Permalink to Unreal UI Input Routing">
+           Unreal UI Input Routing
+        </a>
+      </h1>
+      <time datetime="2022-11-13T00:00:00-05:00">13 Nov 2022</time>
+      
+    </header>
+    <div data-bs-spy="scroll" data-bs-target="#toc">
+    <style>
 table thead:first-child tr:first-child th:first-child {
     width: 33%;
 }
@@ -88,38 +137,45 @@ table tbody td:last-child {
     overflow-x: auto
 }
 </style>
-
 <p>Input handling in UI is an interesting subject. It often gets more complicated than gameplay code, and there's as many ways of "doing something" in a menu as there are designers in the world. As an engineer you're probably going to encounter a situation where the eldritch hunger of your UX person is too strong to satiate, and you'll have to put that button down, and you'll click the button, and nothing's going to happen...</p>
 <p>At that point, since you can't really tell them that this very simple thing that should obviously work actually doesn't, you're gonna need to understand what the heck happens between you clicking your mouse, and that UMG widget "Click" node firing.</p>
 <p>So let's just do that ! Step by step, we'll start from the very low level and see how each layers has a thing to say on your inputs :)</p>
-<h1>The Basics</h1>
+<h1 id="the-basics">The Basics</h1>
 <p>First step on our journey, we need a starting point. Going from the old saying I just made up <code>If something happens, some code somewhere must run</code>, we want some place to put a breakpoint. So let's find a nice test case that will give us a predictable callstack to work from.</p>
 <p>A simple use case that unreal supports well is the clickable button ! Using UMG, the button you can drag and drop is of the UButton class. If we look that class up and check the structure, we can see a bunch of "SlateHandle..." functions.</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="o">/**</span><span class="w"> </span><span class="n">Handle</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">actual</span><span class="w"> </span><span class="n">click</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">slate</span><span class="w"> </span><span class="nb">and</span><span class="w"> </span><span class="n">forward</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="o">*/</span>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">    </span><span class="o">/**</span><span class="w"> </span><span class="n">Handle</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">actual</span><span class="w"> </span><span class="n">click</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">slate</span><span class="w"> </span><span class="nb">and</span><span class="w"> </span><span class="n">forward</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="o">*/</span>
 <span class="w">    </span><span class="n">FReply</span><span class="w"> </span><span class="n">SlateHandleClicked</span><span class="p">();</span>
 <span class="w">    </span><span class="n">void</span><span class="w"> </span><span class="n">SlateHandlePressed</span><span class="p">();</span>
 <span class="w">    </span><span class="n">void</span><span class="w"> </span><span class="n">SlateHandleReleased</span><span class="p">();</span>
 <span class="w">    </span><span class="n">void</span><span class="w"> </span><span class="n">SlateHandleHovered</span><span class="p">();</span>
 <span class="w">    </span><span class="n">void</span><span class="w"> </span><span class="n">SlateHandleUnhovered</span><span class="p">();</span>
-</code></pre></div>
-
+</code></pre></div></td></tr></table></div>
 <p>As the comment wisely says, those are the entry points from Slate that are directly forwarded to the blueprint events. This gives us a straightforward place to put a breakpoint ! Let's make a simple menu with a button, show it, and switch the game to UI input mode. This will give us a callstack that we can study !</p>
 <div class="tony-question">
-<img src="/images/tony-think-smol.png">Wait, UI input mode ? What is this about ?<br>
+<img src="/images/tony-think-smol.png"/>Wait, UI input mode ? What is this about ?<br/>
 <span>Good question ! Any tutorial kinda tells you to do that without really talking about what it implies :) But we'll see first hand what exactly happens later. Just trust me for now !</span>
 </div>
-
 <p>Here's the menu we'll be working from, you can really do whatever you want, the only thing we need is a UButton instance. We don't even need to bind any event to it !</p>
-<p><img alt="We see a very simple menu here, a canvas panel containing a vertical box, containing a &quot;Main Menu&quot; textbox, followed by 2 buttons, one with the text &quot;Other Button&quot; and an other one with the text &quot;Close Menu&quot;" class="center" src="/images/InputRouting/test-menu.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt='We see a very simple menu here, a canvas panel containing a vertical box, containing a "Main Menu" textbox, followed by 2 buttons, one with the text "Other Button" and an other one with the text "Close Menu"' class="img-fluid" src="./images/InputRouting/test-menu.png" title='We see a very simple menu here, a canvas panel containing a vertical box, containing a "Main Menu" textbox, followed by 2 buttons, one with the text "Other Button" and an other one with the text "Close Menu"'/></p>
+</p>
 <p>In the level blueprint I put some boilerplate code to show the menu, set us in the right mode, and show the cursor. Feel free to copy it here :)</p>
-<iframe src="https://blueprintue.com/render/zigoa3o1/" width="100%" height="600px" scrolling="no" allowfullscreen></iframe>
-
+<iframe allowfullscreen="" height="600px" scrolling="no" src="https://blueprintue.com/render/zigoa3o1/" width="100%"></iframe>
 <p>Alright, if we press play and the Tab key, we should see our menu appear ! On top of it we have full mouse control :) 
-<br>Perfect to click our little button.</p>
-<p><img alt="In game in the default unreal scene with our menu popped up" class="center" src="/images/InputRouting/test-menu-ingame.png"></p>
+<br/>Perfect to click our little button.</p>
+<p>
+<p class="text-center img-wrapper"><img alt="In game in the default unreal scene with our menu popped up" class="img-fluid" src="./images/InputRouting/test-menu-ingame.png" title="In game in the default unreal scene with our menu popped up"/></p>
+</p>
 <p>Here we only have to put our breakpoint in the SlateHandleClicked function of the UButton class, click our button, and pray we actually break 🙏</p>
 <p>Aaaaand...</p>
-<p><img alt="Rider shown with the lil' arrow that says the application is stopped executing the SlateHandleClicked function" class="center" src="/images/InputRouting/slate-handle-clicked-breakpoint.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="Rider shown with the lil' arrow that says the application is stopped executing the SlateHandleClicked function" class="img-fluid" src="./images/InputRouting/slate-handle-clicked-breakpoint.png" title="Rider shown with the lil' arrow that says the application is stopped executing the SlateHandleClicked function"/></p>
+</p>
 <p>We got a hit !</p>
 <p>So, what does our callstack looks like 👀
 I've inlined some comments, feel free to peruse.</p>
@@ -161,7 +217,7 @@ I've inlined some comments, feel free to peruse.</p>
 </tr>
 <tr>
 <td></td>
-<td><div class="highlight"><pre><code><lambda_51e270ca99ea7ce852539efd04dd453f>::operator()[...] SlateApplication.cpp:4959</code></pre></div></td>
+<td><div class="highlight"><pre><code><lambda_51e270ca99ea7ce852539efd04dd453f>::operator()[...] SlateApplication.cpp:4959</lambda_51e270ca99ea7ce852539efd04dd453f></code></pre></div></td>
 </tr>
 <tr>
 <td></td>
@@ -177,7 +233,7 @@ I've inlined some comments, feel free to peruse.</p>
 </tr>
 <tr>
 <td>Application event 😊</td>
-<td><div class="highlight"><pre><code>FSlateApplication::OnMouseUp(Type,TVector2<double>) SlateApplication.cpp:5458</code></pre></div></td>
+<td><div class="highlight"><pre><code>FSlateApplication::OnMouseUp(Type,TVector2<double>) SlateApplication.cpp:5458</double></code></pre></div></td>
 </tr>
 <tr>
 <td>Interesting stuff here 👀</td>
@@ -185,7 +241,7 @@ I've inlined some comments, feel free to peruse.</p>
 </tr>
 <tr>
 <td></td>
-<td><div class="highlight"><pre><code>FWindowsApplication::DeferMessage(TSharedPtr<FWindowsWindow,1> &amp;,HWND__ *,unsigned int,unsigned long long,long long,int,int,unsigned int) WindowsApplication.cpp:2699</code></pre></div></td>
+<td><div class="highlight"><pre><code>FWindowsApplication::DeferMessage(TSharedPtr<fwindowswindow,1> &amp;,HWND__ *,unsigned int,unsigned long long,long long,int,int,unsigned int) WindowsApplication.cpp:2699</fwindowswindow,1></code></pre></div></td>
 </tr>
 <tr>
 <td>More interesting stuff 👀</td>
@@ -204,7 +260,7 @@ I've inlined some comments, feel free to peruse.</p>
 <td><div class="highlight"><pre><code>[... Abridged for clarity ...]</code></pre></div></td>
 </tr>
 <tr>
-<td>The windows event pump,<p> we don't care much below this</td>
+<td>The windows event pump,<p> we don't care much below this</p></td>
 <td><div class="highlight"><pre><code>[Inlined] WinPumpMessages() WindowsPlatformApplicationMisc.cpp:109</code></pre></div></td>
 </tr>
 <tr>
@@ -238,7 +294,8 @@ I've inlined some comments, feel free to peruse.</p>
 </tbody>
 </table>
 <p>Alright ! Lots to talk about, and this is just the MouseUp event, you'll see similar callstacks for all other events with some slight differences but the idea is the same.</p>
-<h2>Platform land</h2>
+<div class="section" id="platform-land">
+<h2 id="platform-land">Platform land</h2>
 <p>As you can see the inputs are starting at the OS level, in this case Windows, when you press a button or the mouse, it pushes a WM_ event to a queue that the application, our friend the Unreal Engine, can pump and do stuff with.</p>
 <p>You can see that happening in the ProcessMessage function where a big ol' switch decides what goes where. If you go take a look you'll see special mentions for the ALT+F4 boy 👀, you should also take a look at the WM_INPUT event, lots of dark magic there... Anyway, generally you'll see a whole bunch of stuff a standard windows application is supposed to support, and most events ends up calling this <code>DeferMessage</code> function.</p>
 <p><code>DeferMessage</code> doesn't matter much here, its main goal is to make sure the rest of the stack goes on the Game thread, it's a fairly standard setup where it queues messages when needed, and the messages get dequeued elsewhere when the application knows it's safe to do so.</p>
@@ -251,21 +308,22 @@ I've inlined some comments, feel free to peruse.</p>
 <p>We're not going to go through all windows messages, but if you want to know more about how the various OS interaction happens, I highly recommend you check these out !</p>
 <p>At this point we're reaching the end of the OS layer and entering application layer land. You'll see that most of those events ends up calling stuff on this <code>MessageHandler</code> guy, and in our case it's going to be our friend the SlateApplication 😁</p>
 <div class="tony-question">
-I actually went and checked who sets CurrentApplication, and FSlateApplication actually sets it itself on creation<br>
+I actually went and checked who sets CurrentApplication, and FSlateApplication actually sets it itself on creation<br/>
 <div class="highlight"><pre>
-TSharedRef<FSlateApplication> FSlateApplication::Create(const TSharedRef<class GenericApplication>& InPlatformApplication)
+TSharedRef<fslateapplication> FSlateApplication::Create(const TSharedRef<class genericapplication="">&amp; InPlatformApplication)
 {
     [... abridged ...]
     CurrentApplication = MakeShareable( new FSlateApplication() );
-    PlatformApplication->SetMessageHandler( CurrentApplication.ToSharedRef() );
+    PlatformApplication-&gt;SetMessageHandler( CurrentApplication.ToSharedRef() );
     [... abridged ...]
 }
-</pre></div>
+</class></fslateapplication></pre></div>
 
 Fun stuff 😁
 </div>
-
-<h2>Application land</h2>
+</div>
+<div class="section" id="application-land">
+<h2 id="application-land">Application land</h2>
 <p>Tap on the back ! We're out of Platform space and entering the livelier Application space 👀 We're not exactly home as Unreal don't expect you to directly interact with this level when building a menu, we're somewhat in the garden... You've probably seen the FSlateApplication throw rocks at your window as your SButton son opened the door to receive his MouseUp message, then walking to you in the kitchen to tell you he's been clicked while you prepare delicious cookies... Ok, the metaphor has escaped me let's move on ! Let's continue our descent ! </p>
 <p>Here's the cut down callstack we have left, I've taken the liberty of removing lambdas and indirection we don't care much about :</p>
 <table>
@@ -298,202 +356,50 @@ Fun stuff 😁
 </tr>
 <tr>
 <td>Application starts here !</td>
-<td><div class="highlight"><pre><code>FSlateApplication::OnMouseUp(Type,TVector2<double>) SlateApplication.cpp:5458</code></pre></div></td>
+<td><div class="highlight"><pre><code>FSlateApplication::OnMouseUp(Type,TVector2<double>) SlateApplication.cpp:5458</double></code></pre></div></td>
 </tr>
 </tbody>
 </table>
 <p>Interestingly the flow here is relatively simple ! Here it is schematized :</p>
-<p><img alt="FlowGraph of the mouse up event, first the slate application receives a mouse up event, it searches for the widget under the mouse and calls OnMouseUp on it, if the element returns Handled we're done ! Otherwise we get the widgets parent " class="center" src="/images/InputRouting/mouse-up-flow-graph.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="FlowGraph of the mouse up event, first the slate application receives a mouse up event, it searches for the widget under the mouse and calls OnMouseUp on it, if the element returns Handled we're done ! Otherwise we get the widgets parent " class="img-fluid" src="./images/InputRouting/mouse-up-flow-graph.png" title="FlowGraph of the mouse up event, first the slate application receives a mouse up event, it searches for the widget under the mouse and calls OnMouseUp on it, if the element returns Handled we're done ! Otherwise we get the widgets parent "/></p>
+</p>
 <p>So coming from the Slate Application, we find the element under our cursor, call the OnMouseButtonUp function common to all SWidget on it, the SButton specialisation does some shenanigans that dispatches it to the UMG UButton, that then dispatches it to the blueprint 😊 Simple enough !</p>
 <p>Well, of course the devil is in the details. In FSlateApplication::ProcessMouseButtonUpEvent we can see that an InputPreProcessor might decide to interrupt the flow :</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="c1">// Input preprocessors get the first chance at the input</span>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">    </span><span class="c1">// Input preprocessors get the first chance at the input</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">InputPreProcessors</span><span class="p">.</span><span class="n">HandleMouseButtonUpEvent</span><span class="p">(</span><span class="o">*</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">MouseEvent</span><span class="p">))</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">true</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
-</code></pre></div>
-
+</code></pre></div></td></tr></table></div>
 <div class="tony-question">
 I recommend you check in your project if you have something in there, it's always good to know 👀
 </div>
-
 <p>The routing could fail to find your button, it's possible that something below your button (or widget) reply that the even is handled before it got a chance to bubble to you ! In which case it can get a bit hard to track because of the recursive nature of <code>FSlateApplication::RoutePointerUpEvent</code>, I recommend setting a breakpoint that detects when the reply is handled, you can then check who decided to handle the event in your stead 😈</p>
 <p>Now the last piece is the SButton, as I've stated earlier this is actually starting to be your home ! It's pretty easy to write a replacement to SButton and just plop it where you need it. If we take a quick look at SButton::OnMouseButtonUp we can see a whole lot of stuff happens there that might result in ExecuteOnClick not happening, for example if we set the click method to MouseDown, or if we moved the mouse outside the button between the mouse down and mouse up event, or other stuff ! Those are all design decisions that comes from the general requirement Epic wanted for their SButton ! You're free to rewrite an equivalent class that actually fit your requirement, and as we'll see that's exactly what happens with the CommonUI buttons 😲</p>
-<h2>Taking a step back</h2>
+</div>
+<div class="section" id="taking-a-step-back">
+<h2 id="taking-a-step-back">Taking a step back</h2>
 <p>Alright ! We've seen a lot of things and I'd like to recap. We've seen that there's more or less 3 layers that any physical inputs goes through before reaching the high level user space. I've recapped them here :</p>
-<p><img alt="An image showing the 3 input layers we've encountered thus far, Platform, Application and User, each layer recaps the functions that belongs to them" class="center" src="/images/InputRouting/unreal-input-layers.png"></p>
+<p>
+<p class="text-center img-wrapper"><img alt="An image showing the 3 input layers we've encountered thus far, Platform, Application and User, each layer recaps the functions that belongs to them" class="img-fluid" src="./images/InputRouting/unreal-input-layers.png" title="An image showing the 3 input layers we've encountered thus far, Platform, Application and User, each layer recaps the functions that belongs to them"/></p>
+</p>
 <p>Of course this isn't the whole picture, a few questions rises up, what was this UI InputMode about ? What is it here that decides if the input goes to the game or to slate ? We've seen that there's nothing particularly game related in the code path we saw, but we know you can bind stuff to left click. So what's different in the "game" flow ?</p>
 <p>I think this article has been long enough, we'll cover those questions in the next one 👀 Stay tuned !</p>
-
-
-             
- 
-            
-            
-            
-
-
-
-
-
-
-
-            <hr/>
-            <aside>
-            <nav>
-            <ul class="articles-timeline">
-                <li class="previous-article">« <a href="/porting-iq-2d-sdf-shadertoys-to-unreal-part-4.html" title="Previous: Porting IQ 2D SDF Shadertoys to Unreal - Part 4">Porting IQ 2D SDF Shadertoys to Unreal - Part 4</a></li>
-                <li class="next-article"><a href="/a-quick-dive-in-unreal-windows-contextual-commands.html" title="Next: A Quick Dive in Unreal Windows Contextual Commands">A Quick Dive in Unreal Windows Contextual Commands</a> »</li>
-            </ul>
-            </nav>
-            </aside>
-        </div>
-        <section id="article-sidebar" class="span2">
-            <h4>Published</h4>
-            <time itemprop="dateCreated" datetime="2022-11-13T00:00:00-05:00">Sun 13 November 2022</time>
-            <h4>Category</h4>
-            <a class="category-link" href="/categories.html#articles-ref">Articles</a>
-<h4>Contact</h4>
-<div id="sidebar-social-link">
-    <a href="https://twitter.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Twitter" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1da1f3"/><path fill="#fff" d="M437 152a72 72 0 0 1-40 12 72 72 0 0 0 32-40 72 72 0 0 1-45 17 72 72 0 0 0-122 65 200 200 0 0 1-145-74 72 72 0 0 0 22 94 72 72 0 0 1-32-7 72 72 0 0 0 56 69 72 72 0 0 1-32 1 72 72 0 0 0 67 50 200 200 0 0 1-105 29 200 200 0 0 0 309-179 200 200 0 0 0 35-37"/></svg>
-    </a>
-    <a href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
-    </a>
-    <a href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
-        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
-    </a>
 </div>
-            
-
-
-
-
-
-            
-
-
-
-
-
-        </section>
-</div>
-</article>
-<!-- Root element of PhotoSwipe. Must have class pswp. -->
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe.
-         It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-        <!-- Container that holds slides.
-            PhotoSwipe keeps only 3 of them in the DOM to save memory.
-            Don't modify these 3 pswp__item elements, data is added later on. -->
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                <!--  Controls are self-explanatory. Order can be changed. -->
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
-                <!-- element will get class pswp__preloader--active when preloader is running -->
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                      <div class="pswp__preloader__cut">
-                        <div class="pswp__preloader__donut"></div>
-                      </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
     </div>
-
-</div>                    </div>
-                    <div class="span1"></div>
-                </div>
-            </div>
-        </div>
-<footer>
-
-
-
-
-    <div id="fpowered">
-        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
-        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
-    </div>
-</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-        <script src="/theme/js/elegant.prod.9e9d5ce754.js"></script>
-        <script>
-            function validateForm(query)
-            {
-                return (query.length > 0);
-            }
-        </script>
-
-    <script>
-    (function () {
-        if (window.location.hash.match(/^#comment-\d+$/)) {
-            $('#comment_thread').collapse('show');
-        }
-    })();
-    window.onhashchange=function(){
-        if (window.location.hash.match(/^#comment-\d+$/))
-            window.location.reload(true);
-    }
-    $('#comment_thread').on('shown', function () {
-        var link = document.getElementById('comment-accordion-toggle');
-        var old_innerHTML = link.innerHTML;
-        $(link).fadeOut(200, function() {
-            $(this).text('Click here to hide comments').fadeIn(200);
-        });
-        $('#comment_thread').on('hidden', function () {
-            $(link).fadeOut(200, function() {
-                $(this).text(old_innerHTML).fadeIn(200);
-            });
-        })
-    })
-</script>
-
-    </body>
-    <!-- Theme: Elegant built for Pelican
-        License : MIT -->
+  </article>
+    </main>
+    <footer class="fixed-bottom py-1 d-flex flex-wrap justify-content-center align-items-center border-top bg-dark">
+        <a href="#" class="text-center link-body-emphasis text-decoration-none rounded">Back to top</a>
+        <!-- <address class="col-md-4 text-body-secondary text-end m-1">
+          Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>,
+          which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+        </address> -->
+    </footer>
+  </body>
 </html>
