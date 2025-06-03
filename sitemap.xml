@@ -6,7 +6,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>/</loc>
-<lastmod>2025-06-02T21:12:50-00:00</lastmod>
+<lastmod>2025-06-03T08:53:55-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -20,35 +20,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>/archives.html</loc>
-<lastmod>2025-06-02T21:12:50-00:00</lastmod>
+<lastmod>2025-06-03T08:53:55-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>/author/sharundaar.html</loc>
-<lastmod>2025-06-02T21:12:50-00:00</lastmod>
+<lastmod>2025-06-03T08:53:55-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>/authors.html</loc>
-<lastmod>2025-06-02T21:12:50-00:00</lastmod>
+<lastmod>2025-06-03T08:53:55-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>/categories.html</loc>
-<lastmod>2025-06-02T21:12:50-00:00</lastmod>
+<lastmod>2025-06-03T08:53:55-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>/category/articles.html</loc>
-<lastmod>2025-06-02T21:12:50-00:00</lastmod>
+<lastmod>2025-06-03T08:53:55-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -90,7 +90,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>/tags.html</loc>
-<lastmod>2025-06-02T21:12:50-00:00</lastmod>
+<lastmod>2025-06-03T08:53:55-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -105,6 +105,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>/unreal-ui-input-routing.html</loc>
 <lastmod>2022-11-13T00:00:00-05:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>/visualizing-ui-issues-using-show-flags.html</loc>
+<lastmod>2025-06-02T00:00:00-04:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>

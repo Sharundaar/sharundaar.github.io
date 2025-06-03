@@ -9,10 +9,10 @@
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
       <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-      <script src="../theme/scripts/dropdown.js" defer></script>
-      <script src="../theme/scripts/copy-to-clipboard.js" defer></script>
-      <link rel="stylesheet" type="text/css" href="../theme/css/style.css" />
-      <link rel="stylesheet" type="text/css" href="../theme/css/code-highlights.css" />
+      <script src="./theme/scripts/dropdown.js" defer></script>
+      <script src="./theme/scripts/copy-to-clipboard.js" defer></script>
+      <link rel="stylesheet" type="text/css" href="./theme/css/style.css" />
+      <link rel="stylesheet" type="text/css" href="./theme/css/code-highlights.css" />
       <meta property="og:type" content="article" />
       <meta name="twitter:card" content="summary">
 
@@ -22,7 +22,7 @@
 <meta name="keywords" content=", Articles, " />
 
 <meta property="og:title" content="Visualizing UI issues using Show Flags "/>
-<meta property="og:url" content="../drafts/visualizing-ui-issues-using-show-flags.html" />
+<meta property="og:url" content="./visualizing-ui-issues-using-show-flags.html" />
 <meta property="og:description" content="Using a custom show flag and some debug draw code to visually track UI issues" />
 <meta property="og:site_name" content="Sharundaar&#39;s Blog" />
 <meta property="og:article:author" content="Sharundaar" />
@@ -49,12 +49,12 @@
       <div class="sticky-top ms-4">
         <div>
             <hgroup class="d-inline-flex align-items-center">
-                <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="../theme/images/tony-slurp.jpg">
+                <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="./theme/images/tony-slurp.jpg">
                 <h1 class="flex-shrink-1">Sharundaar</h1>
             </hgroup>
             <div class="d-flex justify-content-between">
             <div>
-<a class="social-link" href="..">
+<a class="social-link" href=".">
 <svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
     width="24px" height="24px" viewBox="0 0 495.398 495.398"
     xml:space="preserve">
@@ -97,7 +97,7 @@
       <div class="d-lg-none">
       <div class="d-flex justify-content-between align-items-center">
         <hgroup class="d-inline-flex align-items-center">
-        <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="../theme/images/tony-slurp.jpg">
+        <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="./theme/images/tony-slurp.jpg">
         <h1 class="flex-shrink-1">Sharundaar</h1>
         </hgroup>
         <button class="btn btn-dark d-lg-none m-2 d-flex align-items-center justify-content-center" 
@@ -110,7 +110,7 @@
       </div>
       <div class="d-flex justify-content-between">
         <div>
-<a class="social-link" href="..">
+<a class="social-link" href=".">
 <svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
     width="24px" height="24px" viewBox="0 0 495.398 495.398"
     xml:space="preserve">
@@ -143,7 +143,7 @@
   <article class="mb-4 mt-4">
     <header class="mb-4">
       <h1 class="mb-0">
-        <a href="../drafts/visualizing-ui-issues-using-show-flags.html" rel="bookmark"
+        <a href="./visualizing-ui-issues-using-show-flags.html" rel="bookmark"
            title="Permalink to Visualizing UI issues using Show Flags">
            Visualizing UI issues using Show Flags
         </a>
@@ -152,8 +152,8 @@
       
     </header>
     <div data-bs-spy="scroll" data-bs-target="#toc">
-    <p>In Unreal the other engineering team use show flags to enable debug drawing, this feature is seldom use in UI and I was exploring if we could leverage that debug draw layer to dynamically visualize UI issues at runtime.</p>
-<p>For this experiment we'll be making a simple validator to check if some displayed FText is properly localized according to some arbitrary rule and we'll visualize it by drawing a colored square around our text widget by creating a custom show flag ! So let's do it ☺</p>
+    <p>In Unreal the other engineering teams use show flags to enable debug drawing, this feature is seldom used in UI and I was exploring if we could leverage that debug draw layer to dynamically visualize UI issues at runtime.</p>
+<p>For this experiment we'll be making a simple validator to check if some displayed FText is properly localized according to some arbitrary rule and we'll visualize it by drawing a colored square around our text widget by creating a custom show flag ! So let's do it 😀</p>
 <div class="section" id="step-1-scaffolding">
 <h2 id="step-1-scaffolding">Step 1: Scaffolding</h2>
 <p>First step is always the scaffolding, we'll be making a very simple subsystem that'll take care of registering our draw function and holding any necessary data we might need.</p>
@@ -239,14 +239,14 @@
 
 <span class="p">}</span>
 </code></pre></div></td></tr></table></div>
-<p>Alright, with this we're ready to make write some debug code ! We'll do our event registering in the Initialize function, and we'll use the namespace for any static variables and function we need, it's good hygien to avoid any unity build issues later down the line.</p>
+<p>Alright, with this we're ready to write some debug code ! We'll do our event registering in the Initialize function, and we'll use the namespace for any static variables and functions we need, it's good hygiene to avoid any unity build issues later down the line.</p>
 <p>Let's move on to making our custom show flag :)</p>
 </div>
 <div class="section" id="step-2-custom-showflag">
 <h2 id="step-2-custom-showflag">Step 2: Custom ShowFlag</h2>
-<p>If you've never seen or used them, show flags are simple bit flag globally available to enable or disable specific render features, like the atmosphere, the sky, all static meshes... You can also use them to render debug visuals like the camera frustrum, or colision shapes for example. They're all available in the console by typing ShowFlag or in the editor viewport under the Show button :</p>
+<p>If you've never seen or used them, show flags are simple bit flag globally available to enable or disable specific render features, like the atmosphere, the sky, all static meshes... You can also use them to render debug visuals like the camera frustum, or collision shapes for example. They're all available in the console by typing ShowFlag or in the editor viewport under the Show button :</p>
 <p>
-<p class="text-center img-wrapper"><img alt="Show flags menu in the unreal editor viewport" class="img-fluid" src="../images/UIDebugShowFlag/show-flags-list.webp" title="Show flags menu in the unreal editor viewport"/></p>
+<p class="text-center img-wrapper"><img alt="Show flags menu in the unreal editor viewport" class="img-fluid" src="./images/UIDebugShowFlag/show-flags-list.webp" title="Show flags menu in the unreal editor viewport"/></p>
 </p>
 <p>The nice thing is that unreal provides a very simple construct to make arbitrary custom ones ! It uses the <code>TCustomShowFlag</code> struct to automatically create and register our show flag. We'll put ours in the local namespace we made:</p>
 <div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
@@ -376,9 +376,12 @@
 </code></pre></div></td></tr></table></div>
 <p>With this written, if we enable our show flag you'll see our box render on top of everything !</p>
 <p>
-<p class="text-center img-wrapper"><img alt="Our box item being rendered on top of the world" class="img-fluid" src="../images/UIDebugShowFlag/simple-draw-procedure.webp" title="Our box item being rendered on top of the world"/></p>
+<p class="text-center img-wrapper"><img alt="Our box item being rendered on top of the world" class="img-fluid" src="./images/UIDebugShowFlag/simple-draw-procedure.webp" title="Our box item being rendered on top of the world"/></p>
 </p>
-<p>You'll notice that the coordinate system here is with respect to the viewport we render inside accounting for DPI. Our box is positionned at the pixel coordinate {100, 100} * DPIScale and has the pixel size {80, 45} * DPIScale. It's important to understand in which coordinate system we're working so we can do the right transformation when we'll work with widgets later.</p>
+<p>You'll notice that the coordinate system here is with respect to the viewport we render inside accounting for DPI. Our box is positioned at the pixel coordinate {100, 100} * DPIScale and has the pixel size {80, 45} * DPIScale. It's important to understand in which coordinate system we're working so we can do the right transformation when we'll work with widgets later.</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Box with length indications" class="img-fluid" src="./images/UIDebugShowFlag/simple-draw-procedure-lengths.webp" title="Box with length indications"/></p>
+</p>
 <p>I said earlier that we want to draw text, let's write some shenanigans centered in our box here :</p>
 <div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -422,7 +425,7 @@
 <p>The <code>CreateFontRenderInfo</code> is used so the <code>DrawText</code> procedures adds a shadow to help legibility, finally the DrawText function has self explanatory parameters.</p>
 <p>And that's it ! We have a nicely centered text in our drawn box :</p>
 <p>
-<p class="text-center img-wrapper"><img alt="Our box is now agremented by some shenanigans, we're glad" class="img-fluid" src="../images/UIDebugShowFlag/less-simple-draw-procedure.webp" title="Our box is now agremented by some shenanigans, we're glad"/></p>
+<p class="text-center img-wrapper"><img alt="Our box is now brighten up by some shenanigans, we're glad" class="img-fluid" src="./images/UIDebugShowFlag/less-simple-draw-procedure.webp" title="Our box is now brighten up by some shenanigans, we're glad"/></p>
 </p>
 <p>Ok we're done with the fun part, now let's work on the useful part :)</p>
 </div>
@@ -430,15 +433,15 @@
 <h2 id="step-5-gathering-widgets">Step 5: Gathering Widgets</h2>
 <p>Now that we have a way to draw things, we want to show something. First I'll build a simple test widget (named <code>W_TextLocalizationDemo</code>) just so we have data to work with, it looks like this in the UMG editor :</p>
 <p>
-<p class="text-center img-wrapper"><img alt="Demo widget to show different localization issues" class="img-fluid" src="../images/UIDebugShowFlag/w_textlocalizationdemo.webp" title="Demo widget to show different localization issues"/></p>
+<p class="text-center img-wrapper"><img alt="Demo widget to show different localization issues" class="img-fluid" src="./images/UIDebugShowFlag/w_textlocalizationdemo.webp" title="Demo widget to show different localization issues"/></p>
 </p>
 <p>Just a couple of text block, there's also an animation on the Bouncy Text so it moves around. Here's a simple graph to spawn it, dump this in the level blueprint :</p>
 <p>
-<p class="text-center img-wrapper"><img alt="Level blueprint to spawn our debug widget" class="img-fluid" src="../images/UIDebugShowFlag/level-blueprint.webp" title="Level blueprint to spawn our debug widget"/></p>
+<p class="text-center img-wrapper"><img alt="Level blueprint to spawn our debug widget" class="img-fluid" src="./images/UIDebugShowFlag/level-blueprint.webp" title="Level blueprint to spawn our debug widget"/></p>
 </p>
 <p>From here when you press play and enable our custom show flag you should see the following :</p>
 <p>
-<p class="text-center img-wrapper"><img alt="Showing the demo widget with the shenanigan red box on top" class="img-fluid" src="../images/UIDebugShowFlag/gracious-widget-with-shenanigans.webp" title="Showing the demo widget with the shenanigan red box on top"/></p>
+<p class="text-center img-wrapper"><img alt="Showing the demo widget with the shenanigan red box on top" class="img-fluid" src="./images/UIDebugShowFlag/gracious-widget-with-shenanigans.webp" title="Showing the demo widget with the shenanigan red box on top"/></p>
 </p>
 <p>Ok ! We have a widget showing up, our debug view still draws on top of them, we're ready to gather what we need and overlay debug information on top of our UI !</p>
 <p>Here the nice thing to know is that UMG works with UWidget's, specifically widget's that are UObject. This means we can gather all existing instances using <code>TObjectIterator</code> (note that you shouldn't <em>usually</em> do this, but we're making an exception here. If it gets too slow we can always accelerate it later)</p>
@@ -701,7 +704,7 @@
 </div>
 <div class="section" id="step-6-overlay-our-widgets">
 <h2 id="step-6-overlay-our-widgets">Step 6: Overlay our widgets</h2>
-<p>Alright ! At this point we have all the information we need to overlay a nice box on our textblocks, remember what I said about coordinates system ? The debug canvas is drawn in the <em>viewport</em> space. Which means that thanks to the viewport geometry we grabbed, we can trivially transform the widget's geometry in our canvas space !</p>
+<p>Alright ! At this point we have all the information we need to overlay a nice box on our text blocks, remember what I said about coordinates system ? The debug canvas is drawn in the <em>viewport</em> space. Which means that thanks to the viewport geometry we grabbed, we can trivially transform the widget's geometry in our canvas space !</p>
 <p>Look at this :</p>
 <div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
@@ -755,7 +758,7 @@
 </code></pre></div></td></tr></table></div>
 <p>Thanks to the work we did to parametrize our layout correctly there's almost no changes. With this recompiled we should see the following in game :</p>
 <p>
-<p class="text-center img-wrapper"><img alt="Our previous widget except each textblock is surrounded by a beautiful shenanigan box" class="img-fluid" src="../images/UIDebugShowFlag/gracious-widget-full-of-shenanigans.webp" title="Our previous widget except each textblock is surrounded by a beautiful shenanigan box"/></p>
+<p class="text-center img-wrapper"><img alt="Our previous widget except each text block is surrounded by a beautiful shenanigan box" class="img-fluid" src="./images/UIDebugShowFlag/gracious-widget-full-of-shenanigans.webp" title="Our previous widget except each text block is surrounded by a beautiful shenanigan box"/></p>
 </p>
 <p>Ain't that great ? We can overlay debug information on any widget we'd like now, and we can show any information we care about. Let's go back to our first goal then, let's validate that the displayed text is correctly localized and show info about that.</p>
 </div>
@@ -838,7 +841,7 @@
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Here we're properly localized, return the namespace and the key for vizualisation</span>
+<span class="w">    </span><span class="c1">// Here we're properly localized, return the namespace and the key for visualization</span>
 <span class="w">    </span><span class="n">TOptional</span><span class="o">&lt;</span><span class="n">FString</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FTextInspector</span><span class="o">::</span><span class="n">GetKey</span><span class="p">(</span><span class="n">Text</span><span class="p">);</span>
 <span class="w">    </span><span class="n">OutReason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FString</span><span class="o">::</span><span class="n">Printf</span><span class="p">(</span><span class="n">TEXT</span><span class="p">(</span><span class="s">"[%s, %s]"</span><span class="p">),</span><span class="w"> </span><span class="o">*</span><span class="n">NamespaceStr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">Key</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">TEXT</span><span class="p">(</span><span class="s">"&lt;unset&gt;"</span><span class="p">)));</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
@@ -892,13 +895,13 @@
 </span></code></pre></div></td></tr></table></div>
 <p>Not <em>that much</em> change. Let's compile and see the result :</p>
 <p>
-<p class="text-center img-wrapper"><img alt="We now see our widget with a bunch of useful data about their localization state" class="img-fluid" src="../images/UIDebugShowFlag/gracious-widget-full-of-useful-data.webp" title="We now see our widget with a bunch of useful data about their localization state"/></p>
+<p class="text-center img-wrapper"><img alt="We now see our widget with a bunch of useful data about their localization state" class="img-fluid" src="./images/UIDebugShowFlag/gracious-widget-full-of-useful-data.webp" title="We now see our widget with a bunch of useful data about their localization state"/></p>
 </p>
 </div>
 <div class="section" id="conclusion">
 <h2 id="conclusion">Conclusion</h2>
-<p>There we go ! We have generated an overlayed debug view that allows us to see dynamic information about the current state of localizable strings in the game's UI.</p>
-<p>The code is simple enough that we can improve it, cover more widget types, do more complex verifications. Hopefully it at least inspired you to write your own overlay vizualizer to check what widgets are misconfigured or need attention ! Why not one that shows texture size for example ?</p>
+<p>There we go ! We have generated an overlaid debug view that allows us to see dynamic information about the current state of localizable strings in the game's UI.</p>
+<p>The code is simple enough that we can improve it, cover more widget types, do more complex verifications. Hopefully it at least inspired you to write your own overlay visualizer to check what widgets are misconfigured or need attention ! Why not one that shows texture size for example ?</p>
 <p>As usual the full code is publicly available on my github under MIT : </p>
 <ul>
 <li><a href="https://github.com/Sharundaar/UECodeGolfing/blob/main/Source/TextLocalizationIndicatorSubsystem.h">TextLocalizationIndicatorSubsystem.h</a></li>
