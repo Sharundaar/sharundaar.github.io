@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+          <title>Sharundaar's Blog - Visualizing UI issues using Show Flags</title>
+      <meta charset="utf-8" />
+      <meta name="generator" content="Pelican" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+      <script src="../theme/scripts/dropdown.js" defer></script>
+      <script src="../theme/scripts/copy-to-clipboard.js" defer></script>
+      <link rel="stylesheet" type="text/css" href="../theme/css/style.css" />
+      <link rel="stylesheet" type="text/css" href="../theme/css/code-highlights.css" />
+      <meta property="og:type" content="article" />
+      <meta name="twitter:card" content="summary">
+
+      <meta property="og:type" content="article" />
+      <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content=", Articles, " />
+
+<meta property="og:title" content="Visualizing UI issues using Show Flags "/>
+<meta property="og:url" content="../drafts/visualizing-ui-issues-using-show-flags.html" />
+<meta property="og:description" content="Using a custom show flag and some debug draw code to visually track UI issues" />
+<meta property="og:site_name" content="Sharundaar&#39;s Blog" />
+<meta property="og:article:author" content="Sharundaar" />
+<meta property="og:article:published_time" content="2025-06-02T00:00:00-04:00" />
+<meta name="twitter:title" content="Visualizing UI issues using Show Flags ">
+<meta name="twitter:description" content="Using a custom show flag and some debug draw code to visually track UI issues">
+
+
+
+
+<script async data-id="101425269" src="//static.getclicky.com/js"></script>
+
+
+
+
+
+
+  </head>
+
+  <body class="bg-dark d-flex mb-4">
+    <aside class="sh-offcanvas sh-offcanvas-start d-lg-block me-4 bg-dark flex-shrink-0" tabindex="-1" id="offcanvas-sidebar" aria-labelledby="sidebarLabel">
+      <div class="sticky-top ms-4">
+        <div>
+            <hgroup class="d-inline-flex align-items-center">
+                <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="../theme/images/tony-slurp.jpg">
+                <h1 class="flex-shrink-1">Sharundaar</h1>
+            </hgroup>
+            <div class="d-flex justify-content-between">
+            <div>
+<a class="social-link" href="..">
+<svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="24px" height="24px" viewBox="0 0 495.398 495.398"
+    xml:space="preserve">
+<g><g><g>
+    <path d="M487.083,225.514l-75.08-75.08V63.704c0-15.682-12.708-28.391-28.413-28.391c-15.669,0-28.377,12.709-28.377,28.391
+        v29.941L299.31,37.74c-27.639-27.624-75.694-27.575-103.27,0.05L8.312,225.514c-11.082,11.104-11.082,29.071,0,40.158
+        c11.087,11.101,29.089,11.101,40.172,0l187.71-187.729c6.115-6.083,16.893-6.083,22.976-0.018l187.742,187.747
+        c5.567,5.551,12.825,8.312,20.081,8.312c7.271,0,14.541-2.764,20.091-8.312C498.17,254.586,498.17,236.619,487.083,225.514z"/>
+    <path d="M257.561,131.836c-5.454-5.451-14.285-5.451-19.723,0L72.712,296.913c-2.607,2.606-4.085,6.164-4.085,9.877v120.401
+        c0,28.253,22.908,51.16,51.16,51.16h81.754v-126.61h92.299v126.61h81.755c28.251,0,51.159-22.907,51.159-51.159V306.79
+        c0-3.713-1.465-7.271-4.085-9.877L257.561,131.836z"/>
+    </g></g></g>
+</svg>
+</a>            </div>
+            <div class="m-0">
+<div id="sidebar-social-link" class="d-flex">
+    <a class="social-link" href="https://bsky.app/profile/sharundaar.bsky.social" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z" style="fill:#fff;"/><clipPath id="_clip1"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z"/></clipPath><g clip-path="url(#_clip1)"><path d="M12,11.006c-0.9,-1.75 -3.35,-5.012 -5.628,-6.62c-2.183,-1.54 -3.015,-1.274 -3.561,-1.026c-0.631,0.284 -0.747,1.254 -0.747,1.824c0,0.571 0.313,4.678 0.517,5.364c0.675,2.266 3.074,3.031 5.285,2.785c0.113,-0.016 0.228,-0.032 0.344,-0.046c-0.115,0.018 -0.229,0.033 -0.344,0.046c-3.239,0.481 -6.116,1.661 -2.343,5.861c4.15,4.297 5.688,-0.922 6.477,-3.567c0.789,2.645 1.697,7.676 6.403,3.567c3.533,-3.567 0.97,-5.38 -2.269,-5.861c-0.115,-0.012 -0.229,-0.028 -0.344,-0.046c0.116,0.014 0.231,0.03 0.344,0.046c2.211,0.246 4.61,-0.519 5.285,-2.785c0.204,-0.685 0.517,-4.794 0.517,-5.363c-0,-0.572 -0.116,-1.541 -0.747,-1.827c-0.546,-0.247 -1.378,-0.513 -3.561,1.027c-2.278,1.61 -4.728,4.872 -5.628,6.621Z" style="fill:#3088d4;fill-rule:nonzero;"/></g></svg>
+    </a>
+    <a class="social-link" href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a class="social-link" href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
+</div>
+            </div>
+            </div>
+        </div>
+        <nav>
+            <ul class="list-unstyled ps-0 pt-4">
+  <li class="mb-1">
+    <div id="toc"><ul class="list-unstyled mb-1"><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#step-1-scaffolding" title="Step 1: Scaffolding">Step 1: Scaffolding</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#step-2-custom-showflag" title="Step 2: Custom ShowFlag">Step 2: Custom ShowFlag</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#step-3-debug-draw-service" title="Step 3: Debug draw Service">Step 3: Debug draw Service</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#step-4-drawing-stuff" title="Step 4: Drawing stuff">Step 4: Drawing stuff</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#step-5-gathering-widgets" title="Step 5: Gathering Widgets">Step 5: Gathering Widgets</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#step-6-overlay-our-widgets" title="Step 6: Overlay our widgets">Step 6: Overlay our widgets</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#step-7-text-validation" title="Step 7: Text Validation">Step 7: Text Validation</a></li><li class="btn-toggle-nav mb-1 nav-item"><a class="link-body-emphasis d-inline-flex text-decoration-none rounded nav-link ms-0 fs-4" href="#conclusion" title="Conclusion">Conclusion</a></li></ul></div>
+  </div>
+            </ul>
+        </nav>
+        </div>
+    </aside>
+    <main class="container overflow-auto">
+      <div class="d-lg-none">
+      <div class="d-flex justify-content-between align-items-center">
+        <hgroup class="d-inline-flex align-items-center">
+        <img alt="Profile Picture" class="profile-pic img-fluid me-2" src="../theme/images/tony-slurp.jpg">
+        <h1 class="flex-shrink-1">Sharundaar</h1>
+        </hgroup>
+        <button class="btn btn-dark d-lg-none m-2 d-flex align-items-center justify-content-center" 
+        type="button" 
+        data-bs-toggle="offcanvas" 
+        data-bs-target="#offcanvas-sidebar" 
+        aria-controls="offcanvas-sidebar">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="d-flex justify-content-between">
+        <div>
+<a class="social-link" href="..">
+<svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="24px" height="24px" viewBox="0 0 495.398 495.398"
+    xml:space="preserve">
+<g><g><g>
+    <path d="M487.083,225.514l-75.08-75.08V63.704c0-15.682-12.708-28.391-28.413-28.391c-15.669,0-28.377,12.709-28.377,28.391
+        v29.941L299.31,37.74c-27.639-27.624-75.694-27.575-103.27,0.05L8.312,225.514c-11.082,11.104-11.082,29.071,0,40.158
+        c11.087,11.101,29.089,11.101,40.172,0l187.71-187.729c6.115-6.083,16.893-6.083,22.976-0.018l187.742,187.747
+        c5.567,5.551,12.825,8.312,20.081,8.312c7.271,0,14.541-2.764,20.091-8.312C498.17,254.586,498.17,236.619,487.083,225.514z"/>
+    <path d="M257.561,131.836c-5.454-5.451-14.285-5.451-19.723,0L72.712,296.913c-2.607,2.606-4.085,6.164-4.085,9.877v120.401
+        c0,28.253,22.908,51.16,51.16,51.16h81.754v-126.61h92.299v126.61h81.755c28.251,0,51.159-22.907,51.159-51.159V306.79
+        c0-3.713-1.465-7.271-4.085-9.877L257.561,131.836z"/>
+    </g></g></g>
+</svg>
+</a>        </div>
+        <div class="m-0">
+<div id="sidebar-social-link" class="d-flex">
+    <a class="social-link" href="https://bsky.app/profile/sharundaar.bsky.social" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z" style="fill:#fff;"/><clipPath id="_clip1"><path d="M20.4,0c1.988,0 3.6,1.612 3.6,3.6l-0,16.8c-0,1.988 -1.612,3.6 -3.6,3.6l-16.8,-0c-1.988,-0 -3.6,-1.612 -3.6,-3.6l-0,-16.8c0,-1.988 1.612,-3.6 3.6,-3.6l16.8,-0Z"/></clipPath><g clip-path="url(#_clip1)"><path d="M12,11.006c-0.9,-1.75 -3.35,-5.012 -5.628,-6.62c-2.183,-1.54 -3.015,-1.274 -3.561,-1.026c-0.631,0.284 -0.747,1.254 -0.747,1.824c0,0.571 0.313,4.678 0.517,5.364c0.675,2.266 3.074,3.031 5.285,2.785c0.113,-0.016 0.228,-0.032 0.344,-0.046c-0.115,0.018 -0.229,0.033 -0.344,0.046c-3.239,0.481 -6.116,1.661 -2.343,5.861c4.15,4.297 5.688,-0.922 6.477,-3.567c0.789,2.645 1.697,7.676 6.403,3.567c3.533,-3.567 0.97,-5.38 -2.269,-5.861c-0.115,-0.012 -0.229,-0.028 -0.344,-0.046c0.116,0.014 0.231,0.03 0.344,0.046c2.211,0.246 4.61,-0.519 5.285,-2.785c0.204,-0.685 0.517,-4.794 0.517,-5.363c-0,-0.572 -0.116,-1.541 -0.747,-1.827c-0.546,-0.247 -1.378,-0.513 -3.561,1.027c-2.278,1.61 -4.728,4.872 -5.628,6.621Z" style="fill:#3088d4;fill-rule:nonzero;"/></g></svg>
+    </a>
+    <a class="social-link" href="https://github.com/Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a class="social-link" href="https://mastodon.gamedev.place/@Sharundaar" title="" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mastodon" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%"/><path d="m409 290c-5 24-43 50-85 56-86 11-137-6-137-6 3 13-4 54 70 52 31 0 58-7 58-7l2 27c-51 24-107 15-140 6-67-17-79-90-81-162v-59c0-74 49-96 49-96 50-24 180-22 222 0 0 0 49 22 49 96 0 0 1 55-7 93" fill="#3088d4"/><path d="m358 202v91h-35v-88c0-18-8-27-23-27-18 0-27 11-27 33v47h-34v-47c0-22-9-33-27-33-15 0-23 9-23 27v88h-35v-91c0-18 5-60 52-60 39 0 50 37 50 37s10-37 50-37c45 0 52 42 52 60"/></svg>
+    </a>
+</div>
+        </div>
+      </div>
+      </div>
+  <article class="mb-4 mt-4">
+    <header class="mb-4">
+      <h1 class="mb-0">
+        <a href="../drafts/visualizing-ui-issues-using-show-flags.html" rel="bookmark"
+           title="Permalink to Visualizing UI issues using Show Flags">
+           Visualizing UI issues using Show Flags
+        </a>
+      </h1>
+      <time datetime="2025-06-02T00:00:00-04:00">02 Jun 2025</time>
+      
+    </header>
+    <div data-bs-spy="scroll" data-bs-target="#toc">
+    <p>In Unreal the other engineering team use show flags to enable debug drawing, this feature is seldom use in UI and I was exploring if we could leverage that debug draw layer to dynamically visualize UI issues at runtime.</p>
+<p>For this experiment we'll be making a simple validator to check if some displayed FText is properly localized according to some arbitrary rule and we'll visualize it by drawing a colored square around our text widget by creating a custom show flag ! So let's do it ☺</p>
+<div class="section" id="step-1-scaffolding">
+<h2 id="step-1-scaffolding">Step 1: Scaffolding</h2>
+<p>First step is always the scaffolding, we'll be making a very simple subsystem that'll take care of registering our draw function and holding any necessary data we might need.</p>
+<p>For this I picked an Engine subsystem, since the show flag is always available and we only care about registering once for the application lifetime we might as well. Create two files <code>TextLocalizationIndicatorSubsystem.h</code> and <code>TextLocalizationIndicatorSubsystem.cpp</code> and write this inside :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// =======================================</span>
+<span class="c1">// TextLocalizationIndicatorSubsystem.h</span>
+
+<span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Subsystems/EngineSubsystem.h"</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"TextLocalizationIndicatorSubsystem.generated.h"</span>
+
+<span class="n">UCLASS</span><span class="p">()</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UTextLocalizationIndicatorSubsystem</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">UEngineSubsystem</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">GENERATED_BODY</span><span class="p">()</span>
+
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">Initialize</span><span class="p">(</span><span class="n">FSubsystemCollectionBase</span><span class="o">&amp;</span><span class="w"> </span><span class="n">Collection</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">Deinitialize</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+
+<span class="k">protected</span><span class="o">:</span>
+<span class="w">    </span><span class="n">FDelegateHandle</span><span class="w"> </span><span class="n">DebugDrawDelegate</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></td></tr></table></div>
+<p><br/></p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// =======================================</span>
+<span class="c1">// TextLocalizationIndicatorSubsystem.cpp</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"TextLocalizationIndicatorSubsystem.h"</span>
+
+<span class="n">namespace</span><span class="w"> </span><span class="n">TextLocalizationIndicatorSubsystem</span>
+<span class="p">{</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">UTextLocalizationIndicatorSubsystem</span><span class="o">::</span><span class="n">Initialize</span><span class="p">(</span><span class="n">FSubsystemCollectionBase</span><span class="o">&amp;</span><span class="w"> </span><span class="n">Collection</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">UTextLocalizationIndicatorSubsystem</span><span class="o">::</span><span class="n">Deinitialize</span><span class="p">()</span>
+<span class="p">{</span>
+
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Alright, with this we're ready to make write some debug code ! We'll do our event registering in the Initialize function, and we'll use the namespace for any static variables and function we need, it's good hygien to avoid any unity build issues later down the line.</p>
+<p>Let's move on to making our custom show flag :)</p>
+</div>
+<div class="section" id="step-2-custom-showflag">
+<h2 id="step-2-custom-showflag">Step 2: Custom ShowFlag</h2>
+<p>If you've never seen or used them, show flags are simple bit flag globally available to enable or disable specific render features, like the atmosphere, the sky, all static meshes... You can also use them to render debug visuals like the camera frustrum, or colision shapes for example. They're all available in the console by typing ShowFlag or in the editor viewport under the Show button :</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Show flags menu in the unreal editor viewport" class="img-fluid" src="../images/UIDebugShowFlag/show-flags-list.webp" title="Show flags menu in the unreal editor viewport"/></p>
+</p>
+<p>The nice thing is that unreal provides a very simple construct to make arbitrary custom ones ! It uses the <code>TCustomShowFlag</code> struct to automatically create and register our show flag. We'll put ours in the local namespace we made:</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">namespace</span><span class="w"> </span><span class="nn">TextLocalizationIndicatorSubsystem</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">TCHAR</span><span class="o">*</span><span class="w"> </span><span class="n">TextLocalizationIndicatorName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">"TextLocalizationIndicator"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">TCustomShowFlag</span><span class="o">&lt;</span><span class="n">EShowFlagShippingValue</span><span class="o">::</span><span class="n">ForceDisabled</span><span class="o">&gt;</span><span class="w"> </span><span class="n">TextLocalizationIndicatorShowFlag</span><span class="p">(</span>
+<span class="w">        </span><span class="n">TextLocalizationIndicatorName</span><span class="p">,</span>
+<span class="w">        </span><span class="nb">false</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Easy enough right ? We've created a new flag named "TextLocalizationIndicator", if you compile and boot the editor you should already see it popup if you check in the "Custom" section. You can turn it on but it won't do much as is :)</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Our new show flag available in the Show menu" class="img-fluid" src="./images/UIDebugShowFlag/show-flags-new-custom.webp" title="Our new show flag available in the Show menu"/></p>
+</p>
+<p>Next step is to plug some debug visualization !</p>
+</div>
+<div class="section" id="step-3-debug-draw-service">
+<h2 id="step-3-debug-draw-service">Step 3: Debug draw Service</h2>
+<p>To do things with our new flag, Unreal provides the <code>UDebugDrawService</code> global object with two functions <code>Register</code> and <code>Unregister</code>. Simple enough !</p>
+<p>Let's look at the <code>Register</code> function :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">DECLARE_DELEGATE_TwoParams</span><span class="p">(</span><span class="n">FDebugDrawDelegate</span><span class="p">,</span><span class="w"> </span><span class="n">UCanvas</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">APlayerController</span><span class="o">*</span><span class="p">);</span>
+<span class="n">FDelegateHandle</span><span class="w"> </span><span class="nf">UDebugDrawService::Register</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TCHAR</span><span class="o">*</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">FDebugDrawDelegate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">NewDelegate</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+<p>It takes our show flag name, and the delegate callback that will be automatically called every frame when the debug draw service is drawn. When is it drawn ? Directly in the GameViewportClient draw path, right after the HUD and before the subtitles, which means it should be drawn on top of "everything" as far as we're concerned.</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// pseudo code of the client draw procedure, check UGameViewportClient::Draw for the complete picture</span>
+<span class="k">if</span><span class="p">(</span><span class="n">FSlateApplication</span><span class="o">::</span><span class="n">Get</span><span class="p">().</span><span class="n">GetPlatformApplication</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">IsAllowedToRender</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">foreach</span><span class="p">(</span><span class="n">PlayerController</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">PlayerController</span><span class="o">-&gt;</span><span class="n">MyHUD</span><span class="p">)</span><span class="w"> </span><span class="c1">// MyHUD is AHud, we usually don't use those anymore for UI</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">PlayerController</span><span class="o">-&gt;</span><span class="n">MyHUD</span><span class="o">-&gt;</span><span class="n">Render</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">DebugCanvas</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="hll"><span class="w">            </span><span class="n">UDebugDrawService</span><span class="o">::</span><span class="n">Draw</span><span class="p">(</span><span class="n">ViewFamily</span><span class="p">.</span><span class="n">EngineShowFlags</span><span class="p">,</span><span class="w"> </span><span class="n">InViewport</span><span class="p">,</span><span class="w"> </span><span class="n">View</span><span class="p">,</span><span class="w"> </span><span class="n">DebugCanvas</span><span class="p">,</span><span class="w"> </span><span class="n">DebugCanvasObject</span><span class="p">);</span>
+</span><span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">FSubtitleManager</span><span class="o">::</span><span class="n">GetSubtitleManager</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">DisplaySubtitles</span><span class="p">(</span><span class="w"> </span><span class="n">SceneCanvas</span><span class="p">,</span><span class="w"> </span><span class="n">SubtitleRegion</span><span class="p">,</span><span class="w"> </span><span class="n">MyWorld</span><span class="o">-&gt;</span><span class="n">GetAudioTimeSeconds</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Alright, let's plug ourselves on this DebugDrawService. Make a static function with the right signature, update the <code>Initialize</code> function of our subsystem to register our debug function (and cleanup on <code>Deinitialize</code> !)</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">namespace</span><span class="w"> </span><span class="nn">TextLocalizationIndicatorSubsystem</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">TextLocalizationIndicatorDraw</span><span class="p">(</span><span class="n">UCanvas</span><span class="o">*</span><span class="w"> </span><span class="n">Canvas</span><span class="p">,</span><span class="w"> </span><span class="n">APlayerController</span><span class="o">*</span><span class="w"> </span><span class="cm">/*Controller*/</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Useless code, old trick so we have a line to put a breakpoint on</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="hll"><span class="w">        </span><span class="o">++</span><span class="n">a</span><span class="p">;</span><span class="w"> </span><span class="c1">// Put a breakpoint here</span>
+</span><span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">UTextLocalizationIndicatorSubsystem</span><span class="o">::</span><span class="n">Initialize</span><span class="p">(</span><span class="n">FSubsystemCollectionBase</span><span class="o">&amp;</span><span class="w"> </span><span class="n">Collection</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">TextLocalizationIndicatorSubsystem</span><span class="p">;</span>
+<span class="w">    </span><span class="n">DebugDrawDelegate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UDebugDrawService</span><span class="o">::</span><span class="n">Register</span><span class="p">(</span><span class="n">TextLocalizationIndicatorName</span><span class="p">,</span><span class="w"> </span><span class="n">FDebugDrawDelegate</span><span class="o">::</span><span class="n">CreateStatic</span><span class="p">(</span><span class="n">TextLocalizationIndicatorDraw</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">UTextLocalizationIndicatorSubsystem</span><span class="o">::</span><span class="n">Deinitialize</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">UDebugDrawService</span><span class="o">::</span><span class="n">Unregister</span><span class="p">(</span><span class="n">DebugDrawDelegate</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Let's compile, and put a breakpoint in your draw function. If you type <code>ShowFlag.TextLocalizationIndicator 1</code> in the console you should hit it !</p>
+<p>Alright we almost have everything we need for the fun part, last step is to know how to draw stuff !</p>
+</div>
+<div class="section" id="step-4-drawing-stuff">
+<h2 id="step-4-drawing-stuff">Step 4: Drawing stuff</h2>
+<p>Our draw function comes equipped with a <code>Canvas</code> object, if you look into it you'll see a whole lot of Draw function. We're UI engineers so we care about only two things, drawing boxes and text.</p>
+<p>We can draw boxes using the <code>DrawItem</code> procedure, that function takes an <code>FCanvasItem</code>. It's a fairly simple interface that makes it easy to make your own custom, potentially more complex, drawing procedure. In our case we'll want to use <code>FCanvasBoxItem</code> directly since it does what we want. That item has a position, a size, and a line thickness property. Let's set all that :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">TextLocalizationIndicatorDraw</span><span class="p">(</span><span class="n">UCanvas</span><span class="o">*</span><span class="w"> </span><span class="n">Canvas</span><span class="p">,</span><span class="w"> </span><span class="n">APlayerController</span><span class="o">*</span><span class="w"> </span><span class="cm">/*Controller*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">FCanvasBoxItem</span><span class="w"> </span><span class="n">BoxItem</span><span class="p">(</span><span class="n">FVector2D</span><span class="p">{</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">},</span><span class="w"> </span><span class="n">FVector2D</span><span class="p">{</span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">});</span>
+<span class="w">    </span><span class="n">BoxItem</span><span class="p">.</span><span class="n">LineThickness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">DrawItem</span><span class="p">(</span><span class="n">BoxItem</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>With this written, if we enable our show flag you'll see our box render on top of everything !</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Our box item being rendered on top of the world" class="img-fluid" src="../images/UIDebugShowFlag/simple-draw-procedure.webp" title="Our box item being rendered on top of the world"/></p>
+</p>
+<p>You'll notice that the coordinate system here is with respect to the viewport we render inside accounting for DPI. Our box is positionned at the pixel coordinate {100, 100} * DPIScale and has the pixel size {80, 45} * DPIScale. It's important to understand in which coordinate system we're working so we can do the right transformation when we'll work with widgets later.</p>
+<p>I said earlier that we want to draw text, let's write some shenanigans centered in our box here :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">TextLocalizationIndicatorDraw</span><span class="p">(</span><span class="n">UCanvas</span><span class="o">*</span><span class="w"> </span><span class="n">Canvas</span><span class="p">,</span><span class="w"> </span><span class="n">APlayerController</span><span class="o">*</span><span class="w"> </span><span class="cm">/*Controller*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">FVector2D</span><span class="w"> </span><span class="n">BoxPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FVector2D</span><span class="p">{</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">};</span>
+<span class="w">    </span><span class="n">FVector2D</span><span class="w"> </span><span class="n">BoxSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FVector2D</span><span class="p">{</span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">};</span>
+<span class="w">    </span><span class="n">FCanvasBoxItem</span><span class="w"> </span><span class="n">BoxItem</span><span class="p">(</span><span class="n">BoxPosition</span><span class="p">,</span><span class="w"> </span><span class="n">BoxSize</span><span class="p">);</span>
+<span class="w">    </span><span class="n">BoxItem</span><span class="p">.</span><span class="n">SetColor</span><span class="p">(</span><span class="n">FLinearColor</span><span class="o">::</span><span class="n">Red</span><span class="p">);</span>
+<span class="w">    </span><span class="n">BoxItem</span><span class="p">.</span><span class="n">LineThickness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">DrawItem</span><span class="p">(</span><span class="n">BoxItem</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">FString</span><span class="w"> </span><span class="n">Text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">"Shenanigans"</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">TextSize</span><span class="p">(</span><span class="n">UEngine</span><span class="o">::</span><span class="n">GetSmallFont</span><span class="p">(),</span><span class="w"> </span><span class="n">Text</span><span class="p">,</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="p">);</span>
+<span class="w">    </span><span class="n">FVector2D</span><span class="w"> </span><span class="n">TextSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="w"> </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">SetDrawColor</span><span class="p">(</span><span class="n">FColor</span><span class="o">::</span><span class="n">White</span><span class="p">);</span>
+<span class="w">    </span><span class="n">FVector2D</span><span class="w"> </span><span class="n">TextPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BoxPosition</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">BoxSize</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">TextSize</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">FFontRenderInfo</span><span class="w"> </span><span class="n">FontRenderInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">CreateFontRenderInfo</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">DrawText</span><span class="p">(</span><span class="n">UEngine</span><span class="o">::</span><span class="n">GetSmallFont</span><span class="p">(),</span><span class="w"> </span><span class="n">Text</span><span class="p">,</span><span class="w"> </span><span class="n">TextPosition</span><span class="p">.</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">TextPosition</span><span class="p">.</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">FontRenderInfo</span><span class="w"> </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>It extended a bit but that's what happens when we compute layouts by hand. In essence, we've parametrized our box so we can reference its position and size. Then we compute our future text size. Finally we set our draw color and compute the text position so it's properly centered.</p>
+<p>The <code>CreateFontRenderInfo</code> is used so the <code>DrawText</code> procedures adds a shadow to help legibility, finally the DrawText function has self explanatory parameters.</p>
+<p>And that's it ! We have a nicely centered text in our drawn box :</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Our box is now agremented by some shenanigans, we're glad" class="img-fluid" src="../images/UIDebugShowFlag/less-simple-draw-procedure.webp" title="Our box is now agremented by some shenanigans, we're glad"/></p>
+</p>
+<p>Ok we're done with the fun part, now let's work on the useful part :)</p>
+</div>
+<div class="section" id="step-5-gathering-widgets">
+<h2 id="step-5-gathering-widgets">Step 5: Gathering Widgets</h2>
+<p>Now that we have a way to draw things, we want to show something. First I'll build a simple test widget (named <code>W_TextLocalizationDemo</code>) just so we have data to work with, it looks like this in the UMG editor :</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Demo widget to show different localization issues" class="img-fluid" src="../images/UIDebugShowFlag/w_textlocalizationdemo.webp" title="Demo widget to show different localization issues"/></p>
+</p>
+<p>Just a couple of text block, there's also an animation on the Bouncy Text so it moves around. Here's a simple graph to spawn it, dump this in the level blueprint :</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Level blueprint to spawn our debug widget" class="img-fluid" src="../images/UIDebugShowFlag/level-blueprint.webp" title="Level blueprint to spawn our debug widget"/></p>
+</p>
+<p>From here when you press play and enable our custom show flag you should see the following :</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Showing the demo widget with the shenanigan red box on top" class="img-fluid" src="../images/UIDebugShowFlag/gracious-widget-with-shenanigans.webp" title="Showing the demo widget with the shenanigan red box on top"/></p>
+</p>
+<p>Ok ! We have a widget showing up, our debug view still draws on top of them, we're ready to gather what we need and overlay debug information on top of our UI !</p>
+<p>Here the nice thing to know is that UMG works with UWidget's, specifically widget's that are UObject. This means we can gather all existing instances using <code>TObjectIterator</code> (note that you shouldn't <em>usually</em> do this, but we're making an exception here. If it gets too slow we can always accelerate it later)</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// Iterating over all live instances of UTextBlock</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">TObjectIterator</span><span class="o">&lt;</span><span class="n">UTextBlock</span><span class="o">&gt;</span><span class="w"> </span><span class="n">It</span><span class="p">;</span><span class="w"> </span><span class="n">It</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">It</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">UTextBlock</span><span class="o">*</span><span class="w"> </span><span class="n">TextBlock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">It</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">TextBlock</span><span class="p">)</span><span class="w"> </span><span class="c1">// Being overly cautious, we don't want to crash anywhere in this function</span>
+<span class="w">        </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Ignoring design time widgets</span>
+<span class="w">    </span><span class="c1">// we can't draw on them anyways since they're usually not rendered in a traditional viewport</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">TextBlock</span><span class="o">-&gt;</span><span class="n">IsDesignTime</span><span class="p">())</span>
+<span class="w">        </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Ignoring widgets that don't have a Slate counterpart since they wouldn't be visible anyways</span>
+<span class="w">    </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWidget</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Widget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TextBlock</span><span class="o">-&gt;</span><span class="n">GetCachedWidget</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">Widget</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span>
+<span class="w">        </span><span class="k">continue</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Ok ! That's a good start, the next part is going to be more complicated, but there's three goals here :</p>
+<ol>
+<li>Find which window our widget's belongs.</li>
+<li>Verify that the widget is actually visible.</li>
+<li>Find the viewport geometry, remember when I talked about coordinate system, this will be important.</li>
+</ol>
+<p>First step, finding the window. This is relatively easy, we just have to do something you should probably never do, climb up the slate hierarchy until we find a window :)</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWidget</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="p">;</span>
+<span class="k">while</span><span class="p">(</span><span class="n">Parent</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">Advanced_IsWindow</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// jackpot, we have a window</span>
+<span class="w">        </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWindow</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StaticCastSharedPtr</span><span class="o">&lt;</span><span class="n">SWindow</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Parent</span><span class="p">);</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"> </span><span class="c1">// We can break here, there won't be anything more to see</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">GetParentWidget</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Good, second objective, verify that we're actually visible :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="n">bIsVisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWidget</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="p">;</span>
+<span class="k">while</span><span class="p">(</span><span class="n">Parent</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Any of those conditions being valid means we're just not being rendered, so stop iteration there</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">GetRenderOpacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.0f</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Visibility</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EVisibility</span><span class="o">::</span><span class="n">Collapsed</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Visibility</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EVisibility</span><span class="o">::</span><span class="n">Hidden</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">bIsVisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">Advanced_IsWindow</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWindow</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StaticCastSharedPtr</span><span class="o">&lt;</span><span class="n">SWindow</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Parent</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Check that the Window actually draws something</span>
+<span class="w">        </span><span class="n">bIsVisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Window</span><span class="o">-&gt;</span><span class="n">IsVisible</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Window</span><span class="o">-&gt;</span><span class="n">GetViewport</span><span class="p">().</span><span class="n">IsValid</span><span class="p">();</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">GetParentWidget</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Alright, that's done, easy enough ! Final point is fetching the viewport's geometry :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">FGeometry</span><span class="w"> </span><span class="n">ViewportGeometry</span>
+<span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWidget</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="p">;</span>
+<span class="k">while</span><span class="p">(</span><span class="n">Parent</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">GetRenderOpacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.0f</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Visibility</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EVisibility</span><span class="o">::</span><span class="n">Collapsed</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Visibility</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EVisibility</span><span class="o">::</span><span class="n">Hidden</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">bIsVisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">Advanced_IsWindow</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWindow</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StaticCastSharedPtr</span><span class="o">&lt;</span><span class="n">SWindow</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Parent</span><span class="p">);</span>
+<span class="w">        </span><span class="n">bIsVisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Window</span><span class="o">-&gt;</span><span class="n">IsVisible</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Window</span><span class="o">-&gt;</span><span class="n">GetViewport</span><span class="p">().</span><span class="n">IsValid</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">bIsVisible</span><span class="p">)</span><span class="w"> </span><span class="c1">// Doubles as verifying that the viewport is valid</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWidget</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ViewportWidget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Window</span><span class="o">-&gt;</span><span class="n">GetViewport</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">GetWidget</span><span class="p">().</span><span class="n">Pin</span><span class="p">();</span>
+<span class="w">            </span><span class="n">checkf</span><span class="p">(</span><span class="n">ViewportWidget</span><span class="p">.</span><span class="n">IsValid</span><span class="p">(),</span><span class="w"> </span><span class="s">"We're assuming the viewport widget is always valid here (it would be weird if it wasn't)."</span><span class="p">);</span>
+<span class="w">            </span><span class="n">ViewportGeometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ViewportWidget</span><span class="o">-&gt;</span><span class="n">GetCachedGeometry</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">GetParentWidget</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>And that's it for this part ! At this point we <em>know</em> we have a widget that's actually present and drawn on the screen. Note that I don't do any overlap checks, but ultimately you can add anything to the sauce. You can check that the widget belongs to the current active root if you're using CommonUI, or that it's the topmost TextBlock depending on whatever menu system you're using.</p>
+<p>With our variable in hand, we can conclude our loop by skipping any widget that's not visible. The full function should look like this :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">TextLocalizationIndicatorDraw</span><span class="p">(</span><span class="n">UCanvas</span><span class="o">*</span><span class="w"> </span><span class="n">Canvas</span><span class="p">,</span><span class="w"> </span><span class="n">APlayerController</span><span class="o">*</span><span class="w"> </span><span class="cm">/*Controller*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">TObjectIterator</span><span class="o">&lt;</span><span class="n">UTextBlock</span><span class="o">&gt;</span><span class="w"> </span><span class="n">It</span><span class="p">;</span><span class="w"> </span><span class="n">It</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">It</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">UTextBlock</span><span class="o">*</span><span class="w"> </span><span class="n">TextBlock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">It</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">TextBlock</span><span class="p">)</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">TextBlock</span><span class="o">-&gt;</span><span class="n">IsDesignTime</span><span class="p">())</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWidget</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Widget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TextBlock</span><span class="o">-&gt;</span><span class="n">GetCachedWidget</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">Widget</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="n">bIsVisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">FGeometry</span><span class="w"> </span><span class="n">ViewportGeometry</span><span class="p">;</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWidget</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="p">;</span>
+<span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">Parent</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">EVisibility</span><span class="w"> </span><span class="n">Visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">GetVisibility</span><span class="p">();</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">GetRenderOpacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.0f</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Visibility</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EVisibility</span><span class="o">::</span><span class="n">Collapsed</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Visibility</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EVisibility</span><span class="o">::</span><span class="n">Hidden</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">bIsVisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">Advanced_IsWindow</span><span class="p">())</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWindow</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StaticCastSharedPtr</span><span class="o">&lt;</span><span class="n">SWindow</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Parent</span><span class="p">);</span>
+<span class="w">                    </span><span class="n">bIsVisible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Window</span><span class="o">-&gt;</span><span class="n">IsVisible</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">Window</span><span class="o">-&gt;</span><span class="n">GetViewport</span><span class="p">().</span><span class="n">IsValid</span><span class="p">();</span>
+<span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bIsVisible</span><span class="p">)</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">TSharedPtr</span><span class="o">&lt;</span><span class="n">SWidget</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ViewportWidget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Window</span><span class="o">-&gt;</span><span class="n">GetViewport</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">GetWidget</span><span class="p">().</span><span class="n">Pin</span><span class="p">();</span>
+<span class="w">                        </span><span class="n">check</span><span class="p">(</span><span class="n">ViewportWidget</span><span class="p">.</span><span class="n">IsValid</span><span class="p">());</span>
+<span class="w">                        </span><span class="n">ViewportGeometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ViewportWidget</span><span class="o">-&gt;</span><span class="n">GetCachedGeometry</span><span class="p">();</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                    </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="n">Parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Parent</span><span class="o">-&gt;</span><span class="n">GetParentWidget</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">bIsVisible</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="o">++</span><span class="n">a</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>Don't hesitate to run it and put some breakpoints to get a feel of the code flow ! You can also log your visible TextBlock name for example, at this point I can't convince you that we have exactly the <em>right</em> widgets, but we'll soon see something on screen !</p>
+</div>
+<div class="section" id="step-6-overlay-our-widgets">
+<h2 id="step-6-overlay-our-widgets">Step 6: Overlay our widgets</h2>
+<p>Alright ! At this point we have all the information we need to overlay a nice box on our textblocks, remember what I said about coordinates system ? The debug canvas is drawn in the <em>viewport</em> space. Which means that thanks to the viewport geometry we grabbed, we can trivially transform the widget's geometry in our canvas space !</p>
+<p>Look at this :</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">FGeometry</span><span class="w"> </span><span class="n">Geometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="o">-&gt;</span><span class="n">GetCachedGeometry</span><span class="p">();</span>
+
+<span class="c1">// We transform our local geometry _up_ to absolute space (which is your desktop space)</span>
+<span class="c1">// then we transform _down_ to the viewport space (our debug canvas space)</span>
+<span class="n">FVector2D</span><span class="w"> </span><span class="n">ViewportPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ViewportGeometry</span><span class="p">.</span><span class="n">AbsoluteToLocal</span><span class="p">(</span><span class="n">Geometry</span><span class="p">.</span><span class="n">GetAbsolutePosition</span><span class="p">());</span>
+</code></pre></div></td></tr></table></div>
+<p>See, not so hard when we know who's in which space :)</p>
+<p>Ok, we have a position in canvas space, let's draw our box like we did previously.</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">FGeometry</span><span class="w"> </span><span class="n">Geometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="o">-&gt;</span><span class="n">GetCachedGeometry</span><span class="p">();</span>
+<span class="n">FVector2D</span><span class="w"> </span><span class="n">ViewportPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ViewportGeometry</span><span class="p">.</span><span class="n">AbsoluteToLocal</span><span class="p">(</span><span class="n">Geometry</span><span class="p">.</span><span class="n">GetAbsolutePosition</span><span class="p">());</span>
+
+<span class="hll"><span class="n">FVector2D</span><span class="w"> </span><span class="n">BoxPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ViewportPosition</span><span class="p">;</span>
+</span><span class="hll"><span class="n">FVector2D</span><span class="w"> </span><span class="n">BoxSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Geometry</span><span class="p">.</span><span class="n">GetAbsoluteSize</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">GetDPIScale</span><span class="p">();</span><span class="w"> </span><span class="c1">// @NOTE: We have to add back the DPI Scale here since AbsoluteSize removes it</span>
+</span><span class="n">FCanvasBoxItem</span><span class="w"> </span><span class="nf">BoxItem</span><span class="p">(</span><span class="n">BoxPosition</span><span class="p">,</span><span class="w"> </span><span class="n">BoxSize</span><span class="p">);</span>
+<span class="n">BoxItem</span><span class="p">.</span><span class="n">SetColor</span><span class="p">(</span><span class="n">FLinearColor</span><span class="o">::</span><span class="n">Red</span><span class="p">);</span>
+<span class="n">BoxItem</span><span class="p">.</span><span class="n">LineThickness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">;</span>
+<span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">DrawItem</span><span class="p">(</span><span class="n">BoxItem</span><span class="p">);</span>
+
+<span class="n">FString</span><span class="w"> </span><span class="n">Text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">"Shenanigans"</span><span class="p">);</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="p">;</span>
+<span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">TextSize</span><span class="p">(</span><span class="n">UEngine</span><span class="o">::</span><span class="n">GetSmallFont</span><span class="p">(),</span><span class="w"> </span><span class="n">Text</span><span class="p">,</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="p">);</span>
+<span class="n">FVector2D</span><span class="w"> </span><span class="n">TextSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="w"> </span><span class="p">};</span>
+
+<span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">SetDrawColor</span><span class="p">(</span><span class="n">FColor</span><span class="o">::</span><span class="n">White</span><span class="p">);</span>
+<span class="n">FVector2D</span><span class="w"> </span><span class="n">TextPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BoxPosition</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">BoxSize</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">TextSize</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="n">FFontRenderInfo</span><span class="w"> </span><span class="n">FontRenderInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">CreateFontRenderInfo</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">DrawText</span><span class="p">(</span><span class="n">UEngine</span><span class="o">::</span><span class="n">GetSmallFont</span><span class="p">(),</span><span class="w"> </span><span class="n">Text</span><span class="p">,</span><span class="w"> </span><span class="n">TextPosition</span><span class="p">.</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">TextPosition</span><span class="p">.</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">FontRenderInfo</span><span class="w"> </span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+<p>Thanks to the work we did to parametrize our layout correctly there's almost no changes. With this recompiled we should see the following in game :</p>
+<p>
+<p class="text-center img-wrapper"><img alt="Our previous widget except each textblock is surrounded by a beautiful shenanigan box" class="img-fluid" src="../images/UIDebugShowFlag/gracious-widget-full-of-shenanigans.webp" title="Our previous widget except each textblock is surrounded by a beautiful shenanigan box"/></p>
+</p>
+<p>Ain't that great ? We can overlay debug information on any widget we'd like now, and we can show any information we care about. Let's go back to our first goal then, let's validate that the displayed text is correctly localized and show info about that.</p>
+</div>
+<div class="section" id="step-7-text-validation">
+<h2 id="step-7-text-validation">Step 7: Text Validation</h2>
+<p>Let's write a quick text validation function, I won't get into the details but it quickly checks that we either use a string table, or that we've set a proper namespace on the FText, if you reuse this code I encourage you to actually write your own check that makes sense for your environment since this doesn't cover a bunch of situations.</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">ValidateText</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">FText</span><span class="o">&amp;</span><span class="w"> </span><span class="n">Text</span><span class="p">,</span><span class="w"> </span><span class="n">FString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OutReason</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Check that we're using a StringTable, return the table + key if so</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Text</span><span class="p">.</span><span class="n">IsFromStringTable</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">FName</span><span class="w"> </span><span class="n">TableId</span><span class="p">;</span>
+<span class="w">        </span><span class="n">FTextKey</span><span class="w"> </span><span class="n">Key</span><span class="p">;</span>
+<span class="w">        </span><span class="n">FTextInspector</span><span class="o">::</span><span class="n">GetTableIdAndKey</span><span class="p">(</span><span class="n">Text</span><span class="p">,</span><span class="w"> </span><span class="n">TableId</span><span class="p">,</span><span class="w"> </span><span class="n">Key</span><span class="p">);</span>
+<span class="w">        </span><span class="n">OutReason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FString</span><span class="o">::</span><span class="n">Printf</span><span class="p">(</span><span class="n">TEXT</span><span class="p">(</span><span class="s">"[%s, %s]"</span><span class="p">),</span><span class="w"> </span><span class="o">*</span><span class="n">TableId</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span><span class="w"> </span><span class="n">Key</span><span class="p">.</span><span class="n">GetChars</span><span class="p">());</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Check that the "localize" box is checked</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Text</span><span class="p">.</span><span class="n">IsCultureInvariant</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">OutReason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">"Culture Invariant"</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Check that a namespace has been set</span>
+<span class="w">    </span><span class="n">TOptional</span><span class="o">&lt;</span><span class="n">FString</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FTextInspector</span><span class="o">::</span><span class="n">GetNamespace</span><span class="p">(</span><span class="n">Text</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">Namespace</span><span class="p">.</span><span class="n">IsSet</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">OutReason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">"Missing namespace"</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// @HACK: Checks that the namespace has an actual value and is not just an asset hash</span>
+<span class="w">    </span><span class="n">FString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">NamespaceStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Namespace</span><span class="p">.</span><span class="n">GetValue</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">NamespaceStr</span><span class="p">.</span><span class="n">IsEmpty</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">NamespaceStr</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="n">TEXT</span><span class="p">(</span><span class="s">"["</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">NamespaceStr</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="n">TEXT</span><span class="p">(</span><span class="s">"]"</span><span class="p">)))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Namespace only has a GUID set, we want to enforce a namespace to be always set</span>
+<span class="w">        </span><span class="n">OutReason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TEXT</span><span class="p">(</span><span class="s">"Missing namespace"</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Here we're properly localized, return the namespace and the key for vizualisation</span>
+<span class="w">    </span><span class="n">TOptional</span><span class="o">&lt;</span><span class="n">FString</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FTextInspector</span><span class="o">::</span><span class="n">GetKey</span><span class="p">(</span><span class="n">Text</span><span class="p">);</span>
+<span class="w">    </span><span class="n">OutReason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FString</span><span class="o">::</span><span class="n">Printf</span><span class="p">(</span><span class="n">TEXT</span><span class="p">(</span><span class="s">"[%s, %s]"</span><span class="p">),</span><span class="w"> </span><span class="o">*</span><span class="n">NamespaceStr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">Key</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">TEXT</span><span class="p">(</span><span class="s">"&lt;unset&gt;"</span><span class="p">)));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>This function is simple enough, the idea is to pass it a text. It then tells us if the text is valid or not, and gives us some textual information about why it's valid or not to show the user.</p>
+<p>Let's go back to our draw function and use our validation function !</p>
+<div class="highlight table-responsive"><table class="highlight table-responsivetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="hll"><span class="c1">// Once we checked our widget is visible</span>
+</span><span class="hll"><span class="n">FString</span><span class="w"> </span><span class="n">Text</span><span class="p">;</span>
+</span><span class="hll"><span class="kt">bool</span><span class="w"> </span><span class="n">bIsTextValid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ValidateText</span><span class="p">(</span><span class="n">TextBlock</span><span class="o">-&gt;</span><span class="n">GetText</span><span class="p">(),</span><span class="w"> </span><span class="n">Text</span><span class="p">);</span>
+</span><span class="hll"><span class="n">FColor</span><span class="w"> </span><span class="n">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bIsTextValid</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">FColor</span><span class="o">::</span><span class="n">Green</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">FColor</span><span class="o">::</span><span class="n">Red</span><span class="p">;</span>
+</span>
+<span class="n">FGeometry</span><span class="w"> </span><span class="n">Geometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="o">-&gt;</span><span class="n">GetCachedGeometry</span><span class="p">();</span>
+<span class="n">FVector2D</span><span class="w"> </span><span class="n">ViewportPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ViewportGeometry</span><span class="p">.</span><span class="n">AbsoluteToLocal</span><span class="p">(</span><span class="n">Geometry</span><span class="p">.</span><span class="n">GetAbsolutePosition</span><span class="p">());</span>
+<span class="hll"><span class="n">FVector2D</span><span class="w"> </span><span class="n">ViewportSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Geometry</span><span class="p">.</span><span class="n">GetAbsoluteSize</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">GetDPIScale</span><span class="p">();</span>
+</span>
+<span class="hll"><span class="n">FCanvasBoxItem</span><span class="w"> </span><span class="nf">Item</span><span class="p">(</span><span class="n">ViewportPosition</span><span class="p">,</span><span class="w"> </span><span class="n">ViewportSize</span><span class="p">);</span>
+</span><span class="n">Item</span><span class="p">.</span><span class="n">SetColor</span><span class="p">(</span><span class="n">Color</span><span class="p">);</span>
+<span class="hll"><span class="n">Item</span><span class="p">.</span><span class="n">LineThickness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+</span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">DrawItem</span><span class="p">(</span><span class="n">Item</span><span class="p">);</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="p">;</span>
+<span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">TextSize</span><span class="p">(</span><span class="n">UEngine</span><span class="o">::</span><span class="n">GetSmallFont</span><span class="p">(),</span><span class="w"> </span><span class="n">Text</span><span class="p">,</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="p">);</span>
+<span class="n">FVector2D</span><span class="w"> </span><span class="n">TextSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">TextX</span><span class="p">,</span><span class="w"> </span><span class="n">TextY</span><span class="w"> </span><span class="p">};</span>
+
+<span class="n">FVector2D</span><span class="w"> </span><span class="n">TextPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ViewportPosition</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ViewportSize</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">TextSize</span><span class="p">;</span>
+<span class="n">FFontRenderInfo</span><span class="w"> </span><span class="n">RenderInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">CreateFontRenderInfo</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">SetDrawColor</span><span class="p">(</span><span class="n">Color</span><span class="p">);</span>
+<span class="hll"><span class="n">Canvas</span><span class="o">-&gt;</span><span class="n">DrawText</span><span class="p">(</span><span class="n">UEngine</span><span class="o">::</span><span class="n">GetSmallFont</span><span class="p">(),</span><span class="w"> </span><span class="n">Text</span><span class="p">,</span><span class="w"> </span><span class="n">TextPosition</span><span class="p">.</span><span class="n">X</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.f</span><span class="p">,</span><span class="w"> </span><span class="n">TextPosition</span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.f</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">RenderInfo</span><span class="p">);</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Not <em>that much</em> change. Let's compile and see the result :</p>
+<p>
+<p class="text-center img-wrapper"><img alt="We now see our widget with a bunch of useful data about their localization state" class="img-fluid" src="../images/UIDebugShowFlag/gracious-widget-full-of-useful-data.webp" title="We now see our widget with a bunch of useful data about their localization state"/></p>
+</p>
+</div>
+<div class="section" id="conclusion">
+<h2 id="conclusion">Conclusion</h2>
+<p>There we go ! We have generated an overlayed debug view that allows us to see dynamic information about the current state of localizable strings in the game's UI.</p>
+<p>The code is simple enough that we can improve it, cover more widget types, do more complex verifications. Hopefully it at least inspired you to write your own overlay vizualizer to check what widgets are misconfigured or need attention ! Why not one that shows texture size for example ?</p>
+<p>As usual the full code is publicly available on my github under MIT : </p>
+<ul>
+<li><a href="https://github.com/Sharundaar/UECodeGolfing/blob/main/Source/TextLocalizationIndicatorSubsystem.h">TextLocalizationIndicatorSubsystem.h</a></li>
+<li><a href="https://github.com/Sharundaar/UECodeGolfing/blob/main/Source/TextLocalizationIndicatorSubsystem.cpp">TextLocalizationIndicatorSubsystem.cpp</a></li>
+</ul>
+<p>Hope you had fun reading this, don't hesitate to come ask question on <a href="https://discord.gg/8p9EuPwAf2">discord</a>, or poke me directly on <a href="https://bsky.app/profile/sharundaar.bsky.social">bluesky</a>.</p>
+<p>Cheers !</p>
+</div>
+    </div>
+  </article>
+    </main>
+    <footer class="fixed-bottom py-1 d-flex flex-wrap justify-content-center align-items-center border-top bg-dark">
+        <a href="#" class="text-center link-body-emphasis text-decoration-none rounded">Back to top</a>
+        <!-- <address class="col-md-4 text-body-secondary text-end m-1">
+          Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>,
+          which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+        </address> -->
+    </footer>
+  </body>
+</html>

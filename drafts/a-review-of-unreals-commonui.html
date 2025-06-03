@@ -187,6 +187,10 @@
 <p>
 <p class="text-center img-wrapper"><img alt="Available Properties in the UCommonButtonStyle object" class="img-fluid" src="../images/CommonUIReview/common-button-style-properties.png" title="Available Properties in the UCommonButtonStyle object"/></p>
 </p>
+<p>The style allows to define some simple properties and clearly delineates and condense the possible states of a button (default, hover, etc...). It gets some bonus points for handling sounds too ! Even though there's some caveats we'll get into... Right now.</p>
+<p>What's the issue ? We should be considering that feature in context of what it's trying to solve. Being able to easily define a style, and centralize what a button looks like in a way that makes it simple to edit. But fundamentally, what is a button ? We first have to recognize that there's simply not a single definition of what a "button" is, just like there's not a single definition of a "chair". We can agree on some basic function, it's a <em>thing</em> you <em>push</em>, and <em>pushing</em> it starts some <em>process</em>. Translating that to computer term, what does it means to <em>push</em> a button ? Moving the cursor on top and clicking ? React on mouse down or mouse up ? What if I'm with a gamepad, would I move a virtual cursor or rely on some cardinal navigation system ? What shoudl happen if I move my cursor on a interactible widget and press space ? Simulate a left click or is it a whole other interaction ?</p>
+<p>You might just say those are systemic questions that we can analyse and come up with a <em>best</em> solution, but from my experience any generic rules you might come up with will end up needing addendum for this or that screen or situation.</p>
+<p>Does it mean we can't encode what a button is, and we'll endlessly solve case by case issues ? Of course not, but it does mean that any attempt to rigidify blindly will inevitably end up creating friction points when we'll went to amend.</p>
 </div>
     </div>
   </article>
